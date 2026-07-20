@@ -1,0 +1,48 @@
+generated: '2026-07-18'
+method: searched
+source: openapi/depop-selling-openapi-original.yml
+docs: https://partnerapi.depop.com/api-docs/concepts/authentication/
+summary:
+  types:
+  - http
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - authorizationCode
+  notes: >-
+    The OpenAPI declares a single http bearer scheme (BearerAuth). The docs
+    document two mechanisms: static per-shop API keys (bearer tokens prefixed
+    pak_) and OAuth 2.0 Authorization Code flow with PKCE (S256) for acting on
+    behalf of a Depop seller. API-key tokens carry all scopes; OAuth tokens are
+    limited to the scopes granted at authorization. Access is not self-service:
+    partners must be onboarded by Depop (developers@depop.com).
+schemes:
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: API key
+  description: >-
+    Authorization: Bearer <token>. Token is either a static per-shop API key
+    (prefix pak_) or a short-lived OAuth 2.0 access token.
+  sources:
+  - openapi/depop-selling-openapi-original.yml
+- name: OAuth2
+  type: oauth2
+  description: >-
+    OAuth 2.0 Authorization Code flow with mandatory PKCE (S256), per RFC 6749
+    and RFC 7636. Sellers grant granular scopes; access + refresh tokens are
+    issued at the token endpoint.
+  flows:
+  - flow: authorizationCode
+    tokenUrl: https://partnerapi.depop.com/api/v1/oauth2/access-token/
+    pkce: S256
+    scopes:
+    - products_read
+    - products_write
+    - orders_read
+    - orders_write
+    - offers_read
+    - offers_write
+    - shop_read
+  source: https://partnerapi.depop.com/api-docs/concepts/authentication/
