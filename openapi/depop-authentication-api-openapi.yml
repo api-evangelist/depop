@@ -1,0 +1,275 @@
+openapi: 3.1.0
+info:
+  title: Seller API status Authentication API
+  version: 1.0.0
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+servers:
+- url: https://partnerapi-staging.depop.com
+- url: https://partnerapi.depop.com
+security:
+- BearerAuth: []
+tags:
+- name: Authentication
+  description: OAuth 2.0 authentication endpoints for partner integration
+paths:
+  /api/v1/oauth2/access-token/:
+    post:
+      tags:
+      - Authentication
+      summary: OAuth 2.0 token endpoint (authorization code exchange and refresh token)
+      description: 'Token endpoint supporting multiple grant types according to RFC 6749: - Authorization Code (Section 4.1.3): Exchange authorization code for access tokens - Refresh Token (Section 6): Exchange refresh token for new access tokens
+
+        **Authorization Code Flow:** Requires PKCE (Proof Key for Code Exchange) with S256 challenge method according to RFC 7636. The code_verifier parameter is required and must match the code_challenge from the authorization request. The scopes granted during authorization are retrieved and included in the generated access token.
+
+        **Refresh Token Flow:** Exchange a partner refresh token for a new access token and refresh token pair. The original refresh token is consumed and cannot be reused. The new refresh token maintains the same expiry as the original (1 year from initial creation).'
+      operationId: exchangeToken
+      security: []
+      requestBody:
+        required: true
+        description: Authorization code exchange request with client credentials
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                  - authorization_code
+                  - refresh_token
+                  description: OAuth 2.0 grant type - 'authorization_code' to exchange code for tokens, 'refresh_token' to refresh access token
+                  example: authorization_code
+                code:
+                  type: string
+                  description: Authorization code received from the authorization endpoint (required for authorization_code grant)
+                  example: placeholder_auth_code_12345
+                redirect_uri:
+                  type: string
+                  format: uri
+                  description: Redirect URI that must match the one used in authorization request (required for authorization_code grant)
+                  example: https://example.com/auth/callback
+                client_id:
+                  type: string
+                  description: OAuth client identifier
+                  example: a1b2c3d4e5f6g7h8i9j0
+                client_secret:
+                  type: string
+                  description: OAuth client secret for authentication
+                  example: client_secret_abc123
+                code_verifier:
+                  type: string
+                  description: 'PKCE code verifier used to verify the code_challenge from the authorization request.
+
+                    Required for all authorization code flows (PKCE is mandatory).
+
+                    Must be 43-128 characters long and contain only [A-Za-z0-9._~-] characters.
+
+                    Not used for refresh_token grant.
+
+                    '
+                  example: dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+                refresh_token:
+                  type: string
+                  description: Partner refresh token to exchange for new tokens (required for refresh_token grant)
+                  example: prt_26f4f74b761c83ef0d383bcfc419e114fd554331
+              required:
+              - grant_type
+              - client_id
+              - client_secret
+            examples:
+              authorization_code:
+                summary: Exchange authorization code for tokens
+                value:
+                  grant_type: authorization_code
+                  code: placeholder_auth_code_12345
+                  redirect_uri: https://example.com/auth/callback
+                  client_id: a1b2c3d4e5f6g7h8i9j0
+                  client_secret: client_secret_abc123
+                  code_verifier: dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+              refresh_token:
+                summary: Refresh access token
+                value:
+                  grant_type: refresh_token
+                  refresh_token: prt_26f4f74b761c83ef0d383bcfc419e114fd554331
+                  client_id: a1b2c3d4e5f6g7h8i9j0
+                  client_secret: client_secret_abc123
+      responses:
+        '200':
+          description: Successfully exchanged authorization code or refresh token for access and refresh tokens
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthTokenResponse'
+              example:
+                access_token: pat_4eea1fdb98106005fea67ed65138df69afa0e6aa
+                refresh_token: prt_26f4f74b761c83ef0d383bcfc419e114fd554331
+                expires_in: 3600
+                token_type: Bearer
+        '400':
+          description: Invalid token exchange request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthErrorResponse'
+              examples:
+                invalid_grant:
+                  summary: Invalid or expired authorization code or refresh token
+                  value:
+                    code: 400
+                    error: invalid_grant
+                    message: Depop OAuth2 error
+                    detail: The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client
+                    error_message: Depop OAuth2 error
+                    error_description: The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client
+                    id: 550e8400-e29b-41d4-a716-446655440000
+                invalid_refresh_token:
+                  summary: Invalid, expired, or revoked refresh token
+                  value:
+                    code: 400
+                    error: invalid_grant
+                    message: Depop OAuth2 error
+                    detail: The refresh token is invalid, expired, revoked, or does not belong to the client
+                    error_message: Depop OAuth2 error
+                    error_description: The refresh token is invalid, expired, revoked, or does not belong to the client
+                    id: 550e8400-e29b-41d4-a716-446655440004
+                invalid_client:
+                  summary: Client authentication failed
+                  value:
+                    code: 401
+                    error: client secret does not match
+                    message: Depop OAuth2 error
+                    detail: Depop OAuth2 error
+                    error_message: Depop OAuth2 error
+                    error_description: Depop OAuth2 error
+                    id: 550e8400-e29b-41d4-a716-446655440001
+                invalid_request:
+                  summary: Missing or invalid request parameters
+                  value:
+                    code: 400
+                    error: invalid_request
+                    message: Depop OAuth2 error
+                    detail: The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed
+                    error_message: Depop OAuth2 error
+                    error_description: The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed
+                    id: 550e8400-e29b-41d4-a716-446655440002
+                pkce_verification_failed:
+                  summary: PKCE code verifier does not match challenge
+                  value:
+                    code: 400
+                    error: invalid_request
+                    message: Depop OAuth2 error
+                    detail: PKCE verification failed - code verifier does not match the stored code challenge
+                    error_message: Depop OAuth2 error
+                    error_description: PKCE verification failed - code verifier does not match the stored code challenge
+                    id: 550e8400-e29b-41d4-a716-446655440003
+        '401':
+          description: Unauthorized - Client authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthErrorResponse'
+              example:
+                code: 401
+                error: client secret does not match
+                message: Depop OAuth2 error
+                detail: Depop OAuth2 error
+                error_message: Depop OAuth2 error
+                error_description: Depop OAuth2 error
+                id: 43d738a4-a3bf-4c79-bdd0-97a61ecf022a
+components:
+  schemas:
+    OAuthErrorResponse:
+      type: object
+      description: OAuth 2.0 error response from the clientauth service
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: OAuth 2.0 error code
+          example: invalid_grant
+        message:
+          type: string
+          description: High-level error message
+          example: Depop OAuth2 error
+        detail:
+          type: string
+          description: Detailed error description
+          example: The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client
+        error_message:
+          type: string
+          description: Error message (legacy field)
+          example: Depop OAuth2 error
+        error_description:
+          type: string
+          description: Error description (legacy field)
+          example: The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client
+        id:
+          type: string
+          format: uuid
+          description: Unique error identifier for tracking
+          example: 550e8400-e29b-41d4-a716-446655440000
+      required:
+      - code
+      - error
+      - message
+      - id
+    OAuthTokenResponse:
+      type: object
+      description: Partner OAuth authentication response with access and refresh tokens for authorization code flow
+      properties:
+        access_token:
+          type: string
+          description: Partner access token with 1 hour expiry
+          example: pat_4eea1fdb98106005fea67ed65138df69afa0e6aa
+        refresh_token:
+          type: string
+          description: Partner refresh token with 1 year expiry
+          example: prt_26f4f74b761c83ef0d383bcfc419e114fd554331
+        expires_in:
+          type: integer
+          description: Access token expiry time in seconds (3600 = 1 hour)
+          example: 3600
+        token_type:
+          type: string
+          enum:
+          - Bearer
+          example: Bearer
+      required:
+      - access_token
+      - refresh_token
+      - expires_in
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key

@@ -1,0 +1,60 @@
+openapi: 3.1.0
+info:
+  title: Seller API status Docs API
+  version: 1.0.0
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+servers:
+- url: https://partnerapi-staging.depop.com
+- url: https://partnerapi.depop.com
+security:
+- BearerAuth: []
+tags:
+- name: Docs
+paths:
+  /api-docs/openapi.yaml:
+    get:
+      summary: Get the latest version of the OpenAPI specification (this document).
+      description: 'This endpoint returns the latest version of the OpenAPI specification for the Depop API.
+
+        You can use this to generate client libraries or to understand the API better.
+
+        The OpenAPI specification is in YAML format and can be used with tools like Swagger UI or Postman.'
+      operationId: getOpenAPISpec
+      tags:
+      - Docs
+      responses:
+        '200':
+          description: OK
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key

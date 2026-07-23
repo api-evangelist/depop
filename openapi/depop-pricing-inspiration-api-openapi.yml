@@ -1,0 +1,408 @@
+openapi: 3.1.0
+info:
+  title: Seller API status Pricing Inspiration API
+  version: 1.0.0
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+servers:
+- url: https://partnerapi-staging.depop.com
+- url: https://partnerapi.depop.com
+security:
+- BearerAuth: []
+tags:
+- name: Pricing Inspiration
+  description: ML-powered price recommendations and pricing guidance
+paths:
+  /api/v1/pricing/inspiration/:
+    post:
+      tags:
+      - Pricing Inspiration
+      summary: Get pricing inspiration when given product listing details
+      description: 'This endpoint returns a price prediction range and a list of similar sold items for a product listing.
+
+        The price prediction is the core of the response. The list of similar sold items is supplementary and best-effort: if the similar sold items lookup is unavailable (for example, a timeout), the endpoint still returns the price prediction with an empty `similar_sold_items` array rather than failing. Clients should therefore not rely on `similar_sold_items` always being populated.
+
+        This endpoint does not require OAuth Scopes and is only valid for specific countries (US and GB).'
+      operationId: getPricingInspiration
+      requestBody:
+        description: Pricing inspiration request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PricingInspirationRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingInspirationResponse'
+              example:
+                price_prediction:
+                  lower_bound: '17.00'
+                  balanced: '19.00'
+                  prediction: '19.00'
+                  upper_bound: '22.00'
+                similar_sold_items:
+                - brand_name: Nike
+                  condition: used_excellent
+                  picture:
+                    height: 1280
+                    url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+                    width: 1280
+                  sold_price_amount: '50.00'
+                  sold_price_currency: GBP
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Not Found - no price prediction is available for the given attributes (for example, an uncommon brand and product type combination).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                id: 6eaec55a-c500-4c76-81b6-fda44828df1e
+                errors:
+                - code: price_prediction_not_available
+                  message: No price prediction is available for the given attributes.
+        '422':
+          description: Unprocessable Entity - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: unsupported_country
+                  message: 'Country ''AU'' is not supported. Supported countries: GB, US'
+        '500':
+          description: Internal Server Error
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    PricePrediction:
+      title: PricePrediction
+      type: object
+      description: The price prediction range with the predicted balanced sale price and a higher and lower bound price.
+      properties:
+        balanced:
+          type: string
+          description: The balanced price for the product.
+          example: '19.00'
+        prediction:
+          type: string
+          description: The predicted price for the product. Deprecated - use 'balanced' instead.
+          example: '19.00'
+          deprecated: true
+        upper_bound:
+          type: string
+          description: The upper bound of the predicted price range.
+          example: '22.00'
+        lower_bound:
+          type: string
+          description: The lower bound of the predicted price range.
+          example: '17.00'
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
+    PricingInspirationResponse:
+      title: PricingInspirationResponse
+      type: object
+      required:
+      - price_prediction
+      - similar_sold_items
+      properties:
+        price_prediction:
+          $ref: '#/components/schemas/PricePrediction'
+        similar_sold_items:
+          type: array
+          description: A best-effort list of similar sold items. May be empty if no comparable items are found, or if the similar sold items lookup is temporarily unavailable. The price prediction is still returned in either case.
+          items:
+            $ref: '#/components/schemas/SimilarSoldItem'
+          example:
+          - brand_name: Nike
+            condition: used_excellent
+            picture:
+              height: 1280
+              url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+              width: 1280
+            sold_price_amount: '50.00'
+            sold_price_currency: GBP
+    SimilarSoldItem:
+      title: SimilarSoldItem
+      type: object
+      description: A list of sold items that are similar to the product request.
+      properties:
+        picture:
+          $ref: '#/components/schemas/Picture'
+        sold_price_amount:
+          type: string
+          description: The sale price of the item.
+          example: '50.00'
+        sold_price_currency:
+          type: string
+          description: The currency of the sale price.
+          example: GBP
+        condition:
+          type: string
+          anyOf:
+          - type: string
+            enum:
+            - brand_new
+            - used_like_new
+            - used_excellent
+            - used_good
+            - used_fair
+          example: brand_new
+          description: The condition of the sold item.
+        brand_name:
+          type: string
+          description: The canonical brand name of the product.
+          example: Nike
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    Picture:
+      type: object
+      required:
+      - url
+      - height
+      - width
+      properties:
+        url:
+          type: string
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
+    PricingInspirationRequest:
+      title: PricingInspirationRequest
+      required:
+      - description
+      - country
+      - currency
+      - product_type
+      - department
+      - condition
+      - brand_name
+      type: object
+      properties:
+        description:
+          type: string
+          description: A detailed description of the product. The more detail the better the prediction
+          example: A sporty nike t-shirt with abstract patterns
+        country:
+          type: string
+          description: The country the product is listed in.
+          example: GB
+        currency:
+          type: string
+          description: The currency code for the listing.
+          example: GBP
+        product_type:
+          type: string
+          description: The type of product. Find out more in the taxonomy section of the API docs.
+          example: t-shirts
+        department:
+          type: string
+          description: The product department. Find out more in the taxonomy section of the API docs.
+          example: menswear
+        condition:
+          type: string
+          description: The condition of the product. Find out more in the taxonomy section of the API docs.
+          example: used_like_new
+        brand_name:
+          type: string
+          description: The canonical brand name of the product.
+          example: Nike
+        size_set_id:
+          type: integer
+          description: The size set ID for the given Department and Product Type.
+          example: 52
+        size_id:
+          type: integer
+          description: The size identifier.
+          example: 4
+        colour:
+          type: array
+          maxItems: 2
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - black
+              - grey
+              - white
+              - brown
+              - tan
+              - cream
+              - yellow
+              - red
+              - burgundy
+              - orange
+              - pink
+              - purple
+              - blue
+              - navy
+              - green
+              - khaki
+              - multi
+              - silver
+              - gold
+          description: List of colours for the product.
+          example:
+          - black
+          - white
+        style:
+          type: array
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - streetwear
+              - sportswear
+              - loungewear
+              - goth
+              - retro
+              - boho
+              - western
+              - indie
+              - skater
+              - rave
+              - costume
+              - cosplay
+              - grunge
+              - emo
+              - minimalist
+              - preppy
+              - avant_garde
+              - punk
+              - glam
+              - regency
+              - casual
+              - techwear
+              - futuristic
+              - cottage
+              - fairy
+              - kidcore
+              - y2_k
+              - biker
+              - gorpcore
+              - twee
+              - coquette
+              - whimsygoth
+          description: List of styles for the product.
+          example:
+          - casual
+          - sportswear
+        source:
+          type: array
+          maxItems: 2
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - vintage
+              - preloved
+              - reworked
+              - custom
+              - handmade
+              - deadstock
+              - designer
+              - repaired
+          example:
+          - vintage
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key

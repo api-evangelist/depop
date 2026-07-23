@@ -1,0 +1,77 @@
+openapi: 3.1.0
+info:
+  title: Seller API status API
+  version: 1.0.0
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+servers:
+- url: https://partnerapi-staging.depop.com
+- url: https://partnerapi.depop.com
+security:
+- BearerAuth: []
+tags:
+- name: API status
+  description: Service health and status endpoints
+paths:
+  /status:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+              example:
+                status: OK
+      summary: Get status
+      operationId: getStatus
+      description: 'This endpoint can be used to check the availability of the API.
+
+        If the API is up and running, it will return a 200 status code with the message "OK".'
+      tags:
+      - API status
+      parameters: []
+components:
+  schemas:
+    Status:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          example: OK
+          description: The status of the API.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key

@@ -1,0 +1,443 @@
+openapi: 3.1.0
+info:
+  title: Seller API status Insights API
+  version: 1.0.0
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+servers:
+- url: https://partnerapi-staging.depop.com
+- url: https://partnerapi.depop.com
+security:
+- BearerAuth: []
+tags:
+- name: Insights
+  description: Shop and product insights
+paths:
+  /api/v1/insights/shop/live/:
+    get:
+      tags:
+      - Insights
+      summary: Get shop insights
+      description: 'This endpoint returns insights about the authenticated seller''s shop, including product counts, shop rating, offers awaiting review, boost ad counts and orders awaiting shipping.
+
+
+        **Required OAuth Scopes:** at least one of the scopes below. Each section of the response is included only when its corresponding scope is present, and omitted otherwise. A `403` is returned only when none of these scopes are present.
+
+        - `products_read` - Include product counts (`products`) and boost ad counts (`boost`). - `shop_read` - Include shop rating (`rating`). - `offers_read` - Include offers awaiting seller review (`offers`). - `orders_read` - Include orders awaiting shipping (`orders`).
+
+
+        A section is included in the response only when its corresponding scope is present, and is omitted entirely otherwise. A `403` is returned only when the token has none of the four scopes above.
+
+        **Note:** Counters may be delayed by up to 60 minutes and may not reflect the most recent changes to your shop inventory.'
+      operationId: getShopInsightsLive
+      responses:
+        '200':
+          description: Shop insights. Each section is present only when the token holds the scope that section requires; sections for missing scopes are omitted. The `orders` section is additionally omitted when there are no orders awaiting shipping.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopInsightsResponse'
+              example:
+                products:
+                  on_sale_count: 42
+                  total_count: 150
+                rating:
+                  average: 4.8
+                  count: 120
+                offers:
+                  awaiting_seller_review_count: 8
+                boost:
+                  live_count: 25
+                  sold_count: 4
+                orders:
+                  awaiting_shipping_count: 7
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+  /api/v1/insights/products/by-sku/{sku}/live/:
+    get:
+      tags:
+      - Insights
+      summary: Get product insights by SKU
+      description: 'This endpoint returns live insights about a single product in the authenticated seller''s shop, identified by its SKU, including likes, bag adds, offers awaiting review and boosted-listing performance.
+
+
+        **Required OAuth Scopes:** at least one of the scopes below. Each section of the response is included only when its corresponding scope is present, and omitted otherwise. A `403` is returned only when none of these scopes are present.
+
+        - `products_read` - Include likes (`likes_count`) and bag adds (`bag_count`). - `offers_read` - Include offers awaiting review (`offers`).'
+      operationId: getProductInsightsLiveBySku
+      parameters:
+      - name: sku
+        in: path
+        description: SKU of the product to fetch insights for.
+        required: true
+        schema:
+          type: string
+          maxLength: 50
+        example: ABC-12345-S-BL
+      responses:
+        '200':
+          description: Product insights. Each section is present only when the token holds the scope that section requires; sections for missing scopes are omitted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInsightsResponse'
+              example:
+                likes_count: 34
+                bag_count: 12
+                offers:
+                  awaiting_seller_review_count: 3
+                  awaiting_buyer_review_count: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/ProductNotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+  /api/v1/insights/products/by-slug/{slug}/live/:
+    get:
+      tags:
+      - Insights
+      summary: Get product insights by slug
+      description: 'This endpoint returns live insights about a single product in the authenticated seller''s shop, identified by its slug, including likes, bag adds, offers awaiting review and boosted-listing performance.
+
+
+        **Required OAuth Scopes:** at least one of the scopes below. Each section of the response is included only when its corresponding scope is present, and omitted otherwise. A `403` is returned only when none of these scopes are present.
+
+        - `products_read` - Include likes (`likes_count`) and bag adds (`bag_count`). - `offers_read` - Include offers awaiting review (`offers`).'
+      operationId: getProductInsightsLiveBySlug
+      parameters:
+      - name: slug
+        in: path
+        description: The slug of the product to fetch insights for.
+        required: true
+        schema:
+          type: string
+        example: vintage-nike-t-shirt-7033001
+      responses:
+        '200':
+          description: Product insights. Each section is present only when the token holds the scope that section requires; sections for missing scopes are omitted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInsightsResponse'
+              example:
+                likes_count: 34
+                bag_count: 12
+                offers:
+                  awaiting_seller_review_count: 3
+                  awaiting_buyer_review_count: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/ProductNotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+  /api/v1/insights/products/by-product-id/{productId}/live/:
+    get:
+      tags:
+      - Insights
+      summary: Get product insights by product ID
+      description: 'This endpoint returns live insights about a single product in the authenticated seller''s shop, identified by its internal product ID, including likes, bag adds, offers awaiting review and boosted-listing performance.
+
+
+        **Required OAuth Scopes:** at least one of the scopes below. Each section of the response is included only when its corresponding scope is present, and omitted otherwise. A `403` is returned only when none of these scopes are present.
+
+        - `products_read` - Include likes (`likes_count`) and bag adds (`bag_count`). - `offers_read` - Include offers awaiting review (`offers`).'
+      operationId: getProductInsightsLiveByProductId
+      parameters:
+      - name: productId
+        in: path
+        description: The internal product ID of the product to fetch insights for.
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 7033001
+      responses:
+        '200':
+          description: Product insights. Each section is present only when the token holds the scope that section requires; sections for missing scopes are omitted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInsightsResponse'
+              example:
+                likes_count: 34
+                bag_count: 12
+                offers:
+                  awaiting_seller_review_count: 3
+                  awaiting_buyer_review_count: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/ProductNotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+components:
+  schemas:
+    ShopOrdersInsights:
+      type: object
+      description: Order insights for the shop.
+      required:
+      - awaiting_shipping_count
+      properties:
+        awaiting_shipping_count:
+          type: integer
+          description: Count of orders awaiting shipping. Counts orders whose receipt is within the recent cut-off window and that have not been refunded. Capped at 20.
+          example: 5
+          maximum: 20
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
+    ProductBoostInsights:
+      type: object
+      description: Boosted listing (ads) performance for the product. Included only when the token has the `products_read` scope. Individual counters are omitted when the underlying data is unavailable.
+      properties:
+        organic_clicks:
+          type: integer
+          description: Number of clicks from organic (non-boosted) placements.
+          example: 120
+        boosted_clicks:
+          type: integer
+          description: Number of clicks from boosted placements.
+          example: 45
+        organic_impressions:
+          type: integer
+          description: Number of impressions from organic (non-boosted) placements.
+          example: 3400
+        boosted_impressions:
+          type: integer
+          description: Number of impressions from boosted placements.
+          example: 900
+    ShopInsightsResponse:
+      type: object
+      description: Insights for the authenticated seller's shop. Counters may be delayed by up to 60 minutes.
+      properties:
+        products:
+          $ref: '#/components/schemas/ShopProductsInsights'
+        rating:
+          $ref: '#/components/schemas/ShopRatingInsights'
+        boost:
+          $ref: '#/components/schemas/ShopBoostInsights'
+        orders:
+          $ref: '#/components/schemas/ShopOrdersInsights'
+        offers:
+          $ref: '#/components/schemas/ShopOffersInsights'
+    ShopRatingInsights:
+      type: object
+      description: Seller rating insights for the shop.
+      required:
+      - average
+      - count
+      properties:
+        average:
+          type: number
+          format: double
+          description: Average seller rating across all reviews.
+          example: 4.8
+        count:
+          type: integer
+          description: Number of seller reviews received.
+          example: 120
+    ProductOffersInsights:
+      type: object
+      description: Offer insights for the product. Included only when the token has the `offers_read` scope.
+      required:
+      - awaiting_seller_review_count
+      - awaiting_buyer_review_count
+      properties:
+        awaiting_seller_review_count:
+          type: integer
+          description: Number of offers on the product awaiting the seller's review.
+          example: 3
+        awaiting_buyer_review_count:
+          type: integer
+          description: Number of offers on the product awaiting the buyer's review.
+          example: 1
+    ShopOffersInsights:
+      type: object
+      description: Offer insights for the shop.
+      required:
+      - awaiting_seller_review_count
+      properties:
+        awaiting_seller_review_count:
+          type: integer
+          description: Number of offers across the shop awaiting the seller's review.
+          example: 8
+    ShopProductsInsights:
+      type: object
+      description: Product count insights for the shop.
+      required:
+      - on_sale_count
+      - total_count
+      properties:
+        on_sale_count:
+          type: integer
+          description: Number of products currently on sale.
+          example: 42
+        total_count:
+          type: integer
+          description: Total number of products in the shop.
+          example: 150
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    ProductInsightsResponse:
+      type: object
+      description: Live insights for a single product. Each section is present only when the token holds the scope that section requires; sections for missing scopes are omitted.
+      properties:
+        likes_count:
+          type: integer
+          description: Number of likes on the product. Included only when the token has the `products_read` scope.
+          example: 34
+        bag_count:
+          type: integer
+          description: Number of users who have added the product to their bag. Included only when the token has the `products_read` scope.
+          example: 12
+        offers:
+          $ref: '#/components/schemas/ProductOffersInsights'
+        boost:
+          $ref: '#/components/schemas/ProductBoostInsights'
+    ShopBoostInsights:
+      type: object
+      description: Boosted listings (ads) insights for the shop.
+      required:
+      - live_count
+      - sold_count
+      properties:
+        live_count:
+          type: integer
+          description: Number of boosted listings currently live.
+          example: 12
+        sold_count:
+          type: integer
+          description: Number of boosted listings that have sold.
+          example: 34
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
+    TooManyRequests:
+      description: Too Many Requests - a rate limit has been exceeded.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: too_many_requests
+              message: Rate limit exceeded. Please retry later.
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
+    BadGateway:
+      description: Bad Gateway - an upstream service required to build the insights response failed or returned an unexpected response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unexpected_response
+              message: An upstream request at depop has failed to be processed.
+    ProductNotFound:
+      description: Not Found - the product does not exist or is not owned by the authenticated seller
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: product_not_found
+              message: 'Product (sku: ABC-12345-S-BL, id: None, slug: None) not found'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key

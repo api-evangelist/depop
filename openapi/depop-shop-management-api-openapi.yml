@@ -1,0 +1,463 @@
+openapi: 3.1.0
+info:
+  title: Seller API status Shop Management API
+  version: 1.0.0
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+servers:
+- url: https://partnerapi-staging.depop.com
+- url: https://partnerapi.depop.com
+security:
+- BearerAuth: []
+tags:
+- name: Shop Management
+  description: Shop and seller information endpoints
+paths:
+  /api/v1/shop/:
+    get:
+      summary: Get seller details
+      description: 'This endpoint allows you to retrieve details about your Depop shop, including your seller ID, username, and country code.
+
+        **Required OAuth Scope:** `shop_read`'
+      operationId: getSellerDetails
+      tags:
+      - Shop Management
+      responses:
+        '200':
+          description: Seller details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerDetails'
+              example:
+                id: 97082934
+                username: good_will_charity
+                country_code: US
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden - Insufficient scope
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: insufficient_scope
+                  message: 'The request requires higher privileges than provided by the access token. Required scope: shop_read'
+  /api/v1/shop/seller-addresses/:
+    get:
+      summary: Get seller addresses
+      description: 'This endpoint allows you to retrieve all active addresses associated with your Depop shop.
+
+        **Required OAuth Scope:** `shop_read`
+
+
+        These addresses can be used to determine available shipping providers for your shop.'
+      operationId: getSellerAddresses
+      tags:
+      - Shop Management
+      responses:
+        '200':
+          description: A paginated list of seller addresses
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - meta
+                - data
+                properties:
+                  meta:
+                    type: object
+                    required:
+                    - has_more
+                    properties:
+                      cursor:
+                        type:
+                        - string
+                        - 'null'
+                        description: Cursor for pagination. Null when there are no more results.
+                        example: MTIzNDU2fDIwMjUtMDEtMTVUMTA6MzA6MDBafDEyMw
+                      has_more:
+                        type: boolean
+                        description: Indicates whether there are more results available.
+                        example: false
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SellerAddress'
+                    example: []
+              example:
+                meta:
+                  cursor: MTIzNDU2fDIwMjUtMDEtMTVUMTA6MzA6MDBafDEyMw
+                  has_more: false
+                data:
+                - id: 123456
+                  name: John Doe
+                  address: 123 Main Street
+                  address2: Apt 4B
+                  city: London
+                  state: Greater London
+                  postal_code: SW1A 1AA
+                  country: GB
+                  last_modified: '2025-01-15T10:30:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden - Insufficient scope
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: insufficient_scope
+                  message: 'The request requires higher privileges than provided by the access token. Required scope: shop_read'
+  /api/v1/shop/seller-addresses/{address_id}/shipping-providers/:
+    get:
+      summary: Get available shipping providers for an address
+      description: 'This endpoint allows you to retrieve the available shipping providers for a specific seller address.
+
+        **Required OAuth Scope:** `shop_read`
+
+
+        The response includes the shipping providers and their available parcel sizes with pricing information.
+
+        If no shipping providers are available for the given address, manual shipping will be returned as the provider Id.'
+      operationId: getShippingProviders
+      tags:
+      - Shop Management
+      parameters:
+      - name: address_id
+        in: path
+        description: The ID of the seller address.
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 123456
+      responses:
+        '200':
+          description: A list of available shipping providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShippingProviderInfo'
+              example:
+              - id: MY_HERMES
+                parcel_sizes:
+                - id: small
+                  title: Small
+                  subtitle: Tops, jeans, dresses and jewellery
+                  cost:
+                    original_amount: '2.99'
+                    original_currency: GBP
+                    amount: '2.99'
+                    currency: GBP
+                  courier_service: DROP_OFF
+                - id: medium
+                  title: Medium
+                  subtitle: Coats, jackets, trainers and shoes
+                  cost:
+                    original_amount: '4.99'
+                    original_currency: GBP
+                    amount: '4.99'
+                    currency: GBP
+                  courier_service: DROP_OFF
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden - Insufficient scope
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: insufficient_scope
+                  message: 'The request requires higher privileges than provided by the access token. Required scope: shop_read'
+        '404':
+          description: Address not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: address_not_found
+                  message: Address with ID 999999 not found
+components:
+  schemas:
+    ShippingParcelSize:
+      type: object
+      required:
+      - id
+      - title
+      - subtitle
+      - cost
+      - courier_service
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the parcel size.
+          example: SMALL
+        title:
+          type: string
+          description: The display title for the parcel size.
+          example: Small parcel
+        subtitle:
+          type: string
+          description: Additional information about the parcel size (e.g., dimensions).
+          example: Up to 35 x 25 x 16cm
+        cost:
+          $ref: '#/components/schemas/ShippingParcelCost'
+        courier_service:
+          type: string
+          description: 'The courier service type for this parcel size.
+
+
+            - `DROP_OFF`: Seller drops off the parcel at a designated location
+
+            - `COURIER_COLLECT`: Courier collects the parcel from the seller
+
+            - `OTHER`: Other courier service types (reserved for future use)
+
+            '
+          enum:
+          - DROP_OFF
+          - COURIER_COLLECT
+          - OTHER
+          example: DROP_OFF
+      example:
+        id: small
+        title: Extra small
+        subtitle: Under 8oz
+        cost:
+          original_amount: '5.99'
+          original_currency: USD
+          amount: '5.00'
+          currency: USD
+        courier_service: DROP_OFF
+    SellerDetails:
+      type: object
+      required:
+      - id
+      - username
+      - country_code
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique identifier for the seller.
+          example: 97082934
+        username:
+          type: string
+          description: The Depop username of the seller.
+          example: good_will_charity
+        country_code:
+          type: string
+          description: The ISO 3166-1 alpha-2 country code of the seller.
+          example: US
+      example:
+        id: 97082934
+        username: good_will_charity
+        country_code: US
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
+    ShippingParcelCost:
+      type: object
+      required:
+      - original_amount
+      - original_currency
+      - amount
+      - currency
+      properties:
+        original_amount:
+          type: string
+          description: The original cost amount before any conversions.
+          example: '3.50'
+        original_currency:
+          type: string
+          description: The original currency code.
+          example: GBP
+        amount:
+          type: string
+          description: The cost amount (may be converted to buyer's currency).
+          example: '3.50'
+        currency:
+          type: string
+          description: The currency code for the amount.
+          example: GBP
+      example:
+        original_amount: '3.50'
+        original_currency: GBP
+        amount: '3.50'
+        currency: GBP
+    ShippingProviderInfo:
+      type: object
+      required:
+      - id
+      - parcel_sizes
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the shipping provider.
+          example: USPS
+        parcel_sizes:
+          type: array
+          description: Available parcel sizes for this shipping provider.
+          items:
+            $ref: '#/components/schemas/ShippingParcelSize'
+      example:
+        id: USPS
+        parcel_sizes:
+        - id: small
+          title: Extra small
+          subtitle: Under 8oz
+          cost:
+            original_amount: '5.99'
+            original_currency: USD
+            amount: '5.00'
+            currency: USD
+          courier_service: DROP_OFF
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    SellerAddress:
+      type: object
+      required:
+      - id
+      - name
+      - address
+      - city
+      - state
+      - postal_code
+      - country
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique identifier for the address.
+          example: 123456
+        name:
+          type: string
+          description: The name associated with the address.
+          example: John Doe
+        address:
+          type: string
+          description: The primary address line.
+          example: 123 Main Street
+        address2:
+          type:
+          - string
+          - 'null'
+          description: The secondary address line (optional).
+          example: Apt 4B
+        city:
+          type: string
+          description: The city of the address.
+          example: London
+        state:
+          type: string
+          description: The state or county of the address.
+          example: Greater London
+        postal_code:
+          type: string
+          description: The postal code or ZIP code of the address.
+          example: SW1A 1AA
+        country:
+          type: string
+          description: The ISO 3166-1 alpha-2 country code.
+          example: GB
+        last_modified:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The timestamp when the address was last modified (optional).
+          example: '2025-01-15T10:30:00Z'
+      example:
+        id: 123456
+        name: John Doe
+        address: 123 Main Street
+        address2: Apt 4B
+        city: London
+        state: Greater London
+        postal_code: SW1A 1AA
+        country: GB
+        last_modified: '2025-01-15T10:30:00Z'
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
