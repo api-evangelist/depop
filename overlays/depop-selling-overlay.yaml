@@ -1,0 +1,29 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Depop Selling API
+  version: 1.0.0
+extends: openapi/depop-selling-openapi-original.yml
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-rating: 4
+      x-apievangelist-notes: >-
+        Enterprise partner API for automating Depop listings, orders, offers,
+        shipping, refunds and insights. OAuth 2.0 (auth code + PKCE) and per-shop
+        API keys; documented rate limits; OpenAPI 3.1 webhooks event surface.
+      x-artifacts:
+        authentication: authentication/depop-authentication.yml
+        scopes: scopes/depop-scopes.yml
+        errors: errors/depop-problem-types.yml
+        conventions: conventions/depop-conventions.yml
+        lifecycle: lifecycle/depop-lifecycle.yml
+        rate-limits: rate-limits/depop-rate-limits.yml
+        sandbox: sandbox/depop-sandbox.yml
+        webhooks: asyncapi/depop-webhooks-asyncapi.yml
+        data-model: data-model/depop-data-model.yml
+        agentic-access: agentic-access/depop-agentic-access.yml
+  - target: $.info
+    update:
+      x-agentic-access-summary: >-
+        27 acting operations (5 payment/order-consequence), 16 read; see
+        agentic-access/depop-agentic-access.yml for per-operation contracts.

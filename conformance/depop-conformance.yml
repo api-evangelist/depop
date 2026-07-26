@@ -1,0 +1,39 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/depop-selling-openapi-original.yml
+standards:
+- id: oauth2
+  conforms: true
+  evidence: OAuth 2.0 Authorization Code flow documented; token endpoint /api/v1/oauth2/access-token/.
+- id: rfc6749-oauth2
+  conforms: true
+  evidence: Token endpoint description cites RFC 6749 (authorization code + refresh token grants).
+- id: rfc7636-pkce
+  conforms: true
+  evidence: Authorization Code flow requires PKCE with S256 challenge (RFC 7636).
+- id: oidc
+  conforms: false
+  evidence: No OpenID Connect / id_token; OAuth authorization only.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors use a custom { id, errors[] } envelope with application/json, not application/problem+json.
+- id: webhooks
+  conforms: true
+  evidence: OpenAPI 3.1 webhooks section defines newOrder, orderRefunded, productLiked, productUnliked events.
+- id: pagination
+  conforms: true
+  evidence: Paged collection responses (OrdersPage, PaginatedSellerAddressResponse).
+- id: rate-limiting
+  conforms: true
+  evidence: Documented per-API-key request-rate limits with 429 responses.
+- id: json-api
+  conforms: false
+  evidence: Plain JSON resource model, not JSON:API.
+- id: fhir
+  conforms: false
+- id: fapi
+  conforms: false
+- id: scim
+  conforms: false
+- id: odata
+  conforms: false

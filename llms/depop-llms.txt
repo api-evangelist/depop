@@ -1,0 +1,38 @@
+# Depop Selling API
+
+> Depop is a peer-to-peer fashion marketplace. The Depop Selling API is an enterprise partner API that lets approved partners automate listing, inventory, orders, offers, shipping, refunds and shop insights on Depop. Access is by invitation (developers@depop.com); it uses per-shop API keys (prefix pak_) and OAuth 2.0 (Authorization Code + PKCE) with granular scopes.
+
+## APIs
+
+- [Depop Selling API — developer portal](https://partnerapi.depop.com/api-docs/): Overview, concepts, how-to guides and reference.
+- [API Reference](https://partnerapi.depop.com/api-docs/reference/): Full operation reference.
+- [OpenAPI 3.1 spec](https://partnerapi.depop.com/api-docs/openapi.yaml): Machine-readable specification.
+
+## Specs and artifacts
+
+- [OpenAPI (harvested)](openapi/depop-selling-openapi-original.yml): 43 operations across Products, Orders, Offers, Shop, Shipping, Insights and Pricing Inspiration.
+- [Authentication](authentication/depop-authentication.yml): Bearer API key + OAuth 2.0 (auth code + PKCE, S256).
+- [OAuth scopes](scopes/depop-scopes.yml): products_read/write, orders_read/write, offers_read/write, shop_read.
+- [Webhooks (AsyncAPI 3.0)](asyncapi/depop-webhooks-asyncapi.yml): newOrder, orderRefunded, productLiked, productUnliked.
+- [Error catalog](errors/depop-problem-types.yml): custom { id, errors[] } envelope.
+- [Conventions](conventions/depop-conventions.yml): auth, pagination, SKU-keyed upsert idempotency, rate limiting.
+- [Rate limits](rate-limits/depop-rate-limits.yml): 20 rps for listing create/update, 100 rps cumulative for the rest.
+- [Lifecycle](lifecycle/depop-lifecycle.yml): /api/v1 URI versioning; deprecated legacy product endpoints.
+- [Sandbox](sandbox/depop-sandbox.yml): staging host + purchase-simulation endpoints.
+- [Data model](data-model/depop-data-model.yml): Product, Order, Offer, Shop, Shipping, Insights entity graph.
+
+## Docs
+
+- [Authentication concept](https://partnerapi.depop.com/api-docs/concepts/authentication/)
+- [Rate limits concept](https://partnerapi.depop.com/api-docs/concepts/rate-limits/)
+- [Changelog](https://partnerapi.depop.com/api-docs/changelog/)
+- [Getting started — your first listing](https://partnerapi.depop.com/api-docs/getting-started/your-first-listing/)
+- [Why Depop](https://partnerapi.depop.com/api-docs/why-depop/)
+
+## Company
+
+- [Depop](https://www.depop.com/)
+- [Engineering blog](https://engineering.depop.com/)
+- [GitHub](https://github.com/depop)
+- [Status](https://depopstatus.com/)
+- [Support](https://depophelp.zendesk.com/)

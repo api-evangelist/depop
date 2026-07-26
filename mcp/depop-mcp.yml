@@ -1,0 +1,142 @@
+generated: '2026-07-18'
+method: derived
+status: candidate
+source: openapi/depop-selling-openapi-original.yml
+notes: >-
+  No official hosted MCP server was found for the Depop Selling API. This is a
+  candidate tool list derived one-to-one from the OpenAPI operations, suitable
+  for generating an MCP server that fronts the API (partner API key or OAuth
+  token required).
+server:
+  name: depop-selling
+  transport: stdio
+tools:
+  - name: createOrUpdateProduct
+    description: Create or update a listing on Depop
+    source_operation: openapi/depop-selling-openapi-original.yml#createOrUpdateProduct
+  - name: patchProduct
+    description: Patch an existing product on Depop
+    source_operation: openapi/depop-selling-openapi-original.yml#patchProduct
+  - name: getProductBySku
+    description: Get product details by SKU
+    source_operation: openapi/depop-selling-openapi-original.yml#getProductBySku
+  - name: deleteProduct
+    description: Delete a product on Depop
+    source_operation: openapi/depop-selling-openapi-original.yml#deleteProduct
+  - name: markProductAsSold
+    description: Mark a product as sold
+    source_operation: openapi/depop-selling-openapi-original.yml#markProductAsSold
+  - name: createProduct
+    description: Create a new product
+    source_operation: openapi/depop-selling-openapi-original.yml#createProduct
+  - name: getAllProducts
+    description: Get all products
+    source_operation: openapi/depop-selling-openapi-original.yml#getAllProducts
+  - name: getProductById
+    description: Get product details by product ID
+    source_operation: openapi/depop-selling-openapi-original.yml#getProductById
+  - name: updateProductById
+    description: Update an existing product by product ID
+    source_operation: openapi/depop-selling-openapi-original.yml#updateProductById
+  - name: patchProductById
+    description: Patch an existing product by product ID
+    source_operation: openapi/depop-selling-openapi-original.yml#patchProductById
+  - name: deleteProductById
+    description: Delete a product by product ID
+    source_operation: openapi/depop-selling-openapi-original.yml#deleteProductById
+  - name: markProductAsSoldById
+    description: Mark a product as sold by product ID
+    source_operation: openapi/depop-selling-openapi-original.yml#markProductAsSoldById
+  - name: createProductLegacy
+    description: Create or update a listing on Depop
+    source_operation: openapi/depop-selling-openapi-original.yml#createProductLegacy
+  - name: patchProductLegacy
+    description: Patch an existing product on Depop
+    source_operation: openapi/depop-selling-openapi-original.yml#patchProductLegacy
+  - name: getProductBySkuLegacy
+    description: Get product details by SKU
+    source_operation: openapi/depop-selling-openapi-original.yml#getProductBySkuLegacy
+  - name: deleteProductLegacy
+    description: Delete a product on Depop
+    source_operation: openapi/depop-selling-openapi-original.yml#deleteProductLegacy
+  - name: markProductAsSoldLegacy
+    description: Mark a product as sold
+    source_operation: openapi/depop-selling-openapi-original.yml#markProductAsSoldLegacy
+  - name: triggerPurchaseById
+    description: Trigger a purchase of a product by product ID (for testing)
+    source_operation: openapi/depop-selling-openapi-original.yml#triggerPurchaseById
+  - name: triggerPurchaseBySku
+    description: Trigger a purchase of a product by SKU (for testing)
+    source_operation: openapi/depop-selling-openapi-original.yml#triggerPurchaseBySku
+  - name: triggerPurchase
+    description: Trigger a purchase of a product (for testing)
+    source_operation: openapi/depop-selling-openapi-original.yml#triggerPurchase
+  - name: submitOfferByProductId
+    description: Submit an offer for a product by product ID
+    source_operation: openapi/depop-selling-openapi-original.yml#submitOfferByProductId
+  - name: submitOfferBySku
+    description: Submit an offer for a product by SKU
+    source_operation: openapi/depop-selling-openapi-original.yml#submitOfferBySku
+  - name: getProductBySlug
+    description: Get product details by slug
+    source_operation: openapi/depop-selling-openapi-original.yml#getProductBySlug
+  - name: updateProductBySlug
+    description: Update an existing product by slug
+    source_operation: openapi/depop-selling-openapi-original.yml#updateProductBySlug
+  - name: patchProductBySlug
+    description: Patch an existing product by slug
+    source_operation: openapi/depop-selling-openapi-original.yml#patchProductBySlug
+  - name: deleteProductBySlug
+    description: Delete a product by slug
+    source_operation: openapi/depop-selling-openapi-original.yml#deleteProductBySlug
+  - name: markProductAsSoldBySlug
+    description: Mark a product as sold by slug
+    source_operation: openapi/depop-selling-openapi-original.yml#markProductAsSoldBySlug
+  - name: submitOfferBySlug
+    description: Submit an offer for a product by slug
+    source_operation: openapi/depop-selling-openapi-original.yml#submitOfferBySlug
+  - name: getPricingInspiration
+    description: Get pricing inspiration when given product listing details
+    source_operation: openapi/depop-selling-openapi-original.yml#getPricingInspiration
+  - name: getAllOrders
+    description: Get all orders
+    source_operation: openapi/depop-selling-openapi-original.yml#getAllOrders
+  - name: getOrderByPurchaseId
+    description: Get order details by purchase ID
+    source_operation: openapi/depop-selling-openapi-original.yml#getOrderByPurchaseId
+  - name: markOrderAsShipped
+    description: Mark an order as shipped, providing tracking information.
+    source_operation: openapi/depop-selling-openapi-original.yml#markOrderAsShipped
+  - name: refundOrder
+    description: Refund an order
+    source_operation: openapi/depop-selling-openapi-original.yml#refundOrder
+  - name: getSellerDetails
+    description: Get seller details
+    source_operation: openapi/depop-selling-openapi-original.yml#getSellerDetails
+  - name: getSellerAddresses
+    description: Get seller addresses
+    source_operation: openapi/depop-selling-openapi-original.yml#getSellerAddresses
+  - name: getShippingProviders
+    description: Get available shipping providers for an address
+    source_operation: openapi/depop-selling-openapi-original.yml#getShippingProviders
+  - name: getShopInsightsLive
+    description: Get shop insights
+    source_operation: openapi/depop-selling-openapi-original.yml#getShopInsightsLive
+  - name: getProductInsightsLiveBySku
+    description: Get product insights by SKU
+    source_operation: openapi/depop-selling-openapi-original.yml#getProductInsightsLiveBySku
+  - name: getProductInsightsLiveBySlug
+    description: Get product insights by slug
+    source_operation: openapi/depop-selling-openapi-original.yml#getProductInsightsLiveBySlug
+  - name: getProductInsightsLiveByProductId
+    description: Get product insights by product ID
+    source_operation: openapi/depop-selling-openapi-original.yml#getProductInsightsLiveByProductId
+  - name: getOpenAPISpec
+    description: Get the latest version of the OpenAPI specification (this document).
+    source_operation: openapi/depop-selling-openapi-original.yml#getOpenAPISpec
+  - name: exchangeToken
+    description: OAuth 2.0 token endpoint (authorization code exchange and refresh token)
+    source_operation: openapi/depop-selling-openapi-original.yml#exchangeToken
+  - name: getStatus
+    description: Get status
+    source_operation: openapi/depop-selling-openapi-original.yml#getStatus

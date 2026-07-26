@@ -1,0 +1,36 @@
+{
+  "provider": "depop",
+  "sources": [
+    "depop-api-status-api-openapi.yml",
+    "depop-authentication-api-openapi.yml",
+    "depop-docs-api-openapi.yml",
+    "depop-insights-api-openapi.yml",
+    "depop-orders-api-openapi.yml",
+    "depop-pricing-inspiration-api-openapi.yml",
+    "depop-products-api-openapi.yml",
+    "depop-products-by-product-id-api-openapi.yml",
+    "depop-products-by-sku-api-openapi.yml",
+    "depop-products-by-slug-api-openapi.yml",
+    "depop-products-legacy-deprecated-api-openapi.yml",
+    "depop-shop-management-api-openapi.yml"
+  ],
+  "outputs": [
+    "depop-api-status-api-openapi.yml",
+    "depop-authentication-api-openapi.yml",
+    "depop-docs-api-openapi.yml",
+    "depop-insights-api-openapi.yml",
+    "depop-orders-api-openapi.yml",
+    "depop-pricing-inspiration-api-openapi.yml",
+    "depop-products-api-openapi.yml",
+    "depop-products-by-product-id-api-openapi.yml",
+    "depop-products-by-sku-api-openapi.yml",
+    "depop-products-by-slug-api-openapi.yml",
+    "depop-products-legacy-deprecated-api-openapi.yml",
+    "depop-shop-management-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

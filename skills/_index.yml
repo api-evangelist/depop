@@ -1,0 +1,16 @@
+generated: '2026-07-18'
+method: generated
+source: openapi/depop-selling-openapi-original.yml
+skills:
+- file: depop-list-product.md
+  name: List a product on Depop
+  api: openapi/depop-selling-openapi-original.yml
+  operations: [createOrUpdateProduct, getProductBySku, markProductAsSold]
+- file: depop-fulfill-order.md
+  name: Fulfill and refund a Depop order
+  api: openapi/depop-selling-openapi-original.yml
+  operations: [getAllOrders, getOrderByPurchaseId, markOrderAsShipped, refundOrder]
+- file: depop-connect-seller-oauth.md
+  name: Connect a Depop seller via OAuth
+  api: openapi/depop-selling-openapi-original.yml
+  operations: [exchangeToken, getSellerDetails]

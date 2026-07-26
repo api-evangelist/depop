@@ -1,0 +1,39 @@
+generated: '2026-07-18'
+method: searched
+source: openapi/depop-selling-openapi-original.yml
+docs: https://partnerapi.depop.com/api-docs/concepts/authentication/
+notes: >-
+  Scopes are documented in the OpenAPI info description and the authentication
+  concept page. The OpenAPI securitySchemes block declares only an http bearer
+  scheme, so scopes are captured here from the documented OAuth 2.0 model. API
+  key tokens implicitly hold all scopes; OAuth tokens are limited to those
+  granted. A 403 with error code insufficient_scope is returned when a required
+  scope is missing.
+schemes:
+- name: OAuth2
+  source: https://partnerapi.depop.com/api-docs/concepts/authentication/
+  flows:
+  - flow: authorizationCode
+    tokenUrl: https://partnerapi.depop.com/api/v1/oauth2/access-token/
+scopes:
+- scope: products_read
+  description: Read product information and listings.
+  flows: [authorizationCode]
+- scope: products_write
+  description: Create, update, or delete products.
+  flows: [authorizationCode]
+- scope: orders_read
+  description: Read order information and order history.
+  flows: [authorizationCode]
+- scope: orders_write
+  description: Mark orders as shipped or process refunds.
+  flows: [authorizationCode]
+- scope: offers_read
+  description: Read offer pricing information (auto send / auto negotiate offer price).
+  flows: [authorizationCode]
+- scope: offers_write
+  description: Set or modify offer prices (auto send / auto negotiate offer price).
+  flows: [authorizationCode]
+- scope: shop_read
+  description: Read shop information including seller addresses and available shipping providers.
+  flows: [authorizationCode]

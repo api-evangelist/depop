@@ -1,0 +1,118 @@
+asyncapi: 3.0.0
+info:
+  title: Depop Selling API — Webhooks
+  version: 1.0.0
+  description: >-
+    Event surface for the Depop Selling API, generated from the webhooks section
+    of the OpenAPI 3.1 document. Depop delivers order and product engagement
+    events to a partner-registered HTTPS endpoint. Every event shares a common
+    envelope { id, event_type, created_at, data }.
+  x-provenance:
+    generated: '2026-07-18'
+    method: generated
+    source: openapi/depop-selling-openapi-original.yml
+defaultContentType: application/json
+channels:
+  webhook:
+    address: '{partnerWebhookUrl}'
+    description: Partner-registered HTTPS endpoint that receives Depop events.
+    parameters:
+      partnerWebhookUrl:
+        description: The HTTPS URL the partner registered to receive webhooks.
+    messages:
+      newOrder:
+        $ref: '#/components/messages/newOrder'
+      orderRefunded:
+        $ref: '#/components/messages/orderRefunded'
+      productLiked:
+        $ref: '#/components/messages/productLiked'
+      productUnliked:
+        $ref: '#/components/messages/productUnliked'
+operations:
+  receiveNewOrder:
+    action: receive
+    channel:
+      $ref: '#/channels/webhook'
+    messages:
+      - $ref: '#/channels/webhook/messages/newOrder'
+  receiveOrderRefunded:
+    action: receive
+    channel:
+      $ref: '#/channels/webhook'
+    messages:
+      - $ref: '#/channels/webhook/messages/orderRefunded'
+  receiveProductLiked:
+    action: receive
+    channel:
+      $ref: '#/channels/webhook'
+    messages:
+      - $ref: '#/channels/webhook/messages/productLiked'
+  receiveProductUnliked:
+    action: receive
+    channel:
+      $ref: '#/channels/webhook'
+    messages:
+      - $ref: '#/channels/webhook/messages/productUnliked'
+components:
+  messages:
+    newOrder:
+      name: newOrder
+      title: New order
+      summary: A buyer purchased a listing; a new order was created.
+      payload:
+        $ref: '#/components/schemas/Webhook'
+      x-event-type: 'v1:order.new'
+    orderRefunded:
+      name: orderRefunded
+      title: Order refunded
+      summary: An order was refunded (to buyer and/or seller).
+      payload:
+        $ref: '#/components/schemas/Webhook'
+      x-event-type: 'v1:order.refund'
+    productLiked:
+      name: productLiked
+      title: Product liked
+      summary: A shopper liked one of the seller's products.
+      payload:
+        $ref: '#/components/schemas/Webhook'
+      x-event-type: 'v1:product.like'
+    productUnliked:
+      name: productUnliked
+      title: Product unliked
+      summary: A shopper removed a like from one of the seller's products.
+      payload:
+        $ref: '#/components/schemas/Webhook'
+      x-event-type: 'v1:product.unlike'
+  schemas:
+    Webhook:
+      type: object
+      required: [id, event_type, created_at, data]
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the webhook delivery.
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        event_type:
+          type: string
+          description: The type of event that triggered the webhook.
+          example: 'v1:order.new'
+        created_at:
+          type: string
+          format: date-time
+          description: When the webhook was created.
+          example: '2025-01-01T00:00:00Z'
+        data:
+          description: Event payload — an order, refunded order, or product-like object.
+          oneOf:
+            - $ref: '#/components/schemas/OrderWebhook'
+            - $ref: '#/components/schemas/RefundedOrder'
+            - $ref: '#/components/schemas/ProductLike'
+    OrderWebhook:
+      type: object
+      description: Order payload (see OpenAPI OrderWebhook schema for full fields).
+    RefundedOrder:
+      type: object
+      description: Refunded order payload (see OpenAPI RefundedOrder schema).
+    ProductLike:
+      type: object
+      description: Product like/unlike payload (includes slug).

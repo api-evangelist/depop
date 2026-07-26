@@ -1,0 +1,58 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/depop-selling-openapi-original.yml
+docs: https://partnerapi.depop.com/api-docs/reference/
+format: custom-envelope
+envelope:
+  description: >-
+    Errors are returned as a JSON object with a top-level id (unique error
+    reference) and an errors[] array; each item has a machine-readable code and
+    a human-readable message. This is NOT RFC 9457 problem+json; content-type is
+    application/json.
+  shape:
+    id: string
+    errors:
+    - code: string
+      message: string
+  example:
+    id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+    errors:
+    - code: product_not_found
+      message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+oauth_errors:
+  description: >-
+    The OAuth 2.0 token endpoint returns RFC 6749-style errors
+    (OAuthErrorResponse) with error + error_description, distinct from the API
+    error envelope above.
+problems:
+- status: 400
+  title: Bad Request
+  detail: Invalid request (e.g. invalid token exchange request at the OAuth endpoint).
+- status: 401
+  title: Unauthorized
+  detail: Missing/invalid bearer token or client authentication failed.
+- status: 403
+  title: Forbidden
+  detail: Insufficient scope. Error code insufficient_scope when a required OAuth scope is not granted.
+- status: 404
+  title: Not Found
+  detail: >-
+    Resource not found — product, order, or address. Also returned by pricing
+    inspiration when no price prediction is available for the given attributes.
+  example_codes: [product_not_found, order_not_found, address_not_found]
+- status: 409
+  title: Conflict
+  detail: Product has active offers (e.g. cannot delete/modify while offers are outstanding).
+- status: 422
+  title: Unprocessable Entity
+  detail: Validation error — a mandatory field is missing or an attribute is invalid.
+  example_codes: [missing_attribute]
+- status: 429
+  title: Too Many Requests
+  detail: Rate limit exceeded. See rate-limits/depop-rate-limits.yml.
+- status: 500
+  title: Internal Server Error
+  detail: Unexpected server error.
+- status: 502
+  title: Bad Gateway
+  detail: Upstream error.

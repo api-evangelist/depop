@@ -1,0 +1,47 @@
+generated: '2026-07-18'
+method: searched
+source: openapi/depop-selling-openapi-original.yml
+docs: https://partnerapi.depop.com/api-docs/
+authentication:
+  style: bearer
+  detail: >-
+    Authorization: Bearer <token>, where the token is a static per-shop API key
+    (prefix pak_) or an OAuth 2.0 access token scoped to granted permissions.
+  see: authentication/depop-authentication.yml
+idempotency:
+  supported: partial
+  mechanism: natural-key-upsert
+  detail: >-
+    No Idempotency-Key header is documented. However listing writes are
+    idempotent by construction: PUT /api/v1/products/by-sku/{sku}/ is a
+    create-or-update keyed on a caller-supplied unique SKU (which cannot be
+    reused), so repeating the same PUT converges on the same listing rather than
+    creating duplicates.
+pagination:
+  style: page
+  detail: >-
+    Collection endpoints (e.g. GET /api/v1/products/, GET /api/v1/orders/)
+    return a paged envelope; orders return an OrdersPage object and seller
+    addresses a PaginatedSellerAddressResponse. Product listing also supports
+    sort_by and state query filters.
+error_envelope:
+  detail: >-
+    { id, errors: [ { code, message } ] } with application/json (custom
+    envelope, not RFC 9457). OAuth token endpoint uses RFC 6749 error shape.
+  see: errors/depop-problem-types.yml
+rate_limiting:
+  detail: Per-API-key limits; 429 on exceed. See rate-limits/depop-rate-limits.yml.
+  see: rate-limits/depop-rate-limits.yml
+webhooks:
+  detail: >-
+    Order and product events are delivered as webhooks (newOrder, orderRefunded,
+    productLiked, productUnliked) with a common { id, event_type, created_at,
+    data } envelope.
+  see: asyncapi/depop-webhooks-asyncapi.yml
+versioning:
+  detail: URI-path versioning under /api/v1/. See lifecycle/depop-lifecycle.yml.
+  see: lifecycle/depop-lifecycle.yml
+identifiers:
+  detail: >-
+    Products can be addressed three ways: caller SKU (by-sku), Depop product id
+    (by-product-id), and URL slug (by-slug). SKUs are unique and non-reusable.

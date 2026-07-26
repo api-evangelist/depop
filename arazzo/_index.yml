@@ -1,0 +1,12 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/depop-selling-openapi-original.yml
+workflows:
+- file: depop-list-and-sell.arazzo.yml
+  workflowId: listAndSell
+  title: List a product and mark it sold
+  summary: Create/update a Depop listing by SKU, verify it, then mark it as sold.
+- file: depop-order-fulfillment.arazzo.yml
+  workflowId: fulfillOrder
+  title: Order fulfillment
+  summary: Read an order, mark a parcel shipped with tracking, optionally refund.

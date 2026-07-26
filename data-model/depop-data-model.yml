@@ -1,0 +1,73 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/depop-selling-openapi-original.yml
+notes: >-
+  Entity graph derived from OpenAPI component schemas and id-reference fields.
+  Products are addressable by SKU (caller-supplied, unique), Depop product id,
+  and URL slug.
+entities:
+- name: Product
+  key: [sku, product_id, slug]
+  schemas: [Product, ProductCreateRequest, ProductPutRequest, PatchProductRequest, ProductCreateOrUpdateResponse]
+  fields_of_note: [pictures, is_boosted, discount_price, depop_shipping, auto_send_offer_price, auto_negotiate_offer_price]
+- name: Picture
+  schemas: [Picture, PublicPicture]
+- name: Order
+  key: [purchase_id]
+  schemas: [Order, OrdersPage, OrderLineItem]
+- name: OrderLineItem
+  schemas: [OrderLineItem]
+- name: RefundedOrder
+  schemas: [RefundedOrder, RefundOrderRequest, TotalRefundBreakdown, RefundedToBuyerRefunds, RefundedToSellerRefunds]
+- name: SellerDetails
+  schemas: [SellerDetails]
+- name: SellerAddress
+  key: [address_id]
+  schemas: [SellerAddress, Address, PaginatedSellerAddressResponse]
+- name: ShippingProvider
+  schemas: [ShippingProviderInfo, DepopShippingDetails, DepopShippingResponse, ShippingParcelCost, ShippingParcelSize]
+- name: Offer
+  schemas: [SubmitOfferRequest]
+- name: PricingInspiration
+  schemas: [PricingInspirationRequest, PricingInspirationResponse, PricePrediction, SimilarSoldItem]
+- name: Insights
+  schemas: [ShopInsightsResponse, ProductInsightsResponse, ShopProductsInsights, ShopOrdersInsights, ShopOffersInsights, ShopRatingInsights, ProductBoostInsights, ProductOffersInsights, ShopBoostInsights]
+- name: Webhook
+  schemas: [Webhook, OrderWebhook, ProductLike, WebhookShippingAddress]
+relationships:
+- from: Order
+  type: has_many
+  to: OrderLineItem
+  via: line_items
+- from: OrderLineItem
+  type: belongs_to
+  to: Product
+  via: product
+- from: Order
+  type: has_one
+  to: RefundedOrder
+  via: refund
+- from: Order
+  type: has_one
+  to: WebhookShippingAddress
+  via: buyer_address
+- from: SellerDetails
+  type: has_many
+  to: SellerAddress
+  via: seller-addresses
+- from: SellerAddress
+  type: has_many
+  to: ShippingProvider
+  via: shipping-providers
+- from: Product
+  type: has_many
+  to: Picture
+  via: pictures
+- from: Product
+  type: has_one
+  to: DepopShippingResponse
+  via: depop_shipping
+- from: Webhook
+  type: has_one
+  to: Order
+  via: data

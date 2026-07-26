@@ -1,0 +1,16 @@
+generated: '2026-07-18'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.depop.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  4 16:44:08 2026 GMT
+  hsts: null
+domains:
+- domain: depop.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject

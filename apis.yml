@@ -1,8 +1,29 @@
 aid: depop
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/depop.png
 name: depop
-description: depop is a company surfaced as a portfolio company of balderton-capital, creandum, eqt-ventures,
-  hv-capital and added to the API Evangelist network as a stub for enrichment. This profile is a lead
-  awaiting the enrichment pipeline.
+description: >-
+  Depop is a peer-to-peer fashion marketplace where people buy, sell and discover
+  secondhand and unique clothing. Its Selling API is an enterprise partner API that
+  lets approved partners automate the seller experience on Depop: create and manage
+  listings (by SKU, product id or slug), manage orders, mark parcels shipped, issue
+  refunds, submit and automate offers, read seller and shipping details, and pull
+  shop and product insights. The API is OpenAPI 3.1, secured with per-shop API keys
+  and OAuth 2.0 (Authorization Code + PKCE) with granular scopes, documents rate
+  limits, and emits webhooks for new orders, refunds and product likes. Access is by
+  invitation via developers@depop.com. Depop is backed by Balderton Capital, Creandum,
+  EQT Ventures and HV Capital and is owned by Etsy.
 url: https://raw.githubusercontent.com/api-evangelist/depop/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -11,19 +32,245 @@ x-backed-by:
 - creandum
 - eqt-ventures
 - hv-capital
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: standard
+x-tier-reason: enriched-real-api
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-18'
 tags:
 - Company
-apis: []
+- Fashion
+- Marketplace
+- E-commerce
+- Resale
+- Retail
+- Inventory Management
+- Orders
+- Sustainability
+apis:
+- aid: depop:depop-api-status-api
+  name: depop API status API
+  description: Service health and status endpoints
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - API status
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-api-status-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-authentication-api
+  name: depop Authentication API
+  description: OAuth 2.0 authentication endpoints for partner integration
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-authentication-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-docs-api
+  name: depop Docs API
+  description: The Docs API from depop — 1 operation(s) for docs.
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Docs
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-docs-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-insights-api
+  name: depop Insights API
+  description: Shop and product insights
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Insights
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-insights-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-orders-api
+  name: depop Orders API
+  description: Order management and fulfillment operations
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-orders-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-pricing-inspiration-api
+  name: depop Pricing Inspiration API
+  description: ML-powered price recommendations and pricing guidance
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Pricing Inspiration
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-pricing-inspiration-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-products-api
+  name: depop Products API
+  description: General product operations
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Products
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-products-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-products-by-product-id-api
+  name: depop Products - By Product ID API
+  description: Product operations using internal product ID identifiers
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Products - By Product ID
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-products-by-product-id-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-products-by-sku-api
+  name: depop Products - By SKU API
+  description: Product operations using SKU (Stock Keeping Unit) identifiers
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Products - By SKU
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-products-by-sku-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-products-by-slug-api
+  name: depop Products - By Slug API
+  description: Product operations using URL-friendly slug identifiers
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Products - By Slug
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-products-by-slug-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-products-legacy-deprecated-api
+  name: depop Products - Legacy (Deprecated) API
+  description: Deprecated product endpoints - use By SKU or By Product ID alternatives instead
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Products - Legacy (Deprecated)
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-products-legacy-deprecated-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-shop-management-api
+  name: depop Shop Management API
+  description: Shop and seller information endpoints
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Shop Management
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-shop-management-api-openapi.yml
+  - type: AsyncAPI
+    url: asyncapi/depop-webhooks-asyncapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+# --- Identity / link properties ---
+- type: DeveloperPortal
+  url: https://partnerapi.depop.com/api-docs/
+- type: Documentation
+  url: https://partnerapi.depop.com/api-docs/
+- type: APIReference
+  url: https://partnerapi.depop.com/api-docs/reference/
+- type: GettingStarted
+  url: https://partnerapi.depop.com/api-docs/getting-started/your-first-listing/
+- type: StatusPage
+  url: https://depopstatus.com/
+- type: Support
+  url: https://depophelp.zendesk.com/
+- type: Blog
+  url: https://engineering.depop.com/
+- type: GitHubOrganization
+  url: https://github.com/depop
+- type: TermsOfService
+  url: https://www.depop.com/terms/
+- type: PrivacyPolicy
+  url: https://www.depop.com/privacy/
 - type: Website
   url: https://www.depop.com/
+# --- Artifacts (scored) ---
+- type: Authentication
+  url: authentication/depop-authentication.yml
+- type: OAuthScopes
+  url: scopes/depop-scopes.yml
+- type: ErrorCatalog
+  url: errors/depop-problem-types.yml
+- type: Conventions
+  url: conventions/depop-conventions.yml
+- type: RateLimits
+  url: rate-limits/depop-rate-limits.yml
+- type: Lifecycle
+  url: lifecycle/depop-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/depop-lifecycle.yml
+- type: ChangeLog
+  url: changelog/depop-changelog.yml
+- type: Sandbox
+  url: sandbox/depop-sandbox.yml
+- type: Conformance
+  url: conformance/depop-conformance.yml
+- type: DataModel
+  url: data-model/depop-data-model.yml
+- type: Webhooks
+  url: asyncapi/depop-webhooks-asyncapi.yml
+- type: MCPServer
+  url: mcp/depop-mcp.yml
+- type: LLMsTxt
+  url: llms/depop-llms.txt
+- type: WellKnown
+  url: well-known/depop-well-known.yml
+- type: AgenticAccess
+  url: agentic-access/depop-agentic-access.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Arazzo
+  name: List a product and mark it sold
+  url: arazzo/depop-list-and-sell.arazzo.yml
+- type: Arazzo
+  name: Order fulfillment
+  url: arazzo/depop-order-fulfillment.arazzo.yml
+# --- Security ---
+- type: VulnerabilityDisclosure
+  url: security/depop-vulnerability-disclosure.yml
+- type: Security
+  url: https://www.depop.com/.well-known/security.txt
+- type: DomainSecurity
+  url: security/depop-domain-security.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

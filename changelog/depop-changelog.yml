@@ -1,0 +1,34 @@
+generated: '2026-07-18'
+method: searched
+source: https://partnerapi.depop.com/api-docs/changelog/
+docs: https://partnerapi.depop.com/api-docs/changelog/
+scheme: dated
+current: v1
+entries:
+- date: '2026-07'
+  additions:
+  - Ability to change product size through update endpoints.
+  - Expanded Insights API with product-level endpoints and additional shop-level counters (ratings, offers, order shipping status).
+- date: '2026-06'
+  additions:
+  - New shop insights endpoint GET /api/v1/insights/shop/live/ (product counts).
+- date: '2026-05'
+  additions:
+  - Product sorting and filtering via sort_by and state query parameters.
+  - New pricing inspiration endpoint (price predictions and similar sold items).
+- date: '2026-04'
+  additions:
+  - SHIPPING_FEE added to seller fee breakdown in order responses.
+  - Product like/unlike webhooks now include the slug field.
+  - Boosting enabled via is_boosted field on product create/update.
+- date: '2026-03'
+  additions:
+  - New seller details endpoint (id, username, country code).
+  - Slug-based product endpoints for managing inventory by URL-friendly identifiers.
+- date: '2026-02'
+  additions:
+  - Manual offer submission for targeted buyer engagement.
+  - Discount support via discount_price with strikethrough display.
+- date: '2026-01'
+  additions:
+  - Depop Managed Shipping support via depop_shipping specification.

@@ -1,0 +1,20 @@
+generated: '2026-07-18'
+method: searched
+source: https://partnerapi.depop.com/api-docs/concepts/rate-limits/
+docs: https://partnerapi.depop.com/api-docs/concepts/rate-limits/
+enforcement: per-api-key
+status_on_exceed: 429
+notes: >-
+  Limits are enforced per API key. The create-or-update-listing endpoint has its
+  own dedicated bucket; all other endpoints share a single cumulative bucket.
+  Depop recommends a throttled request queue. No X-RateLimit-* or Retry-After
+  response headers are documented.
+rate_limits:
+- name: Create or update a listing
+  scope: createOrUpdateProduct
+  limit_count: 20
+  interval: second
+- name: All other endpoints (cumulative)
+  scope: all-other-endpoints
+  limit_count: 100
+  interval: second

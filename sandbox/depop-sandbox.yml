@@ -1,0 +1,29 @@
+generated: '2026-07-18'
+method: searched
+source: openapi/depop-selling-openapi-original.yml
+docs: https://partnerapi.depop.com/api-docs/getting-started/your-first-listing/
+notes: >-
+  Depop publishes a staging environment for integration testing without
+  affecting production data, plus explicit purchase-simulation endpoints so a
+  partner can drive an order through the webhook/order flow in test. No public
+  magic test card numbers are published (the API is inventory/order-oriented,
+  not a card acquirer). Access to both staging and production requires Depop
+  onboarding.
+environments:
+- name: staging
+  base_url: https://partnerapi-staging.depop.com
+  purpose: Testing environment; does not affect production data.
+- name: production
+  base_url: https://partnerapi.depop.com
+credentials:
+  api_key_prefix: pak_
+  detail: Per-shop API keys are issued by Depop; keys are prefixed pak_.
+test_tooling:
+- name: Trigger a purchase (simulation)
+  detail: >-
+    POST purchase endpoints simulate a buyer purchasing a listing so the
+    downstream order + newOrder webhook flow can be exercised in test.
+  operations:
+  - triggerPurchaseBySku
+  - triggerPurchaseById
+  - triggerPurchase

@@ -1,0 +1,23 @@
+generated: '2026-07-18'
+method: searched
+source: openapi/depop-selling-openapi-original.yml
+docs: https://partnerapi.depop.com/api-docs/
+versioning:
+  scheme: uri-path
+  current: v1
+  notes: All operations are namespaced under /api/v1/. The OpenAPI info.version is 1.0.0.
+deprecation:
+  policy_url: https://partnerapi.depop.com/api-docs/changelog/
+  notes: >-
+    A set of legacy product operations (path form /api/v1/products/{sku}/) are
+    marked deprecated: true in the OpenAPI in favor of the by-sku / by-product-id
+    / by-slug path families. No RFC 8594 Sunset header behavior is documented.
+status_page: https://depopstatus.com/
+support: https://depophelp.zendesk.com/
+deprecated_operations:
+- openapi/depop-selling-openapi-original.yml#createProductLegacy
+- openapi/depop-selling-openapi-original.yml#patchProductLegacy
+- openapi/depop-selling-openapi-original.yml#getProductBySkuLegacy
+- openapi/depop-selling-openapi-original.yml#deleteProductLegacy
+- openapi/depop-selling-openapi-original.yml#markProductAsSoldLegacy
+- openapi/depop-selling-openapi-original.yml#triggerPurchase

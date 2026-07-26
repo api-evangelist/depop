@@ -1,0 +1,23 @@
+generated: '2026-07-18'
+method: searched
+source: live probes of API + website hosts
+hosts:
+- host: https://partnerapi.depop.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+- host: https://www.depop.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    note: >-
+      Present (RFC 9116); Contact mailto:infosec@depop.com. Live re-fetch is
+      bot-blocked (403) from some networks, so the raw file is not saved
+      verbatim here; the security contact is recorded in
+      security/depop-vulnerability-disclosure.yml.
