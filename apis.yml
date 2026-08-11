@@ -198,6 +198,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/depop-selling-overlay.yaml
 # --- Identity / link properties ---
 - type: DeveloperPortal
   url: https://partnerapi.depop.com/api-docs/
