@@ -3,12 +3,9 @@
   "feeds": [
     {
       "source": "https://depophelp.zendesk.com/",
-      "feed_url": "https://depophelp.zendesk.com/",
-      "title": "",
-      "saved": 0,
-      "method": "none"
+      "error": "HTTPError"
     }
   ],
   "post_count": 0,
-  "fetched": "2026-08-06T14:08:46Z"
+  "fetched": "2026-08-15T12:22:01Z"
 }
