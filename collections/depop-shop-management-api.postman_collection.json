@@ -1,0 +1,674 @@
+{
+  "item": [
+    {
+      "id": "026ec616-4278-458a-81e6-5c81a419cdba",
+      "name": "Shop Management",
+      "description": {
+        "content": "Shop and seller information endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ac7b29ff-ef6f-4316-b780-c37ce6227207",
+          "name": "Get seller details",
+          "request": {
+            "name": "Get seller details",
+            "description": {
+              "content": "This endpoint allows you to retrieve details about your Depop shop, including your seller ID, username, and country code.\n**Required OAuth Scope:** `shop_read`",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "shop",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8eb62a6f-e113-406d-ba5d-0729a5391b63",
+              "name": "Seller details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 97082934,\n  \"username\": \"good_will_charity\",\n  \"country_code\": \"US\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c6c76ac7-d215-47a7-899f-7996eab36c9e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba9e7bf5-d736-4a38-9e16-ecb220260b6e",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"The request requires higher privileges than provided by the access token. Required scope: shop_read\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4a4d99a0-0bd1-4e68-8f4f-38e21cb195a5",
+          "name": "Get seller addresses",
+          "request": {
+            "name": "Get seller addresses",
+            "description": {
+              "content": "This endpoint allows you to retrieve all active addresses associated with your Depop shop.\n**Required OAuth Scope:** `shop_read`\n\nThese addresses can be used to determine available shipping providers for your shop.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "shop",
+                "seller-addresses",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7f5a8dd8-824f-4f5f-ba4a-15e0eac633ef",
+              "name": "A paginated list of seller addresses",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    "seller-addresses",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"cursor\": \"MTIzNDU2fDIwMjUtMDEtMTVUMTA6MzA6MDBafDEyMw\",\n    \"has_more\": false\n  },\n  \"data\": [\n    {\n      \"id\": 123456,\n      \"name\": \"John Doe\",\n      \"address\": \"123 Main Street\",\n      \"address2\": \"Apt 4B\",\n      \"city\": \"London\",\n      \"state\": \"Greater London\",\n      \"postal_code\": \"SW1A 1AA\",\n      \"country\": \"GB\",\n      \"last_modified\": \"2025-01-15T10:30:00Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4c3333f-7eba-4e6d-b49b-75e181e4f656",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    "seller-addresses",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bac56f60-d17a-43f4-8994-291b7cc2cfa4",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    "seller-addresses",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"The request requires higher privileges than provided by the access token. Required scope: shop_read\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c9464293-1348-421b-b80c-ad034398b0aa",
+          "name": "Get available shipping providers for an address",
+          "request": {
+            "name": "Get available shipping providers for an address",
+            "description": {
+              "content": "This endpoint allows you to retrieve the available shipping providers for a specific seller address.\n**Required OAuth Scope:** `shop_read`\n\nThe response includes the shipping providers and their available parcel sizes with pricing information.\nIf no shipping providers are available for the given address, manual shipping will be returned as the provider Id.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "shop",
+                "seller-addresses",
+                ":address_id",
+                "shipping-providers",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<long>",
+                  "key": "address_id",
+                  "description": "(Required) The ID of the seller address."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "96c3f98d-edae-4503-b557-cc017449507a",
+              "name": "A list of available shipping providers",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    "seller-addresses",
+                    ":address_id",
+                    "shipping-providers",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<long>",
+                      "key": "address_id",
+                      "description": "(Required) The ID of the seller address."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"MY_HERMES\",\n    \"parcel_sizes\": [\n      {\n        \"id\": \"small\",\n        \"title\": \"Small\",\n        \"subtitle\": \"Tops, jeans, dresses and jewellery\",\n        \"cost\": {\n          \"original_amount\": \"2.99\",\n          \"original_currency\": \"GBP\",\n          \"amount\": \"2.99\",\n          \"currency\": \"GBP\"\n        },\n        \"courier_service\": \"DROP_OFF\"\n      },\n      {\n        \"id\": \"medium\",\n        \"title\": \"Medium\",\n        \"subtitle\": \"Coats, jackets, trainers and shoes\",\n        \"cost\": {\n          \"original_amount\": \"4.99\",\n          \"original_currency\": \"GBP\",\n          \"amount\": \"4.99\",\n          \"currency\": \"GBP\"\n        },\n        \"courier_service\": \"DROP_OFF\"\n      }\n    ]\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a0792ea5-ee73-48cf-973d-52d61a28817b",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    "seller-addresses",
+                    ":address_id",
+                    "shipping-providers",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<long>",
+                      "key": "address_id",
+                      "description": "(Required) The ID of the seller address."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c8b08f7d-8c01-4b3a-91de-4b2471b9cdd8",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    "seller-addresses",
+                    ":address_id",
+                    "shipping-providers",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<long>",
+                      "key": "address_id",
+                      "description": "(Required) The ID of the seller address."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"The request requires higher privileges than provided by the access token. Required scope: shop_read\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "956f1807-bbe3-4f38-b9e9-449a9639b8a0",
+              "name": "Address not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "shop",
+                    "seller-addresses",
+                    ":address_id",
+                    "shipping-providers",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<long>",
+                      "key": "address_id",
+                      "description": "(Required) The ID of the seller address."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"address_not_found\",\n      \"message\": \"Address with ID 999999 not found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://partnerapi-staging.depop.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "daa1e537-aaaa-4c65-8f90-7a1060522d9f",
+    "name": "Seller API status Shop Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Externally facing API to allow enterprise partners to automate listing on Depop.\n\n## OAuth 2.0 Scopes\n\nThis API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:\n\n- **`products_read`** - Required to read product information and listings\n- **`products_write`** - Required to create, update, or delete products\n- **`orders_read`** - Required to read order information and order history\n- **`orders_write`** - Required to mark orders as shipped or process refunds\n- **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)\n- **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)\n- **`shop_read`** - Required to read shop information including seller addresses and available shipping providers\n\nAPI key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.\n\nIf you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.",
+      "type": "text/plain"
+    }
+  }
+}

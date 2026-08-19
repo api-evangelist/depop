@@ -1,0 +1,677 @@
+{
+  "item": [
+    {
+      "id": "3212a8e5-5f8b-4c18-b30e-b953bef80ce4",
+      "name": "Products",
+      "description": {
+        "content": "General product operations",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1285e233-f301-4cba-93d8-465840e37db7",
+          "name": "Create a new product",
+          "request": {
+            "name": "Create a new product",
+            "description": {
+              "content": "This endpoint allows you to create a new product listing on Depop. The product will be available for sale immediately.\n\n**Required OAuth Scopes:** - `products_write` - Required for all product operations - `offers_write` - Required when setting `auto_send_offer_price` or `auto_negotiate_offer_price`\n\n**SKU is optional**: If you don't provide a SKU, the product will be created without one (it can be managed by product_id). If you provide a SKU and it already exists, the request will fail with a 400 error.\nTo update an existing product, use the PUT `/api/v1/products/by-product-id/{productId}/` endpoint instead.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "products",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": {\n    \"country_code\": \"<string>\",\n    \"state\": \"<string>\"\n  },\n  \"description\": \"<string>\",\n  \"price_currency\": \"<string>\",\n  \"price_amount\": \"<string>\",\n  \"quantity\": \"<number>\",\n  \"pictures\": [\n    {\n      \"url\": \"<string>\"\n    }\n  ],\n  \"department\": \"<string>\",\n  \"product_type\": \"<string>\",\n  \"condition\": \"<string>\",\n  \"brand_name\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"discount_price\": \"<string>\",\n  \"auto_send_offer_price\": \"<string>\",\n  \"auto_negotiate_offer_price\": \"<string>\",\n  \"international_shipping_cost\": \"<string>\",\n  \"national_shipping_cost\": \"<string>\",\n  \"depop_shipping\": {\n    \"address_id\": \"<long>\",\n    \"shipping_provider_id\": \"<string>\",\n    \"parcel_size_id\": \"<string>\",\n    \"payer\": \"<string>\"\n  },\n  \"size_set_id\": \"<number>\",\n  \"size_id\": \"<number>\",\n  \"colour\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"style\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"age\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"source\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"attributes\": {\n    \"key_0\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"key_1\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"is_boosted\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e07551bb-a9d2-492f-96b8-cd5c587f776c",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product_id\": 12345678,\n  \"slug\": \"vintage-nike-t-shirt-12345678\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "79f7181d-0b90-4fd1-8df8-8bd8c697b0b4",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"bad-request\",\n      \"message\": \"invalid request\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6fe93245-8310-454e-a575-87646aa46e9f",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "425e551b-931e-490e-913b-a1aa993bc3ae",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"Required scope: products_write\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1a2b54ed-0c57-47e4-8e05-26ddfeced4fc",
+              "name": "Unprocessable Entity - product validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"too_many_pictures\",\n      \"message\": \"Failed to create or update product (sku: ABC-12345-S-BL) because too many pictures were provided. The maximum is 8 pictures.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a50c2943-6f05-4747-99e5-8798dcd0982d",
+          "name": "Get all products",
+          "request": {
+            "name": "Get all products",
+            "description": {
+              "content": "This endpoint returns all the products you have listed on Depop with details about each product.\n**Required OAuth Scopes:** - `products_read` - Required to access product information - `offers_read` - Optional. Required to include offer pricing information (`auto_send_offer_price`, `auto_negotiate_offer_price`) in the response. If this scope is not provided, these fields will be omitted from the response.\n\nIt can return a maximum of 100 products at a time and can be paginated using the `cursor` parameter by providing the `cursor` found in the `meta` object.\n\nThe products are returned in descending order, with the latest product added shown first.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "products",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "The number of products to return. Default is 20."
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Request products created after this cursor."
+                },
+                {
+                  "disabled": false,
+                  "key": "sort_by",
+                  "value": "id_desc",
+                  "description": "Sort order for products by product ID. `id_desc` returns products in descending order (newest first), `id_asc` returns products in ascending order (oldest first). Default is `id_desc`."
+                },
+                {
+                  "disabled": false,
+                  "key": "state",
+                  "value": "<string>",
+                  "description": "Filter products by state. `selling` returns products currently on sale, `sold` returns products that have been sold. When not provided, all products are returned regardless of state. `all` returns all products regardless of state."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8b81f6ec-9f96-48d7-87ed-7d2d13fecac7",
+              "name": "This returns all the products you have listed on Depop.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "id_desc"
+                    },
+                    {
+                      "key": "state",
+                      "value": "selling"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"meta\": {\n    \"cursor\": \"NzIwODg1MXwyMDI1LTA2LTE3VDE2OjM3OjMwLjQ0ODI0NTU1NFp8MjQw\",\n    \"has_more\": false\n  },\n  \"data\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ce7c7eaa-76c4-4f9c-bbc7-51f6fc0bc68e",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "id_desc"
+                    },
+                    {
+                      "key": "state",
+                      "value": "selling"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"bad-request\",\n      \"message\": \"invalid request\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a7cb1379-10f8-406e-a6a7-0ac97ea6656b",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "id_desc"
+                    },
+                    {
+                      "key": "state",
+                      "value": "selling"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dfa7edd4-c6ae-4f59-874a-6cd1c3ef74af",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "id_desc"
+                    },
+                    {
+                      "key": "state",
+                      "value": "selling"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"Required scope: products_write\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://partnerapi-staging.depop.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "7d1a2fd9-fd8a-45e4-bcb4-03561a436d05",
+    "name": "Seller API status Products API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Externally facing API to allow enterprise partners to automate listing on Depop.\n\n## OAuth 2.0 Scopes\n\nThis API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:\n\n- **`products_read`** - Required to read product information and listings\n- **`products_write`** - Required to create, update, or delete products\n- **`orders_read`** - Required to read order information and order history\n- **`orders_write`** - Required to mark orders as shipped or process refunds\n- **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)\n- **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)\n- **`shop_read`** - Required to read shop information including seller addresses and available shipping providers\n\nAPI key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.\n\nIf you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.",
+      "type": "text/plain"
+    }
+  }
+}

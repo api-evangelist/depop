@@ -1,0 +1,2292 @@
+{
+  "item": [
+    {
+      "id": "b1a70231-7046-4f46-9623-a33871d5a1a3",
+      "name": "Products - By SKU",
+      "description": {
+        "content": "Product operations using SKU (Stock Keeping Unit) identifiers",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "322744d0-92dc-4f63-905d-f08ed88f3721",
+          "name": "Create or update a listing on Depop",
+          "request": {
+            "name": "Create or update a listing on Depop",
+            "description": {
+              "content": "This endpoint allows you to create or update a new listing on Depop. The product will be available for sale immediately.\n**Required OAuth Scopes:** - `products_write` - Required for all product operations - `offers_write` - Required when setting `auto_send_offer_price` or `auto_negotiate_offer_price`\n#### Creating vs. Updating a Listing\n- **Creating a listing:** If the provided `sku` does not exist, a new product listing will be created.\n\n- **Updating a listing:** If the provided `sku` already exists, the existing product will be updated with the new details in the request.\n#### Taxonomy\nFor more information on Depop's taxonomy, please refer to the [Concepts/Taxonomy](https://partnerapi.depop.com/api-docs/concepts/taxonomy/) documentation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "by-sku",
+                ":sku",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sku",
+                  "description": "(Required) SKU of the product. Must be unique. It can't be reused.\nThis SKU will be used in other endpoints to reference this particular product and also in the webhooks."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": {\n    \"country_code\": \"<string>\",\n    \"state\": \"<string>\"\n  },\n  \"description\": \"<string>\",\n  \"price_currency\": \"<string>\",\n  \"price_amount\": \"<string>\",\n  \"quantity\": \"<number>\",\n  \"pictures\": [\n    {\n      \"url\": \"<string>\"\n    }\n  ],\n  \"department\": \"<string>\",\n  \"product_type\": \"<string>\",\n  \"condition\": \"<string>\",\n  \"brand_name\": \"<string>\",\n  \"attributes\": {\n    \"key_0\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"auto_send_offer_price\": \"<string>\",\n  \"auto_negotiate_offer_price\": \"<string>\",\n  \"international_shipping_cost\": \"<string>\",\n  \"national_shipping_cost\": \"<string>\",\n  \"depop_shipping\": {\n    \"address_id\": \"<long>\",\n    \"shipping_provider_id\": \"<string>\",\n    \"parcel_size_id\": \"<string>\",\n    \"payer\": \"<string>\"\n  },\n  \"size_set_id\": \"<number>\",\n  \"size_id\": \"<number>\",\n  \"colour\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"style\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"age\": [\n    \"<string>\"\n  ],\n  \"source\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"is_boosted\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9436fac5-34fb-45bc-a0c8-62991c199d2a",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product. Must be unique. It can't be reused.\nThis SKU will be used in other endpoints to reference this particular product and also in the webhooks."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product_id\": 12345678,\n  \"slug\": \"vintage-nike-t-shirt-12345678\",\n  \"sku\": \"ABC-12345-S-BL\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e2a9b45-7ed5-4ac7-8c2d-a1254ac3dcd2",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product. Must be unique. It can't be reused.\nThis SKU will be used in other endpoints to reference this particular product and also in the webhooks."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"bad-request\",\n      \"message\": \"invalid request\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "697cf595-f42b-4622-a0f5-f8b1e2ba5456",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product. Must be unique. It can't be reused.\nThis SKU will be used in other endpoints to reference this particular product and also in the webhooks."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d44acb95-8fb9-4b55-b110-9213c81c8aa6",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product. Must be unique. It can't be reused.\nThis SKU will be used in other endpoints to reference this particular product and also in the webhooks."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"Required scope: products_write\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "389ca7b6-8a3f-4220-b3ba-bfb495ab29e7",
+              "name": "Unprocessable Entity - product validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product. Must be unique. It can't be reused.\nThis SKU will be used in other endpoints to reference this particular product and also in the webhooks."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=cover-image\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=back\"\n    },\n    {\n      \"url\": \"https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg#type=tag\"\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"brand_name\": \"Nike\",\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"is_boosted\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"too_many_pictures\",\n      \"message\": \"Failed to create or update product (sku: ABC-12345-S-BL) because too many pictures were provided. The maximum is 8 pictures.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f0e6ba75-5c11-4390-afd3-968220816287",
+          "name": "Patch an existing product on Depop",
+          "request": {
+            "name": "Patch an existing product on Depop",
+            "description": {
+              "content": "This endpoint allows you to patch an `ON SALE` products fields on Depop.\nIf you want to restock a product, call the PUT endpoint with the same SKU with the available quantity.\n**Required OAuth Scopes:** - `products_write` - Required for all product operations - `offers_write` - Required when setting `auto_send_offer_price` or `auto_negotiate_offer_price`",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "by-sku",
+                ":sku",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sku",
+                  "description": "(Required) SKU of the product."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price_amount\": \"<string>\",\n  \"discount_price\": \"<string>\",\n  \"auto_send_offer_price\": \"<string>\",\n  \"auto_negotiate_offer_price\": \"<string>\",\n  \"quantity\": \"<number>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1ae0ed8d-2925-45f8-949b-dd84d30032a5",
+              "name": "Successful operation, no content returned.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"price_amount\": \"39.99\",\n  \"discount_price\": \"37.00\",\n  \"auto_send_offer_price\": \"35.00\",\n  \"auto_negotiate_offer_price\": \"35.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "30aca29f-13b1-43b1-81e3-b75890a59f05",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"price_amount\": \"39.99\",\n  \"discount_price\": \"37.00\",\n  \"auto_send_offer_price\": \"35.00\",\n  \"auto_negotiate_offer_price\": \"35.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"bad-request\",\n      \"message\": \"invalid request\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "15419af6-72f4-4433-a009-13337bd95ad6",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"price_amount\": \"39.99\",\n  \"discount_price\": \"37.00\",\n  \"auto_send_offer_price\": \"35.00\",\n  \"auto_negotiate_offer_price\": \"35.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "18d74149-2d80-4fb8-90a8-a594c5570b76",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"price_amount\": \"39.99\",\n  \"discount_price\": \"37.00\",\n  \"auto_send_offer_price\": \"35.00\",\n  \"auto_negotiate_offer_price\": \"35.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"Required scope: products_write\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "41e09938-43c6-4be1-8c9b-84143e3a7829",
+          "name": "Get product details by SKU",
+          "request": {
+            "name": "Get product details by SKU",
+            "description": {
+              "content": "This endpoint allows you to get the details of a product by its SKU.\n**Required OAuth Scopes:** - `products_read` - Required to access product information - `offers_read` - Optional. Required to include offer pricing information (`auto_send_offer_price`, `auto_negotiate_offer_price`) in the response. If this scope is not provided, these fields will be omitted from the response.\n\nThe SKU is the unique identifier for the product and is used in other endpoints to reference this particular product.\nThe SKU will be used in the webhooks.\nNote that the SKU will _not_ be reusable.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "by-sku",
+                ":sku",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sku",
+                  "description": "(Required) The SKU of the product."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5d9dcdc3-3e56-420f-9d52-4a8346cbca3e",
+              "name": "A single product",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"sku\": \"ABC-12345-S-BL\",\n  \"product_id\": 123456789,\n  \"slug\": \"vintage-nike-t-shirt-123456789\",\n  \"status\": \"STATUS_ONSALE\",\n  \"address\": {\n    \"country_code\": \"GB\",\n    \"state\": \"Greater London\"\n  },\n  \"description\": \"Vintage Nike T-Shirt in excellent condition.\\nBlack with white swoosh logo on the front.\\nSize medium, fits true to size.\\nSmall mark on the left sleeve (see last image).\\n\\n#vintage #nike #streetwear #90s\",\n  \"price_currency\": \"GBP\",\n  \"price_amount\": \"25.99\",\n  \"current_price\": \"24.00\",\n  \"discount_price\": \"24.00\",\n  \"auto_send_offer_price\": \"20.00\",\n  \"auto_negotiate_offer_price\": \"20.00\",\n  \"national_shipping_cost\": \"3.50\",\n  \"international_shipping_cost\": \"12.00\",\n  \"quantity\": 1,\n  \"pictures\": [\n    {\n      \"url\": \"https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg\",\n      \"height\": 1280,\n      \"width\": 1280\n    },\n    {\n      \"url\": \"https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P1.jpg\",\n      \"height\": 1280,\n      \"width\": 1280\n    },\n    {\n      \"url\": \"https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P2.jpg\",\n      \"height\": 1280,\n      \"width\": 1280\n    }\n  ],\n  \"department\": \"menswear\",\n  \"product_type\": \"tshirts\",\n  \"size_set_id\": 52,\n  \"size_id\": 10,\n  \"condition\": \"used_excellent\",\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"streetwear\",\n    \"retro\",\n    \"sportswear\"\n  ],\n  \"age\": [\n    \"90s\"\n  ],\n  \"attributes\": {\n    \"sleeve-length\": [\n      \"short\"\n    ],\n    \"material\": [\n      \"cotton\"\n    ],\n    \"occasion\": [\n      \"casual\"\n    ]\n  },\n  \"brand\": \"Nike\",\n  \"is_boosted\": false,\n  \"source\": [\n    \"vintage\",\n    \"preloved\"\n  ],\n  \"created_at\": \"2024-01-15T10:30:00Z\",\n  \"updated_at\": \"2024-01-15T14:20:00Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "07859834-db04-4f66-a504-3385fb1591a7",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"bad-request\",\n      \"message\": \"invalid request\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6ca84e51-971c-4aae-96c0-80367d47747e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "07e78599-263f-4d00-ad2a-6aea522757cb",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"Required scope: products_write\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0ab4fde4-ef9f-4973-83c6-835ab9eb9ba2",
+          "name": "Delete a product on Depop",
+          "request": {
+            "name": "Delete a product on Depop",
+            "description": {
+              "content": "This endpoint allows you to delete a product on Depop. The product will no longer be available for sale and will be removed from your shop. This endpoint is idempotent - it will return a successful response (200) even if the product doesn't exist.\n**Required OAuth Scope:** `products_write`",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "by-sku",
+                ":sku",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fail_if_active_offers",
+                  "value": "false",
+                  "description": "If set to `true`, the delete will fail with a 409 Conflict error if the product has any active offers. If set to `false` or omitted, the product will be deleted regardless of active offers.\n\n**Note:** This is a temporary flag until insights are available to help you manage active offers. If you plan to use this feature, please let us know so we can understand your use case and ensure a smooth transition when insights become available."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sku",
+                  "description": "(Required) SKU of the product."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a49d3e7c-c746-4569-becf-6b4e0054c325",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fail_if_active_offers",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f894c97a-699f-44d8-b922-d1eb0b242bf4",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fail_if_active_offers",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"bad-request\",\n      \"message\": \"invalid request\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0aece699-50bb-4f94-9611-71efdb313f16",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fail_if_active_offers",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e57eda27-d03e-4f19-8291-f0e2bd4fe872",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fail_if_active_offers",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"Required scope: products_write\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6e1ee5db-3352-491d-a750-ee60690418f8",
+              "name": "Conflict - Product has active offers",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fail_if_active_offers",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"product_has_active_offers\",\n      \"message\": \"Product has active offers and cannot be deleted.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9972d7ab-a6a5-4b11-87ad-a7cdd9ca1713",
+          "name": "Mark a product as sold",
+          "request": {
+            "name": "Mark a product as sold",
+            "description": {
+              "content": "This endpoint allows you to mark a product as sold on your Depop shop. The product will no longer be available for sale but it will still be visible in your shop with a \"sold\" overlay.\n**Required OAuth Scope:** `products_write`\nYou're expected to call this as soon as you make a sale on a different platform. You don't need to call this if the product sells on Depop.\nIf the product is not in a selling state, this endpoint will still return successfully but will remain in the same state.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "by-sku",
+                ":sku",
+                "mark-as-sold",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sku",
+                  "description": "(Required) SKU of the product."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "50c93fd9-7030-4915-a8a2-b06382a59a55",
+              "name": "Successful operation, no content returned.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "mark-as-sold",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4a0e2257-2e24-4916-af32-828f4a85182f",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "mark-as-sold",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"bad-request\",\n      \"message\": \"invalid request\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "367acc50-31f9-413f-ad66-60f59bb4f9f3",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "mark-as-sold",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a381105e-3843-42dc-9a01-861315705e3c",
+              "name": "Product not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "mark-as-sold",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"product_not_found\",\n      \"message\": \"Product (sku: womens-tshirt-1, id: 123) not found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "61aa5afd-fd5d-4bd7-90b5-26c083b578e6",
+          "name": "Trigger a purchase of a product by SKU (for testing)",
+          "request": {
+            "name": "Trigger a purchase of a product by SKU (for testing)",
+            "description": {
+              "content": "This endpoint allows you to trigger a purchase of a product on Depop using its SKU. This is useful if you want to test the purchase flow.\nThe product will be sold to a test user and the purchase will be visible in your orders. You will also receive a webhook for the purchase.\nThis endpoint is only available in the staging environment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "by-sku",
+                ":sku",
+                "purchase",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sku",
+                  "description": "(Required) SKU of the product."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "67317b02-f43d-4311-ae60-0089c0ca9c92",
+              "name": "Successful operation, no content returned.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "purchase",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b1f252fa-0dde-4552-a451-6c3cf1f772f1",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "purchase",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"bad-request\",\n      \"message\": \"invalid request\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "14dd0e82-818e-4ec8-8d2c-2893a5f1b602",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "purchase",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5a23199c-c22c-44c1-bfea-068601efcafa",
+              "name": "Product not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "purchase",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"product_not_found\",\n      \"message\": \"Product (sku: womens-tshirt-1, id: 123) not found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e28c4fd3-c031-426b-8c0d-1d45f5cb9a75",
+          "name": "Submit an offer for a product by SKU",
+          "request": {
+            "name": "Submit an offer for a product by SKU",
+            "description": {
+              "content": "This endpoint allows you to submit an offer on behalf of a seller to a specific buyer for a product using its SKU. The offer will be sent to the specified buyer. You can only send offers to buyers who have shown interest in your products (likes, bags, messages)\n**Required OAuth Scope:** `offers_write`\n\n#### Validation Rules\nThe following validations are enforced:\n- **Offer value:** Must be at least 5% lower than product price_amount - **Currency:** Must match the product's currency exactly - **Size ID:** Must follow size handling rules (see below)\n\n#### Multiple sizes Handling\n- **Products without multiple sizes:** Do not provide `size_id` - **Products with a single size:** The `size_id` will be automatically populated - **Products with multiple sizes:** You must provide a valid `size_id` that exists for the product",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "by-sku",
+                ":sku",
+                "offer",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sku",
+                  "description": "(Required) SKU of the product."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offer_recipient_id\": \"<long>\",\n  \"offer_value\": \"<double>\",\n  \"offer_currency\": \"<string>\",\n  \"size_id\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ee48dab1-b1b4-4ce2-a206-4d8f46642374",
+              "name": "Offer submitted successfully, no content returned.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "offer",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_recipient_id\": 456789,\n  \"offer_value\": 25,\n  \"offer_currency\": \"GBP\",\n  \"size_id\": 2\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4e0e4269-7fdb-4fcd-9acd-57adf042dc5e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "offer",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_recipient_id\": 456789,\n  \"offer_value\": 25,\n  \"offer_currency\": \"GBP\",\n  \"size_id\": 2\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e7b904b0-b9fc-4aca-a83a-2967bf67f315",
+              "name": "Forbidden - Insufficient scope",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "offer",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_recipient_id\": 456789,\n  \"offer_value\": 25,\n  \"offer_currency\": \"GBP\",\n  \"size_id\": 2\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"insufficient_scope\",\n      \"message\": \"Required scope: products_write\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "660ffaca-31e8-4f64-8a39-925e19f6f67b",
+              "name": "Product not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "offer",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_recipient_id\": 456789,\n  \"offer_value\": 25,\n  \"offer_currency\": \"GBP\",\n  \"size_id\": 2\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"product_not_found\",\n      \"message\": \"Product (sku: womens-tshirt-1, id: 123) not found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0a3d7970-1643-4333-b545-43bb20ff2d9b",
+              "name": "Unprocessable Entity - validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "products",
+                    "by-sku",
+                    ":sku",
+                    "offer",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) SKU of the product."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_recipient_id\": 456789,\n  \"offer_value\": 25,\n  \"offer_currency\": \"GBP\",\n  \"size_id\": 2\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"validation-error\",\n      \"message\": \"Offer currency GBP does not match product currency USD\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://partnerapi-staging.depop.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "033b2f0e-fdf2-44eb-93f0-fba1512a36e3",
+    "name": "Seller API status Products - By SKU API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Externally facing API to allow enterprise partners to automate listing on Depop.\n\n## OAuth 2.0 Scopes\n\nThis API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:\n\n- **`products_read`** - Required to read product information and listings\n- **`products_write`** - Required to create, update, or delete products\n- **`orders_read`** - Required to read order information and order history\n- **`orders_write`** - Required to mark orders as shipped or process refunds\n- **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)\n- **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)\n- **`shop_read`** - Required to read shop information including seller addresses and available shipping providers\n\nAPI key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.\n\nIf you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.",
+      "type": "text/plain"
+    }
+  }
+}

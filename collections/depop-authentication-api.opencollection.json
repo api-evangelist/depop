@@ -1,0 +1,68 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Seller API status Authentication API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authentication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "OAuth 2.0 token endpoint (authorization code exchange and refresh token)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://partnerapi-staging.depop.com/api/v1/oauth2/access-token/",
+            "body": {
+              "type": "form-urlencoded",
+              "data": [
+                {
+                  "name": "grant_type",
+                  "value": ""
+                },
+                {
+                  "name": "code",
+                  "value": ""
+                },
+                {
+                  "name": "redirect_uri",
+                  "value": ""
+                },
+                {
+                  "name": "client_id",
+                  "value": ""
+                },
+                {
+                  "name": "client_secret",
+                  "value": ""
+                },
+                {
+                  "name": "code_verifier",
+                  "value": ""
+                },
+                {
+                  "name": "refresh_token",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Token endpoint supporting multiple grant types according to RFC 6749: - Authorization Code (Section 4.1.3): Exchange authorization code for access tokens - Refresh Token (Section 6): Exchange refresh token for new access tokens\n**Authorization Code Flow:** Requires PKCE (Proof Key for Code Exchange) with S256 challenge method according to RFC 7636. The code_verifier parameter is required and must match the code_challenge from the authorization request. The scopes granted during authorization are"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

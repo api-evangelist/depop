@@ -1,0 +1,65 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Seller API status Shop Management API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Shop Management",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get seller details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/shop/"
+          },
+          "docs": "This endpoint allows you to retrieve details about your Depop shop, including your seller ID, username, and country code.\n**Required OAuth Scope:** `shop_read`"
+        },
+        {
+          "info": {
+            "name": "Get seller addresses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/shop/seller-addresses/"
+          },
+          "docs": "This endpoint allows you to retrieve all active addresses associated with your Depop shop.\n**Required OAuth Scope:** `shop_read`\n\nThese addresses can be used to determine available shipping providers for your shop."
+        },
+        {
+          "info": {
+            "name": "Get available shipping providers for an address",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/shop/seller-addresses/:address_id/shipping-providers/",
+            "params": [
+              {
+                "name": "address_id",
+                "value": "123456",
+                "type": "path",
+                "description": "The ID of the seller address."
+              }
+            ]
+          },
+          "docs": "This endpoint allows you to retrieve the available shipping providers for a specific seller address.\n**Required OAuth Scope:** `shop_read`\n\nThe response includes the shipping providers and their available parcel sizes with pricing information.\nIf no shipping providers are available for the given address, manual shipping will be returned as the provider Id."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

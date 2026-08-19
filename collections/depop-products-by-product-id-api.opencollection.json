@@ -1,0 +1,175 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Seller API status Products - By Product ID API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Products - By Product ID",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get product details by product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/products/by-product-id/:productId/",
+            "params": [
+              {
+                "name": "productId",
+                "value": "7033001",
+                "type": "path",
+                "description": "The internal product ID of the product."
+              }
+            ]
+          },
+          "docs": "This endpoint allows you to get the details of a product by its internal product ID.\n**Required OAuth Scopes:** - `products_read` - Required to access product information - `offers_read` - Optional. Required to include offer pricing information (`auto_send_offer_price`, `auto_negotiate_offer_price`) in the response. If this scope is not provided, these fields will be omitted from the response."
+        },
+        {
+          "info": {
+            "name": "Update an existing product by product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://partnerapi-staging.depop.com/api/v1/products/by-product-id/:productId/",
+            "params": [
+              {
+                "name": "productId",
+                "value": "7033001",
+                "type": "path",
+                "description": "The internal product ID of the product to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint allows you to update an existing product on Depop using its internal product ID. The product will be updated with the new details in the request.\n**Required OAuth Scopes:** - `products_write` - Required for all product operations - `offers_write` - Required when setting `auto_send_offer_price` or `auto_negotiate_offer_price`\n**Note:** This endpoint only supports updating existing products. If the product ID does not exist, a 404 error will be returned. To create a new product, use "
+        },
+        {
+          "info": {
+            "name": "Patch an existing product by product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://partnerapi-staging.depop.com/api/v1/products/by-product-id/:productId/",
+            "params": [
+              {
+                "name": "productId",
+                "value": "7033001",
+                "type": "path",
+                "description": "The internal product ID of the product to patch."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint allows you to patch an `ON SALE` product's fields on Depop using its internal product ID.\nIf you want to restock a product, call the PUT endpoint with the same product ID with the available quantity.\n**Required OAuth Scopes:** - `products_write` - Required for all product operations - `offers_write` - Required when setting `auto_send_offer_price` or `auto_negotiate_offer_price`"
+        },
+        {
+          "info": {
+            "name": "Delete a product by product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://partnerapi-staging.depop.com/api/v1/products/by-product-id/:productId/",
+            "params": [
+              {
+                "name": "productId",
+                "value": "7033001",
+                "type": "path",
+                "description": "The internal product ID of the product to delete."
+              },
+              {
+                "name": "fail_if_active_offers",
+                "value": "true",
+                "type": "query",
+                "description": "If set to `true`, the delete will fail with a 409 Conflict error if the product has any active offers. If set to `false` or omitted, the product will be deleted regardless of active offers.\n\n**Note:** This is a temporary flag until insights are available to help you manage active offers. If you plan to use this feature, please let us know so we can understand your use case and ensure a smooth transition when insights become available."
+              }
+            ]
+          },
+          "docs": "This endpoint allows you to delete a product on Depop using its internal product ID. The product will no longer be available for sale and will be removed from your shop. This endpoint is idempotent - it will return a successful response (200) even if the product doesn't exist.\n**Required OAuth Scope:** `products_write`"
+        },
+        {
+          "info": {
+            "name": "Mark a product as sold by product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://partnerapi-staging.depop.com/api/v1/products/by-product-id/:productId/mark-as-sold/",
+            "params": [
+              {
+                "name": "productId",
+                "value": "7033001",
+                "type": "path",
+                "description": "The internal product ID of the product."
+              }
+            ]
+          },
+          "docs": "This endpoint allows you to mark a product as sold on your Depop shop using its internal product ID. The product will no longer be available for sale but it will still be visible in your shop with a \"sold\" overlay.\n**Required OAuth Scope:** `products_write`\nYou're expected to call this as soon as you make a sale on a different platform. You don't need to call this if the product sells on Depop.\nIf the product is not in a selling state, this endpoint will still return successfully but will remain"
+        },
+        {
+          "info": {
+            "name": "Trigger a purchase of a product by product ID (for testing)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://partnerapi-staging.depop.com/api/v1/products/by-product-id/:productId/purchase/",
+            "params": [
+              {
+                "name": "productId",
+                "value": "7033001",
+                "type": "path",
+                "description": "The internal product ID of the product."
+              }
+            ]
+          },
+          "docs": "This endpoint allows you to trigger a purchase of a product on Depop using its internal product ID. This is useful if you want to test the purchase flow.\nThe product will be sold to a test user and the purchase will be visible in your orders. You will also receive a webhook for the purchase.\nThis endpoint is only available in the staging environment."
+        },
+        {
+          "info": {
+            "name": "Submit an offer for a product by product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://partnerapi-staging.depop.com/api/v1/products/by-product-id/:productId/offer/",
+            "params": [
+              {
+                "name": "productId",
+                "value": "7033001",
+                "type": "path",
+                "description": "The internal product ID of the product."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint allows you to submit an offer on behalf of a seller to a specific buyer for a product using its internal product ID. The offer will be sent to the specified buyer. You can only send offers to buyers who have shown interest in your products (likes, bags, messages)\n**Required OAuth Scope:** `offers_write`\n\n#### Validation Rules\nThe following validations are enforced:\n- **Offer value:** Must be at least 5% lower than product price_amount - **Currency:** Must match the product's curren"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

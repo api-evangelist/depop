@@ -1,0 +1,92 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Seller API status Insights API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Insights",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get shop insights",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/insights/shop/live/"
+          },
+          "docs": "This endpoint returns insights about the authenticated seller's shop, including product counts, shop rating, offers awaiting review, boost ad counts and orders awaiting shipping.\n\n**Required OAuth Scopes:** at least one of the scopes below. Each section of the response is included only when its corresponding scope is present, and omitted otherwise. A `403` is returned only when none of these scopes are present.\n- `products_read` - Include product counts (`products`) and boost ad counts (`boost`)"
+        },
+        {
+          "info": {
+            "name": "Get product insights by SKU",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/insights/products/by-sku/:sku/live/",
+            "params": [
+              {
+                "name": "sku",
+                "value": "ABC-12345-S-BL",
+                "type": "path",
+                "description": "SKU of the product to fetch insights for."
+              }
+            ]
+          },
+          "docs": "This endpoint returns live insights about a single product in the authenticated seller's shop, identified by its SKU, including likes, bag adds, offers awaiting review and boosted-listing performance.\n\n**Required OAuth Scopes:** at least one of the scopes below. Each section of the response is included only when its corresponding scope is present, and omitted otherwise. A `403` is returned only when none of these scopes are present.\n- `products_read` - Include likes (`likes_count`) and bag adds "
+        },
+        {
+          "info": {
+            "name": "Get product insights by slug",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/insights/products/by-slug/:slug/live/",
+            "params": [
+              {
+                "name": "slug",
+                "value": "vintage-nike-t-shirt-7033001",
+                "type": "path",
+                "description": "The slug of the product to fetch insights for."
+              }
+            ]
+          },
+          "docs": "This endpoint returns live insights about a single product in the authenticated seller's shop, identified by its slug, including likes, bag adds, offers awaiting review and boosted-listing performance.\n\n**Required OAuth Scopes:** at least one of the scopes below. Each section of the response is included only when its corresponding scope is present, and omitted otherwise. A `403` is returned only when none of these scopes are present.\n- `products_read` - Include likes (`likes_count`) and bag adds"
+        },
+        {
+          "info": {
+            "name": "Get product insights by product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/insights/products/by-product-id/:productId/live/",
+            "params": [
+              {
+                "name": "productId",
+                "value": "7033001",
+                "type": "path",
+                "description": "The internal product ID of the product to fetch insights for."
+              }
+            ]
+          },
+          "docs": "This endpoint returns live insights about a single product in the authenticated seller's shop, identified by its internal product ID, including likes, bag adds, offers awaiting review and boosted-listing performance.\n\n**Required OAuth Scopes:** at least one of the scopes below. Each section of the response is included only when its corresponding scope is present, and omitted otherwise. A `403` is returned only when none of these scopes are present.\n- `products_read` - Include likes (`likes_count"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

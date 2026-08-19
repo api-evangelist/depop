@@ -1,0 +1,423 @@
+{
+  "item": [
+    {
+      "id": "fc694e6a-0215-49fb-ba82-f099d321ae49",
+      "name": "Pricing Inspiration",
+      "description": {
+        "content": "ML-powered price recommendations and pricing guidance",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "eaef63b4-f21d-4757-a9b2-9a0ad3bacca7",
+          "name": "Get pricing inspiration when given product listing details",
+          "request": {
+            "name": "Get pricing inspiration when given product listing details",
+            "description": {
+              "content": "This endpoint returns a price prediction range and a list of similar sold items for a product listing.\nThe price prediction is the core of the response. The list of similar sold items is supplementary and best-effort: if the similar sold items lookup is unavailable (for example, a timeout), the endpoint still returns the price prediction with an empty `similar_sold_items` array rather than failing. Clients should therefore not rely on `similar_sold_items` always being populated.\nThis endpoint does not require OAuth Scopes and is only valid for specific countries (US and GB).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "pricing",
+                "inspiration",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"<string>\",\n  \"country\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"product_type\": \"<string>\",\n  \"department\": \"<string>\",\n  \"condition\": \"<string>\",\n  \"brand_name\": \"<string>\",\n  \"size_set_id\": \"<integer>\",\n  \"size_id\": \"<integer>\",\n  \"colour\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"style\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"source\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7b416f34-12f0-48fc-9bc8-15272c9eaaf6",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "pricing",
+                    "inspiration",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"A sporty nike t-shirt with abstract patterns\",\n  \"country\": \"GB\",\n  \"currency\": \"GBP\",\n  \"product_type\": \"t-shirts\",\n  \"department\": \"menswear\",\n  \"condition\": \"used_like_new\",\n  \"brand_name\": \"Nike\",\n  \"size_set_id\": 52,\n  \"size_id\": 4,\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"casual\",\n    \"sportswear\"\n  ],\n  \"source\": [\n    \"vintage\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"price_prediction\": {\n    \"lower_bound\": \"17.00\",\n    \"balanced\": \"19.00\",\n    \"prediction\": \"19.00\",\n    \"upper_bound\": \"22.00\"\n  },\n  \"similar_sold_items\": [\n    {\n      \"brand_name\": \"Nike\",\n      \"condition\": \"used_excellent\",\n      \"picture\": {\n        \"height\": 1280,\n        \"url\": \"https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg\",\n        \"width\": 1280\n      },\n      \"sold_price_amount\": \"50.00\",\n      \"sold_price_currency\": \"GBP\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4aff1dc8-d1a7-41a4-a841-c5e98414be91",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "pricing",
+                    "inspiration",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"A sporty nike t-shirt with abstract patterns\",\n  \"country\": \"GB\",\n  \"currency\": \"GBP\",\n  \"product_type\": \"t-shirts\",\n  \"department\": \"menswear\",\n  \"condition\": \"used_like_new\",\n  \"brand_name\": \"Nike\",\n  \"size_set_id\": 52,\n  \"size_id\": 4,\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"casual\",\n    \"sportswear\"\n  ],\n  \"source\": [\n    \"vintage\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"bad-request\",\n      \"message\": \"invalid request\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "720b1061-621b-4d76-b2ac-37da9eee1b2a",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "pricing",
+                    "inspiration",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"A sporty nike t-shirt with abstract patterns\",\n  \"country\": \"GB\",\n  \"currency\": \"GBP\",\n  \"product_type\": \"t-shirts\",\n  \"department\": \"menswear\",\n  \"condition\": \"used_like_new\",\n  \"brand_name\": \"Nike\",\n  \"size_set_id\": 52,\n  \"size_id\": 4,\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"casual\",\n    \"sportswear\"\n  ],\n  \"source\": [\n    \"vintage\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unauthorized\",\n      \"message\": \"invalid api key\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "39efdc36-1970-4607-9037-c177bd6be884",
+              "name": "Not Found - no price prediction is available for the given attributes (for example, an uncommon brand and product type combination).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "pricing",
+                    "inspiration",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"A sporty nike t-shirt with abstract patterns\",\n  \"country\": \"GB\",\n  \"currency\": \"GBP\",\n  \"product_type\": \"t-shirts\",\n  \"department\": \"menswear\",\n  \"condition\": \"used_like_new\",\n  \"brand_name\": \"Nike\",\n  \"size_set_id\": 52,\n  \"size_id\": 4,\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"casual\",\n    \"sportswear\"\n  ],\n  \"source\": [\n    \"vintage\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"6eaec55a-c500-4c76-81b6-fda44828df1e\",\n  \"errors\": [\n    {\n      \"code\": \"price_prediction_not_available\",\n      \"message\": \"No price prediction is available for the given attributes.\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cb76766b-2faf-47db-9f41-f3ddd8279125",
+              "name": "Unprocessable Entity - validation error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "pricing",
+                    "inspiration",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"A sporty nike t-shirt with abstract patterns\",\n  \"country\": \"GB\",\n  \"currency\": \"GBP\",\n  \"product_type\": \"t-shirts\",\n  \"department\": \"menswear\",\n  \"condition\": \"used_like_new\",\n  \"brand_name\": \"Nike\",\n  \"size_set_id\": 52,\n  \"size_id\": 4,\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"casual\",\n    \"sportswear\"\n  ],\n  \"source\": [\n    \"vintage\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a210923f-c1f3-4d84-a2bd-7f18c68553e2\",\n  \"errors\": [\n    {\n      \"code\": \"unsupported_country\",\n      \"message\": \"Country 'AU' is not supported. Supported countries: GB, US\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "714db0b6-2d7e-4474-aded-ca4f7ad93a5b",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "pricing",
+                    "inspiration",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"A sporty nike t-shirt with abstract patterns\",\n  \"country\": \"GB\",\n  \"currency\": \"GBP\",\n  \"product_type\": \"t-shirts\",\n  \"department\": \"menswear\",\n  \"condition\": \"used_like_new\",\n  \"brand_name\": \"Nike\",\n  \"size_set_id\": 52,\n  \"size_id\": 4,\n  \"colour\": [\n    \"black\",\n    \"white\"\n  ],\n  \"style\": [\n    \"casual\",\n    \"sportswear\"\n  ],\n  \"source\": [\n    \"vintage\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"product_not_found\",\n      \"message\": \"Product (sku: womens-tshirt-1, id: 123) not found\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://partnerapi-staging.depop.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "854e1607-1b3b-4714-9ed8-8787e964abdb",
+    "name": "Seller API status Pricing Inspiration API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Externally facing API to allow enterprise partners to automate listing on Depop.\n\n## OAuth 2.0 Scopes\n\nThis API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:\n\n- **`products_read`** - Required to read product information and listings\n- **`products_write`** - Required to create, update, or delete products\n- **`orders_read`** - Required to read order information and order history\n- **`orders_write`** - Required to mark orders as shipped or process refunds\n- **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)\n- **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)\n- **`shop_read`** - Required to read shop information including seller addresses and available shipping providers\n\nAPI key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.\n\nIf you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.",
+      "type": "text/plain"
+    }
+  }
+}

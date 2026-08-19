@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Seller API status Pricing Inspiration API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Pricing Inspiration",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get pricing inspiration when given product listing details",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://partnerapi-staging.depop.com/api/v1/pricing/inspiration/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint returns a price prediction range and a list of similar sold items for a product listing.\nThe price prediction is the core of the response. The list of similar sold items is supplementary and best-effort: if the similar sold items lookup is unavailable (for example, a timeout), the endpoint still returns the price prediction with an empty `similar_sold_items` array rather than failing. Clients should therefore not rely on `similar_sold_items` always being populated.\nThis endpoint do"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

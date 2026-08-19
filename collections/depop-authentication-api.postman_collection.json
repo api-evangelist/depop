@@ -1,0 +1,446 @@
+{
+  "item": [
+    {
+      "id": "31334f7f-8bd5-4beb-9fad-819f0f0c1902",
+      "name": "Authentication",
+      "description": {
+        "content": "OAuth 2.0 authentication endpoints for partner integration",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d89e1b4d-6299-4757-be22-15dddca535b0",
+          "name": "OAuth 2.0 token endpoint (authorization code exchange and refresh token)",
+          "request": {
+            "name": "OAuth 2.0 token endpoint (authorization code exchange and refresh token)",
+            "description": {
+              "content": "Token endpoint supporting multiple grant types according to RFC 6749: - Authorization Code (Section 4.1.3): Exchange authorization code for access tokens - Refresh Token (Section 6): Exchange refresh token for new access tokens\n**Authorization Code Flow:** Requires PKCE (Proof Key for Code Exchange) with S256 challenge method according to RFC 7636. The code_verifier parameter is required and must match the code_challenge from the authorization request. The scopes granted during authorization are retrieved and included in the generated access token.\n**Refresh Token Flow:** Exchange a partner refresh token for a new access token and refresh token pair. The original refresh token is consumed and cannot be reused. The new refresh token maintains the same expiry as the original (1 year from initial creation).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "oauth2",
+                "access-token",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "grant_type",
+                  "value": "<string>",
+                  "description": "(Required) OAuth 2.0 grant type - 'authorization_code' to exchange code for tokens, 'refresh_token' to refresh access token"
+                },
+                {
+                  "disabled": false,
+                  "key": "client_id",
+                  "value": "<string>",
+                  "description": "(Required) OAuth client identifier"
+                },
+                {
+                  "disabled": false,
+                  "key": "client_secret",
+                  "value": "<string>",
+                  "description": "(Required) OAuth client secret for authentication"
+                },
+                {
+                  "disabled": false,
+                  "key": "code",
+                  "value": "<string>",
+                  "description": "Authorization code received from the authorization endpoint (required for authorization_code grant)"
+                },
+                {
+                  "disabled": false,
+                  "key": "redirect_uri",
+                  "value": "<uri>",
+                  "description": "Redirect URI that must match the one used in authorization request (required for authorization_code grant)"
+                },
+                {
+                  "disabled": false,
+                  "key": "code_verifier",
+                  "value": "<string>",
+                  "description": "PKCE code verifier used to verify the code_challenge from the authorization request.\nRequired for all authorization code flows (PKCE is mandatory).\nMust be 43-128 characters long and contain only [A-Za-z0-9._~-] characters.\nNot used for refresh_token grant.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "refresh_token",
+                  "value": "<string>",
+                  "description": "Partner refresh token to exchange for new tokens (required for refresh_token grant)"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "46ff799a-4793-46f0-ab68-1cb47bcbfc2c",
+              "name": "Successfully exchanged authorization code or refresh token for access and refresh tokens",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "oauth2",
+                    "access-token",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth 2.0 grant type - 'authorization_code' to exchange code for tokens, 'refresh_token' to refresh access token",
+                        "type": "text/plain"
+                      },
+                      "key": "grant_type",
+                      "value": "authorization_code"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Authorization code received from the authorization endpoint (required for authorization_code grant)",
+                        "type": "text/plain"
+                      },
+                      "key": "code",
+                      "value": "placeholder_auth_code_12345"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Redirect URI that must match the one used in authorization request (required for authorization_code grant)",
+                        "type": "text/plain"
+                      },
+                      "key": "redirect_uri",
+                      "value": "https://example.com/auth/callback"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client identifier",
+                        "type": "text/plain"
+                      },
+                      "key": "client_id",
+                      "value": "a1b2c3d4e5f6g7h8i9j0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client secret for authentication",
+                        "type": "text/plain"
+                      },
+                      "key": "client_secret",
+                      "value": "client_secret_abc123"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "PKCE code verifier used to verify the code_challenge from the authorization request.\nRequired for all authorization code flows (PKCE is mandatory).\nMust be 43-128 characters long and contain only [A-Za-z0-9._~-] characters.\nNot used for refresh_token grant.\n",
+                        "type": "text/plain"
+                      },
+                      "key": "code_verifier",
+                      "value": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"access_token\": \"pat_4eea1fdb98106005fea67ed65138df69afa0e6aa\",\n  \"refresh_token\": \"prt_26f4f74b761c83ef0d383bcfc419e114fd554331\",\n  \"expires_in\": 3600,\n  \"token_type\": \"Bearer\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "556804d5-fca2-4169-abf2-ebacd7a8f3cf",
+              "name": "Invalid token exchange request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "oauth2",
+                    "access-token",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth 2.0 grant type - 'authorization_code' to exchange code for tokens, 'refresh_token' to refresh access token",
+                        "type": "text/plain"
+                      },
+                      "key": "grant_type",
+                      "value": "authorization_code"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Authorization code received from the authorization endpoint (required for authorization_code grant)",
+                        "type": "text/plain"
+                      },
+                      "key": "code",
+                      "value": "placeholder_auth_code_12345"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Redirect URI that must match the one used in authorization request (required for authorization_code grant)",
+                        "type": "text/plain"
+                      },
+                      "key": "redirect_uri",
+                      "value": "https://example.com/auth/callback"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client identifier",
+                        "type": "text/plain"
+                      },
+                      "key": "client_id",
+                      "value": "a1b2c3d4e5f6g7h8i9j0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client secret for authentication",
+                        "type": "text/plain"
+                      },
+                      "key": "client_secret",
+                      "value": "client_secret_abc123"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "PKCE code verifier used to verify the code_challenge from the authorization request.\nRequired for all authorization code flows (PKCE is mandatory).\nMust be 43-128 characters long and contain only [A-Za-z0-9._~-] characters.\nNot used for refresh_token grant.\n",
+                        "type": "text/plain"
+                      },
+                      "key": "code_verifier",
+                      "value": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 400,\n  \"error\": \"invalid_grant\",\n  \"message\": \"Depop OAuth2 error\",\n  \"detail\": \"The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client\",\n  \"error_message\": \"Depop OAuth2 error\",\n  \"error_description\": \"The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client\",\n  \"id\": \"550e8400-e29b-41d4-a716-446655440000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e9dae73e-28d8-40dd-a512-9399c0b256c7",
+              "name": "Unauthorized - Client authentication failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "oauth2",
+                    "access-token",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth 2.0 grant type - 'authorization_code' to exchange code for tokens, 'refresh_token' to refresh access token",
+                        "type": "text/plain"
+                      },
+                      "key": "grant_type",
+                      "value": "authorization_code"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Authorization code received from the authorization endpoint (required for authorization_code grant)",
+                        "type": "text/plain"
+                      },
+                      "key": "code",
+                      "value": "placeholder_auth_code_12345"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Redirect URI that must match the one used in authorization request (required for authorization_code grant)",
+                        "type": "text/plain"
+                      },
+                      "key": "redirect_uri",
+                      "value": "https://example.com/auth/callback"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client identifier",
+                        "type": "text/plain"
+                      },
+                      "key": "client_id",
+                      "value": "a1b2c3d4e5f6g7h8i9j0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client secret for authentication",
+                        "type": "text/plain"
+                      },
+                      "key": "client_secret",
+                      "value": "client_secret_abc123"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "PKCE code verifier used to verify the code_challenge from the authorization request.\nRequired for all authorization code flows (PKCE is mandatory).\nMust be 43-128 characters long and contain only [A-Za-z0-9._~-] characters.\nNot used for refresh_token grant.\n",
+                        "type": "text/plain"
+                      },
+                      "key": "code_verifier",
+                      "value": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+                    }
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 401,\n  \"error\": \"client secret does not match\",\n  \"message\": \"Depop OAuth2 error\",\n  \"detail\": \"Depop OAuth2 error\",\n  \"error_message\": \"Depop OAuth2 error\",\n  \"error_description\": \"Depop OAuth2 error\",\n  \"id\": \"43d738a4-a3bf-4c79-bdd0-97a61ecf022a\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://partnerapi-staging.depop.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "c4c517f8-c6e7-4590-a19a-c6ba77138456",
+    "name": "Seller API status Authentication API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Externally facing API to allow enterprise partners to automate listing on Depop.\n\n## OAuth 2.0 Scopes\n\nThis API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:\n\n- **`products_read`** - Required to read product information and listings\n- **`products_write`** - Required to create, update, or delete products\n- **`orders_read`** - Required to read order information and order history\n- **`orders_write`** - Required to mark orders as shipped or process refunds\n- **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)\n- **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)\n- **`shop_read`** - Required to read shop information including seller addresses and available shipping providers\n\nAPI key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.\n\nIf you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.",
+      "type": "text/plain"
+    }
+  }
+}

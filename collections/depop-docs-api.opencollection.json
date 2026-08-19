@@ -1,0 +1,35 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Seller API status Docs API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Docs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the latest version of the OpenAPI specification (this document).",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api-docs/openapi.yaml"
+          },
+          "docs": "This endpoint returns the latest version of the OpenAPI specification for the Depop API.\nYou can use this to generate client libraries or to understand the API better.\nThe OpenAPI specification is in YAML format and can be used with tools like Swagger UI or Postman."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

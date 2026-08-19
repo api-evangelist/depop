@@ -1,0 +1,132 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Seller API status Orders API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/orders/",
+            "params": [
+              {
+                "name": "limit",
+                "value": "20",
+                "type": "query",
+                "description": "The number of orders to return. Default is 20."
+              },
+              {
+                "name": "cursor",
+                "value": "NDM0NjMyOTI5Njg3",
+                "type": "query",
+                "description": "The cursor to start from. This is the ID of the last purchase order ID returned in the previous request."
+              },
+              {
+                "name": "from",
+                "value": "2025-01-01T00:00:00Z",
+                "type": "query",
+                "description": "The start date of the orders to return."
+              },
+              {
+                "name": "to",
+                "value": "2025-01-31T23:59:59Z",
+                "type": "query",
+                "description": "The end date of the orders to return."
+              }
+            ]
+          },
+          "docs": "This endpoint returns all the orders you have received on Depop.\n**Required OAuth Scope:** `orders_read`\n\nIt can return a maximum of 200 orders at a time and can be paginated using the `cursor` parameter by providing the `cursor` found in the `meta` object."
+        },
+        {
+          "info": {
+            "name": "Get order details by purchase ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/api/v1/orders/:purchase_id/",
+            "params": [
+              {
+                "name": "purchase_id",
+                "value": "123456",
+                "type": "path",
+                "description": "The purchase ID of the order."
+              }
+            ]
+          },
+          "docs": "This endpoint allows you to get the details of an order by its purchase ID.\n**Required OAuth Scope:** `orders_read`\n\nThe purchase ID is the unique identifier for the order and is used in other endpoints to reference this particular order."
+        },
+        {
+          "info": {
+            "name": "Mark an order as shipped, providing tracking information.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://partnerapi-staging.depop.com/api/v1/orders/:purchase_id/parcels/:parcel_id/mark-as-shipped/",
+            "params": [
+              {
+                "name": "purchase_id",
+                "value": "123456",
+                "type": "path",
+                "description": "The purchase ID of the order."
+              },
+              {
+                "name": "parcel_id",
+                "value": "6e3538ca-6653-3c25-bf0a-a2be876b17e4",
+                "type": "path",
+                "description": "The parcel ID of the order."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint allows you to mark an order as shipped, providing tracking information.\n**Required OAuth Scope:** `orders_write`\n\nThe order will be marked as shipped and the tracking information will be sent to the buyer."
+        },
+        {
+          "info": {
+            "name": "Refund an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://partnerapi-staging.depop.com/api/v1/orders/:purchase_id/refund/",
+            "params": [
+              {
+                "name": "purchase_id",
+                "value": "123456",
+                "type": "path",
+                "description": "The purchase ID of the order."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint allows you to refund an order and send a message to the buyer.\n**Required OAuth Scope:** `orders_write`\n\nA refund can be a full refund or a partial refund by specifying the amount to refund on items and/or shipping within the order.\n\n**Important note about shipping refunds with Depop shipping:**\n- For orders using **Depop shipping** (where a Depop shipping label was used), shipping can **only be refunded as part of a full refund**. You cannot do a partial refund that includes shipp"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

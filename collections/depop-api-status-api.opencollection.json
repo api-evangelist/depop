@@ -1,0 +1,35 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Seller API status API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "API status",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://partnerapi-staging.depop.com/status"
+          },
+          "docs": "This endpoint can be used to check the availability of the API.\nIf the API is up and running, it will return a 200 status code with the message \"OK\"."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
