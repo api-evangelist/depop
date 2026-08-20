@@ -41,6 +41,16 @@ tags:
 - Company
 - Fashion
 - Marketplace
+- E-Commerce
+- Resale
+- Retail
+- Inventory Management
+- Order
+- Sustainability
+tags_raw:
+- Company
+- Fashion
+- Marketplace
 - E-commerce
 - Resale
 - Retail
@@ -54,6 +64,8 @@ apis:
   humanURL: https://partnerapi.depop.com/api-docs/
   baseURL: https://partnerapi.depop.com
   tags:
+  - API Status
+  tags_raw:
   - API status
   properties:
   - type: OpenAPI
@@ -102,6 +114,8 @@ apis:
   humanURL: https://partnerapi.depop.com/api-docs/
   baseURL: https://partnerapi.depop.com
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
@@ -126,6 +140,8 @@ apis:
   humanURL: https://partnerapi.depop.com/api-docs/
   baseURL: https://partnerapi.depop.com
   tags:
+  - Product
+  tags_raw:
   - Products
   properties:
   - type: OpenAPI
