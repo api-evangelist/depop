@@ -3,6 +3,17 @@ info:
   title: Order fulfillment
   version: 1.0.0
   summary: Read an order, mark a parcel shipped with tracking, optionally refund.
+  x-realizes-capability-ids:
+  - BC-2330.10
+  x-capability-derivation:
+    method: 'deterministic join: sourceDescriptions -> per-tag OpenAPI -> tag/capability edge. No classification at this step.'
+    min_confidence: 0.7
+    sources:
+    - capability_id: BC-2330.10
+      capability_name: Channel Orchestration Management
+      spec: depop-orders-api-openapi.yml
+      confidence: 0.8
+    model: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities, CC BY 4.0
 sourceDescriptions:
 - name: ordersApi
   url: ../openapi/depop-orders-api-openapi.yml
