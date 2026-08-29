@@ -220,6 +220,16 @@ apis:
     url: openapi/depop-shop-management-api-openapi.yml
   - type: AsyncAPI
     url: asyncapi/depop-webhooks-asyncapi.yml
+- aid: depop:depop-seller-api-api
+  name: depop Seller API
+  description: The Seller API API from depop — 0 operation(s) for seller api.
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Seller API
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-seller-api-api-openapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

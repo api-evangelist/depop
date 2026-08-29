@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Seller API status Products - By Slug API
+  title: Seller Products - By Slug API
   version: 1.0.0
   description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
 
@@ -485,7 +485,67 @@ paths:
                     - code: validation-error
                       message: Product vintage-nike-t-shirt-7033001 does not have multiple sizes, a size ID must not be provided
 components:
+  responses:
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
   schemas:
+    ProductCreateOrUpdateResponse:
+      type: object
+      required:
+      - product_id
+      - slug
+      properties:
+        product_id:
+          type: number
+          example: 12345678
+          description: The product id of the created or updated product.
+        slug:
+          type: string
+          example: vintage-nike-t-shirt-12345678
+          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
+        sku:
+          type:
+          - string
+          - 'null'
+          example: ABC-12345-S-BL
+          description: 'The SKU of the product.
+
+            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
+      example:
+        product_id: 12345678
+        slug: vintage-nike-t-shirt-12345678
+        sku: ABC-12345-S-BL
     DepopShippingDetails:
       type: object
       required:
@@ -533,59 +593,37 @@ components:
         shipping_provider_id: USPS
         parcel_size_id: SMALL
         payer: buyer
-    ProductCreateOrUpdateResponse:
+    PatchProductRequest:
       type: object
-      required:
-      - product_id
-      - slug
       properties:
-        product_id:
+        price_amount:
+          type: string
+          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
+          example: '50.99'
+        discount_price:
+          type: string
+          description: 'The discount price of the item.
+
+            Must be less than the price_amount. Up to 2 decimal places.'
+          example: '48.00'
+        auto_send_offer_price:
+          type: string
+          description: 'The price to automatically send to buyers who liked or have bagged the product.
+
+            There''s a fixed 1h delay before an offer is sent.
+
+            If not set, the product will not automatically send offers.
+
+            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
+          example: '45.00'
+        auto_negotiate_offer_price:
+          type: string
+          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
+          example: '45.00'
+        quantity:
           type: number
-          example: 12345678
-          description: The product id of the created or updated product.
-        slug:
-          type: string
-          example: vintage-nike-t-shirt-12345678
-          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
-        sku:
-          type:
-          - string
-          - 'null'
-          example: ABC-12345-S-BL
-          description: 'The SKU of the product.
-
-            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
-      example:
-        product_id: 12345678
-        slug: vintage-nike-t-shirt-12345678
-        sku: ABC-12345-S-BL
-    PublicPicture:
-      type: object
-      required:
-      - url
-      properties:
-        url:
-          type: string
-          description: 'Publicly accessible URL of the picture.
-
-            Non-square images are also supported.
-
-            Currently, we support JPG, WebP and PNG image formats.'
-          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
+          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
+          example: 1
     Address:
       type: object
       required:
@@ -601,6 +639,83 @@ components:
       example:
         country_code: GB
         state: Greater London
+    SubmitOfferRequest:
+      type: object
+      description: Request body for submitting an offer on behalf of a seller to a buyer for a specific product.
+      required:
+      - offer_recipient_id
+      - offer_value
+      - offer_currency
+      properties:
+        offer_recipient_id:
+          type: integer
+          format: int64
+          description: The user ID of the buyer who will receive the offer.
+          example: 456789
+        offer_value:
+          type: number
+          format: double
+          description: The offer amount. Must be at least 5% lower than the product price_amount.
+          example: 25.0
+          minimum: 0.01
+        offer_currency:
+          type: string
+          description: The currency code for the offer (e.g., GBP, USD, EUR). Must match the product's currency.
+          example: GBP
+          maxLength: 3
+        size_id:
+          type: integer
+          format: int32
+          description: 'The size ID for products with multiple sizes.
+
+            - **Not required** for products without sizes or products with a single size - **Required** for products with multiple sizes - Must be a valid size ID that exists for the product'
+          example: 2
+    PublicPicture:
+      type: object
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          description: 'Publicly accessible URL of the picture.
+
+            Non-square images are also supported.
+
+            Currently, we support JPG, WebP and PNG image formats.'
+          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    Picture:
+      type: object
+      required:
+      - url
+      - height
+      - width
+      properties:
+        url:
+          type: string
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
     Product:
       type: object
       properties:
@@ -911,70 +1026,6 @@ components:
       - is_boosted
       - created_at
       - updated_at
-    PatchProductRequest:
-      type: object
-      properties:
-        price_amount:
-          type: string
-          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
-          example: '50.99'
-        discount_price:
-          type: string
-          description: 'The discount price of the item.
-
-            Must be less than the price_amount. Up to 2 decimal places.'
-          example: '48.00'
-        auto_send_offer_price:
-          type: string
-          description: 'The price to automatically send to buyers who liked or have bagged the product.
-
-            There''s a fixed 1h delay before an offer is sent.
-
-            If not set, the product will not automatically send offers.
-
-            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
-          example: '45.00'
-        auto_negotiate_offer_price:
-          type: string
-          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
-          example: '45.00'
-        quantity:
-          type: number
-          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
-          example: 1
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-    Picture:
-      type: object
-      required:
-      - url
-      - height
-      - width
-      properties:
-        url:
-          type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
     ProductPutRequest:
       type: object
       required:
@@ -1288,71 +1339,20 @@ components:
           occasion:
           - casual
         is_boosted: false
-    SubmitOfferRequest:
+    ErrorItem:
       type: object
-      description: Request body for submitting an offer on behalf of a seller to a buyer for a specific product.
       required:
-      - offer_recipient_id
-      - offer_value
-      - offer_currency
+      - code
+      - message
       properties:
-        offer_recipient_id:
-          type: integer
-          format: int64
-          description: The user ID of the buyer who will receive the offer.
-          example: 456789
-        offer_value:
-          type: number
-          format: double
-          description: The offer amount. Must be at least 5% lower than the product price_amount.
-          example: 25.0
-          minimum: 0.01
-        offer_currency:
+        code:
           type: string
-          description: The currency code for the offer (e.g., GBP, USD, EUR). Must match the product's currency.
-          example: GBP
-          maxLength: 3
-        size_id:
-          type: integer
-          format: int32
-          description: 'The size ID for products with multiple sizes.
-
-            - **Not required** for products without sizes or products with a single size - **Required** for products with multiple sizes - Must be a valid size ID that exists for the product'
-          example: 2
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
-    Forbidden:
-      description: Forbidden - Insufficient scope
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: insufficient_scope
-              message: 'Required scope: products_write'
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
   securitySchemes:
     BearerAuth:
       type: http

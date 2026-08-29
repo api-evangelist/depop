@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Seller API status Products - Legacy (Deprecated) API
+  title: Seller Products - Legacy (Deprecated) API
   version: 1.0.0
   description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
 
@@ -431,7 +431,116 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  responses:
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
+    ProductUnprocessableEntity:
+      description: Unprocessable Entity - product validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            tooManyPictures:
+              summary: Too many pictures provided
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: too_many_pictures
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because too many pictures were provided. The maximum is 8 pictures.'
+            invalidBrand:
+              summary: Invalid brand name
+              value:
+                id: b320134g-d2g4-5e95-b3ce-8g29d79664f3
+                errors:
+                - code: invalid_brand
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid brand. Please check the brand configuration.'
+            invalidSize:
+              summary: Invalid size configuration
+              value:
+                id: c431245h-e3h5-6f06-c4df-9h30e80775g4
+                errors:
+                - code: invalid_size
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid size. Please check the size configuration.'
+            invalidDescription:
+              summary: Invalid description (too many hashtags)
+              value:
+                id: d5423561-f416-4a17-b5e0-0141f91886c5
+                errors:
+                - code: invalid_description
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid description. Use a maximum of 5 hashtags and only tag the brand your item belongs to.'
+            invalidCategory:
+              summary: Invalid category (missing department/gender)
+              value:
+                id: e6534670-a5b7-4c28-ae6f-1a52c02997d6
+                errors:
+                - code: invalid_department
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid category. Please ensure a valid department (gender) is provided.'
+            manualShippingNotAllowed:
+              summary: Manual shipping not allowed for user
+              value:
+                id: f7645780-a6b8-4c39-b7e1-2a63c13008d7
+                errors:
+                - code: manual_shipping_not_allowed
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because manual shipping is not allowed for this user.'
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
   schemas:
+    ProductCreateOrUpdateResponse:
+      type: object
+      required:
+      - product_id
+      - slug
+      properties:
+        product_id:
+          type: number
+          example: 12345678
+          description: The product id of the created or updated product.
+        slug:
+          type: string
+          example: vintage-nike-t-shirt-12345678
+          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
+        sku:
+          type:
+          - string
+          - 'null'
+          example: ABC-12345-S-BL
+          description: 'The SKU of the product.
+
+            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
+      example:
+        product_id: 12345678
+        slug: vintage-nike-t-shirt-12345678
+        sku: ABC-12345-S-BL
     DepopShippingDetails:
       type: object
       required:
@@ -479,6 +588,98 @@ components:
         shipping_provider_id: USPS
         parcel_size_id: SMALL
         payer: buyer
+    PatchProductRequest:
+      type: object
+      properties:
+        price_amount:
+          type: string
+          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
+          example: '50.99'
+        discount_price:
+          type: string
+          description: 'The discount price of the item.
+
+            Must be less than the price_amount. Up to 2 decimal places.'
+          example: '48.00'
+        auto_send_offer_price:
+          type: string
+          description: 'The price to automatically send to buyers who liked or have bagged the product.
+
+            There''s a fixed 1h delay before an offer is sent.
+
+            If not set, the product will not automatically send offers.
+
+            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
+          example: '45.00'
+        auto_negotiate_offer_price:
+          type: string
+          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
+          example: '45.00'
+        quantity:
+          type: number
+          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
+          example: 1
+    Address:
+      type: object
+      required:
+      - country_code
+      properties:
+        country_code:
+          type: string
+          example: GB
+        state:
+          type: string
+          description: The state/county of the product's address.
+          example: Greater London
+      example:
+        country_code: GB
+        state: Greater London
+    PublicPicture:
+      type: object
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          description: 'Publicly accessible URL of the picture.
+
+            Non-square images are also supported.
+
+            Currently, we support JPG, WebP and PNG image formats.'
+          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    Picture:
+      type: object
+      required:
+      - url
+      - height
+      - width
+      properties:
+        url:
+          type: string
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
     Product:
       type: object
       properties:
@@ -789,138 +990,6 @@ components:
       - is_boosted
       - created_at
       - updated_at
-    PublicPicture:
-      type: object
-      required:
-      - url
-      properties:
-        url:
-          type: string
-          description: 'Publicly accessible URL of the picture.
-
-            Non-square images are also supported.
-
-            Currently, we support JPG, WebP and PNG image formats.'
-          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
-    Address:
-      type: object
-      required:
-      - country_code
-      properties:
-        country_code:
-          type: string
-          example: GB
-        state:
-          type: string
-          description: The state/county of the product's address.
-          example: Greater London
-      example:
-        country_code: GB
-        state: Greater London
-    ProductCreateOrUpdateResponse:
-      type: object
-      required:
-      - product_id
-      - slug
-      properties:
-        product_id:
-          type: number
-          example: 12345678
-          description: The product id of the created or updated product.
-        slug:
-          type: string
-          example: vintage-nike-t-shirt-12345678
-          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
-        sku:
-          type:
-          - string
-          - 'null'
-          example: ABC-12345-S-BL
-          description: 'The SKU of the product.
-
-            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
-      example:
-        product_id: 12345678
-        slug: vintage-nike-t-shirt-12345678
-        sku: ABC-12345-S-BL
-    PatchProductRequest:
-      type: object
-      properties:
-        price_amount:
-          type: string
-          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
-          example: '50.99'
-        discount_price:
-          type: string
-          description: 'The discount price of the item.
-
-            Must be less than the price_amount. Up to 2 decimal places.'
-          example: '48.00'
-        auto_send_offer_price:
-          type: string
-          description: 'The price to automatically send to buyers who liked or have bagged the product.
-
-            There''s a fixed 1h delay before an offer is sent.
-
-            If not set, the product will not automatically send offers.
-
-            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
-          example: '45.00'
-        auto_negotiate_offer_price:
-          type: string
-          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
-          example: '45.00'
-        quantity:
-          type: number
-          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
-          example: 1
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-    Picture:
-      type: object
-      required:
-      - url
-      - height
-      - width
-      properties:
-        url:
-          type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
     ProductPutRequest:
       type: object
       required:
@@ -1234,89 +1303,20 @@ components:
           occasion:
           - casual
         is_boosted: false
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
-    Forbidden:
-      description: Forbidden - Insufficient scope
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: insufficient_scope
-              message: 'Required scope: products_write'
-    ProductUnprocessableEntity:
-      description: Unprocessable Entity - product validation error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            tooManyPictures:
-              summary: Too many pictures provided
-              value:
-                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-                errors:
-                - code: too_many_pictures
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because too many pictures were provided. The maximum is 8 pictures.'
-            invalidBrand:
-              summary: Invalid brand name
-              value:
-                id: b320134g-d2g4-5e95-b3ce-8g29d79664f3
-                errors:
-                - code: invalid_brand
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid brand. Please check the brand configuration.'
-            invalidSize:
-              summary: Invalid size configuration
-              value:
-                id: c431245h-e3h5-6f06-c4df-9h30e80775g4
-                errors:
-                - code: invalid_size
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid size. Please check the size configuration.'
-            invalidDescription:
-              summary: Invalid description (too many hashtags)
-              value:
-                id: d5423561-f416-4a17-b5e0-0141f91886c5
-                errors:
-                - code: invalid_description
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid description. Use a maximum of 5 hashtags and only tag the brand your item belongs to.'
-            invalidCategory:
-              summary: Invalid category (missing department/gender)
-              value:
-                id: e6534670-a5b7-4c28-ae6f-1a52c02997d6
-                errors:
-                - code: invalid_department
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid category. Please ensure a valid department (gender) is provided.'
-            manualShippingNotAllowed:
-              summary: Manual shipping not allowed for user
-              value:
-                id: f7645780-a6b8-4c39-b7e1-2a63c13008d7
-                errors:
-                - code: manual_shipping_not_allowed
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because manual shipping is not allowed for this user.'
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
   securitySchemes:
     BearerAuth:
       type: http

@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Seller API status Pricing Inspiration API
+  title: Seller Pricing Inspiration API
   version: 1.0.0
   description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
 
@@ -114,6 +114,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
   schemas:
     PricePrediction:
       title: PricePrediction
@@ -137,20 +160,22 @@ components:
           type: string
           description: The lower bound of the predicted price range.
           example: '17.00'
-    ErrorItem:
+    ErrorResponse:
       type: object
-      required:
-      - code
-      - message
       properties:
-        code:
+        id:
           type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
     PricingInspirationResponse:
       title: PricingInspirationResponse
       type: object
@@ -174,70 +199,6 @@ components:
               width: 1280
             sold_price_amount: '50.00'
             sold_price_currency: GBP
-    SimilarSoldItem:
-      title: SimilarSoldItem
-      type: object
-      description: A list of sold items that are similar to the product request.
-      properties:
-        picture:
-          $ref: '#/components/schemas/Picture'
-        sold_price_amount:
-          type: string
-          description: The sale price of the item.
-          example: '50.00'
-        sold_price_currency:
-          type: string
-          description: The currency of the sale price.
-          example: GBP
-        condition:
-          type: string
-          anyOf:
-          - type: string
-            enum:
-            - brand_new
-            - used_like_new
-            - used_excellent
-            - used_good
-            - used_fair
-          example: brand_new
-          description: The condition of the sold item.
-        brand_name:
-          type: string
-          description: The canonical brand name of the product.
-          example: Nike
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-    Picture:
-      type: object
-      required:
-      - url
-      - height
-      - width
-      properties:
-        url:
-          type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
     PricingInspirationRequest:
       title: PricingInspirationRequest
       required:
@@ -378,29 +339,68 @@ components:
               - repaired
           example:
           - vintage
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
+    Picture:
+      type: object
+      required:
+      - url
+      - height
+      - width
+      properties:
+        url:
+          type: string
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
+    SimilarSoldItem:
+      title: SimilarSoldItem
+      type: object
+      description: A list of sold items that are similar to the product request.
+      properties:
+        picture:
+          $ref: '#/components/schemas/Picture'
+        sold_price_amount:
+          type: string
+          description: The sale price of the item.
+          example: '50.00'
+        sold_price_currency:
+          type: string
+          description: The currency of the sale price.
+          example: GBP
+        condition:
+          type: string
+          anyOf:
+          - type: string
+            enum:
+            - brand_new
+            - used_like_new
+            - used_excellent
+            - used_good
+            - used_fair
+          example: brand_new
+          description: The condition of the sold item.
+        brand_name:
+          type: string
+          description: The canonical brand name of the product.
+          example: Nike
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
   securitySchemes:
     BearerAuth:
       type: http

@@ -1,18 +1,7 @@
 {
   "provider": "depop",
   "sources": [
-    "depop-api-status-api-openapi.yml",
-    "depop-authentication-api-openapi.yml",
-    "depop-docs-api-openapi.yml",
-    "depop-insights-api-openapi.yml",
-    "depop-orders-api-openapi.yml",
-    "depop-pricing-inspiration-api-openapi.yml",
-    "depop-products-api-openapi.yml",
-    "depop-products-by-product-id-api-openapi.yml",
-    "depop-products-by-sku-api-openapi.yml",
-    "depop-products-by-slug-api-openapi.yml",
-    "depop-products-legacy-deprecated-api-openapi.yml",
-    "depop-shop-management-api-openapi.yml"
+    "_original/depop-selling-openapi-original.yml"
   ],
   "outputs": [
     "depop-api-status-api-openapi.yml",
@@ -26,11 +15,34 @@
     "depop-products-by-sku-api-openapi.yml",
     "depop-products-by-slug-api-openapi.yml",
     "depop-products-legacy-deprecated-api-openapi.yml",
+    "depop-seller-api-api-openapi.yml",
     "depop-shop-management-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "depop-selling-openapi-original.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "depop-selling-openapi-original.yml: tagged webhooks POST newOrder -> Seller API",
+    "depop-selling-openapi-original.yml: tagged webhooks POST orderRefunded -> Seller API",
+    "depop-selling-openapi-original.yml: tagged webhooks POST productLiked -> Seller API",
+    "depop-selling-openapi-original.yml: tagged webhooks POST productUnliked -> Seller API",
+    "depop-selling-openapi-original.yml: declared missing tag: Docs",
+    "depop-selling-openapi-original.yml: declared missing tag: Seller API"
+  ],
+  "skipped": [
+    "depop-api-status-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-authentication-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-docs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-insights-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-pricing-inspiration-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-products-by-product-id-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-products-by-sku-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-products-by-slug-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-products-legacy-deprecated-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-shop-management-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

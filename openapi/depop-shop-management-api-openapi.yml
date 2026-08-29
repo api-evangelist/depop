@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Seller API status Shop Management API
+  title: Seller Shop Management API
   version: 1.0.0
   description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
 
@@ -221,166 +221,6 @@ paths:
                   message: Address with ID 999999 not found
 components:
   schemas:
-    ShippingParcelSize:
-      type: object
-      required:
-      - id
-      - title
-      - subtitle
-      - cost
-      - courier_service
-      properties:
-        id:
-          type: string
-          description: The unique identifier for the parcel size.
-          example: SMALL
-        title:
-          type: string
-          description: The display title for the parcel size.
-          example: Small parcel
-        subtitle:
-          type: string
-          description: Additional information about the parcel size (e.g., dimensions).
-          example: Up to 35 x 25 x 16cm
-        cost:
-          $ref: '#/components/schemas/ShippingParcelCost'
-        courier_service:
-          type: string
-          description: 'The courier service type for this parcel size.
-
-
-            - `DROP_OFF`: Seller drops off the parcel at a designated location
-
-            - `COURIER_COLLECT`: Courier collects the parcel from the seller
-
-            - `OTHER`: Other courier service types (reserved for future use)
-
-            '
-          enum:
-          - DROP_OFF
-          - COURIER_COLLECT
-          - OTHER
-          example: DROP_OFF
-      example:
-        id: small
-        title: Extra small
-        subtitle: Under 8oz
-        cost:
-          original_amount: '5.99'
-          original_currency: USD
-          amount: '5.00'
-          currency: USD
-        courier_service: DROP_OFF
-    SellerDetails:
-      type: object
-      required:
-      - id
-      - username
-      - country_code
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: The unique identifier for the seller.
-          example: 97082934
-        username:
-          type: string
-          description: The Depop username of the seller.
-          example: good_will_charity
-        country_code:
-          type: string
-          description: The ISO 3166-1 alpha-2 country code of the seller.
-          example: US
-      example:
-        id: 97082934
-        username: good_will_charity
-        country_code: US
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
-    ShippingParcelCost:
-      type: object
-      required:
-      - original_amount
-      - original_currency
-      - amount
-      - currency
-      properties:
-        original_amount:
-          type: string
-          description: The original cost amount before any conversions.
-          example: '3.50'
-        original_currency:
-          type: string
-          description: The original currency code.
-          example: GBP
-        amount:
-          type: string
-          description: The cost amount (may be converted to buyer's currency).
-          example: '3.50'
-        currency:
-          type: string
-          description: The currency code for the amount.
-          example: GBP
-      example:
-        original_amount: '3.50'
-        original_currency: GBP
-        amount: '3.50'
-        currency: GBP
-    ShippingProviderInfo:
-      type: object
-      required:
-      - id
-      - parcel_sizes
-      properties:
-        id:
-          type: string
-          description: The unique identifier for the shipping provider.
-          example: USPS
-        parcel_sizes:
-          type: array
-          description: Available parcel sizes for this shipping provider.
-          items:
-            $ref: '#/components/schemas/ShippingParcelSize'
-      example:
-        id: USPS
-        parcel_sizes:
-        - id: small
-          title: Extra small
-          subtitle: Under 8oz
-          cost:
-            original_amount: '5.99'
-            original_currency: USD
-            amount: '5.00'
-            currency: USD
-          courier_service: DROP_OFF
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
     SellerAddress:
       type: object
       required:
@@ -444,6 +284,166 @@ components:
         postal_code: SW1A 1AA
         country: GB
         last_modified: '2025-01-15T10:30:00Z'
+    ShippingProviderInfo:
+      type: object
+      required:
+      - id
+      - parcel_sizes
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the shipping provider.
+          example: USPS
+        parcel_sizes:
+          type: array
+          description: Available parcel sizes for this shipping provider.
+          items:
+            $ref: '#/components/schemas/ShippingParcelSize'
+      example:
+        id: USPS
+        parcel_sizes:
+        - id: small
+          title: Extra small
+          subtitle: Under 8oz
+          cost:
+            original_amount: '5.99'
+            original_currency: USD
+            amount: '5.00'
+            currency: USD
+          courier_service: DROP_OFF
+    ShippingParcelCost:
+      type: object
+      required:
+      - original_amount
+      - original_currency
+      - amount
+      - currency
+      properties:
+        original_amount:
+          type: string
+          description: The original cost amount before any conversions.
+          example: '3.50'
+        original_currency:
+          type: string
+          description: The original currency code.
+          example: GBP
+        amount:
+          type: string
+          description: The cost amount (may be converted to buyer's currency).
+          example: '3.50'
+        currency:
+          type: string
+          description: The currency code for the amount.
+          example: GBP
+      example:
+        original_amount: '3.50'
+        original_currency: GBP
+        amount: '3.50'
+        currency: GBP
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    SellerDetails:
+      type: object
+      required:
+      - id
+      - username
+      - country_code
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique identifier for the seller.
+          example: 97082934
+        username:
+          type: string
+          description: The Depop username of the seller.
+          example: good_will_charity
+        country_code:
+          type: string
+          description: The ISO 3166-1 alpha-2 country code of the seller.
+          example: US
+      example:
+        id: 97082934
+        username: good_will_charity
+        country_code: US
+    ShippingParcelSize:
+      type: object
+      required:
+      - id
+      - title
+      - subtitle
+      - cost
+      - courier_service
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the parcel size.
+          example: SMALL
+        title:
+          type: string
+          description: The display title for the parcel size.
+          example: Small parcel
+        subtitle:
+          type: string
+          description: Additional information about the parcel size (e.g., dimensions).
+          example: Up to 35 x 25 x 16cm
+        cost:
+          $ref: '#/components/schemas/ShippingParcelCost'
+        courier_service:
+          type: string
+          description: 'The courier service type for this parcel size.
+
+
+            - `DROP_OFF`: Seller drops off the parcel at a designated location
+
+            - `COURIER_COLLECT`: Courier collects the parcel from the seller
+
+            - `OTHER`: Other courier service types (reserved for future use)
+
+            '
+          enum:
+          - DROP_OFF
+          - COURIER_COLLECT
+          - OTHER
+          example: DROP_OFF
+      example:
+        id: small
+        title: Extra small
+        subtitle: Under 8oz
+        cost:
+          original_amount: '5.99'
+          original_currency: USD
+          amount: '5.00'
+          currency: USD
+        courier_service: DROP_OFF
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
   responses:
     Unauthorized:
       description: Unauthorized

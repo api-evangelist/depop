@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Seller API status Orders API
+  title: Seller Orders API
   version: 1.0.0
   description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
 
@@ -274,101 +274,41 @@ paths:
                 - code: validation
                   message: Refund for purchase id 123456 has shipping_refund_amount greater than shipping price.
 components:
+  responses:
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
   schemas:
-    ShippingAddress:
-      required:
-      - city
-      - postal_code
-      - country_code
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the buyer.
-          example: John Doe
-        address:
-          type: string
-          description: The first line of the buyer's address.
-          example: 123 Main St
-        address2:
-          type: string
-          description: The second line of the buyer's address.
-          example: Apt 1
-        city:
-          type: string
-          description: The city of the buyer's address.
-          example: Los Angeles
-        postal_code:
-          type: string
-          description: The postal code of the buyer's address.
-          example: 90022-3049
-        state:
-          type: string
-          description: The state of the buyer's address.
-          example: CA
-        country_code:
-          type: string
-          description: The country code of the buyer's address.
-          example: US
-        phone_number:
-          type: string
-          description: The phone number of the buyer.
-          example: 07123456789
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
-    TotalRefundBreakdown:
-      type: object
-      required:
-      - refunded_to_buyer
-      - refunded_to_seller
-      properties:
-        refunded_to_buyer:
-          allOf:
-          - $ref: '#/components/schemas/RefundedToBuyerRefunds'
-          description: The breakdown of all amounts refunded to the buyer.
-        refunded_to_seller:
-          allOf:
-          - $ref: '#/components/schemas/RefundedToSellerRefunds'
-          description: The breakdown of all amounts refunded to the seller.
-      example:
-        refunded_to_buyer:
-          item_refund_amount: '15.00'
-          shipping_refund_amount: '3.00'
-          depop_fee_refund_amount: '0.50'
-          tax_refund_amount: '2.00'
-        refunded_to_seller:
-          ads_fee_refund_amount: '1.50'
-          payment_fee_refund_amount: '0.80'
-          depop_fee_refund_amount: '0.30'
-          shipping_refund_amount: '4.00'
-    MarkAsShippedRequest:
-      type: object
-      properties:
-        tracking_number:
-          type: string
-          description: 'The tracking number of the shipment.
-
-            If multiple tracking numbers are provided, they should be separated by commas without spaces.'
-          example: GB1234567890GB,GB0987654321GB
-        carrier:
-          type: string
-          description: The carrier of the shipment.
-          example: Royal Mail
-      required:
-      - tracking_number
-      - carrier
     RefundedToBuyerRefunds:
       type: object
       properties:
@@ -398,63 +338,100 @@ components:
         shipping_refund_amount: '3.00'
         depop_fee_refund_amount: '0.50'
         tax_refund_amount: '2.00'
-    OrderLineItem:
+    FeeBreakdown:
       type: object
       required:
-      - purchase_item_id
-      - product_id
-      - slug
-      - parcel_id
-      - description
-      - original_price
-      - sold_price
-      - sold_via_offers
-      - image_url
+      - fee_type
+      - amount
+      - currency
       properties:
-        purchase_item_id:
-          type: number
-          description: Depop's internal purchase line item ID. Useful to be logged and to report any issues back to us.
-          example: 2385551
-        sku:
-          type:
-          - string
-          - 'null'
-          description: SKU of the product. This field is optional and will be null if no SKU was assigned to the product.
-          example: ABC-12345-S-BL
-        product_id:
-          type: number
-          description: Depop's internal product ID.
-          example: 7021251
-        slug:
+        fee_type:
           type: string
-          description: The unique slug identifier for the product on Depop.
-          example: vintage-levis-501-jeans-w32-l34
-        parcel_id:
-          type: string
-          description: 'Depop''s internal parcel ID.
+          description: 'The type of fee charged to the seller:
 
-            Note that multiple line items can share in the same parcel. This is currently true for all buyer orders with multiple items.'
-          example: 6e3538ca-6653-3c25-bf0a-a2be876b17e4
-        description:
+            - `PAYMENT_FEE`: Payment processing fee
+
+            - `DEPOP_FEE`: Depop marketplace fee
+
+            - `BOOSTED_FEE`: Fee for boosted listings (optional)
+
+            - `SHIPPING_FEE`: Depop Shipping label cost when seller pays for shipping. This will be 0.00 when the buyer pays for shipping label.'
+          enum:
+          - PAYMENT_FEE
+          - BOOSTED_FEE
+          - DEPOP_FEE
+          - SHIPPING_FEE
+          example: PAYMENT_FEE
+        amount:
           type: string
-          description: The description of the product.
-          example: 'Product 403d667d-eb4d-49fd-aa10-18a54119d9fb created by the RestAssured automated test framework hashtags #vintage #rare #tee #grunge #y2k'
-        original_price:
-          type: string
-          description: The original price of the product before any discounts or offers.
-          example: '10.00'
-        sold_price:
-          type: string
-          description: How much it sold for, which includes any discounts or negotiated offers.
+          description: The amount of the fee.
           example: '5.00'
-        sold_via_offers:
-          type: boolean
-          description: Whether the item was sold via an offer negotiation with the buyer.
-          example: true
-        image_url:
+        currency:
           type: string
-          description: The URL of the first image of the product.
-          example: https://media-photos-staging.depop.com/r1/67655700/2147971983_93864b20a2ad4b78833cb92c2154810c/P0.jpg
+          description: The currency.
+          example: GBP
+    OrdersPage:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            cursor:
+              type: string
+              example: NDM0NjMyOTI5Njg3
+            has_more:
+              type: boolean
+              example: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+          example:
+          - seller_id: 123456
+            purchase_id: '123456'
+            status: SHIPPING_PENDING
+            currency: GBP
+            buyer_pays_amount: '50.99'
+            seller_receives_amount: '45.99'
+            buyer_shipping_price: '5.00'
+            buyer_tax_amount: '3.24'
+            buyer_address:
+              name: John Doe
+              address: 123 Main St
+              city: London
+              postal_code: EC1V 4PW
+              state: Greater London
+              country_code: GB
+              phone_number: 07123456789
+            line_items:
+            - purchase_item_id: 2385551
+              sku: ABC-12345-S-BL
+              product_id: 7021251
+              slug: vintage-nike-t-shirt-7021251
+              parcel_id: 6e3538ca-6653-3c25-bf0a-a2be876b17e4
+              description: Vintage Nike T-Shirt
+              original_price: '29.99'
+              sold_price: '25.99'
+              sold_via_offers: false
+              image_url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+            seller_fee_breakdown:
+            - fee_type: DEPOP_FEE
+              amount: '3.00'
+              currency: GBP
+            created_at: '2025-01-01T00:00:00Z'
+    DepopShippingResponse:
+      type: object
+      required:
+      - shipping_provider_id
+      properties:
+        shipping_provider_id:
+          type: string
+          description: 'The identifier for the shipping provider used for this order.
+
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+      example:
+        shipping_provider_id: USPS
     Order:
       type: object
       required:
@@ -590,38 +567,63 @@ components:
           format: date-time
           description: The date and time when the order was created.
           example: '2025-01-01T12:00:00Z'
-    FeeBreakdown:
+    OrderLineItem:
       type: object
       required:
-      - fee_type
-      - amount
-      - currency
+      - purchase_item_id
+      - product_id
+      - slug
+      - parcel_id
+      - description
+      - original_price
+      - sold_price
+      - sold_via_offers
+      - image_url
       properties:
-        fee_type:
+        purchase_item_id:
+          type: number
+          description: Depop's internal purchase line item ID. Useful to be logged and to report any issues back to us.
+          example: 2385551
+        sku:
+          type:
+          - string
+          - 'null'
+          description: SKU of the product. This field is optional and will be null if no SKU was assigned to the product.
+          example: ABC-12345-S-BL
+        product_id:
+          type: number
+          description: Depop's internal product ID.
+          example: 7021251
+        slug:
           type: string
-          description: 'The type of fee charged to the seller:
-
-            - `PAYMENT_FEE`: Payment processing fee
-
-            - `DEPOP_FEE`: Depop marketplace fee
-
-            - `BOOSTED_FEE`: Fee for boosted listings (optional)
-
-            - `SHIPPING_FEE`: Depop Shipping label cost when seller pays for shipping. This will be 0.00 when the buyer pays for shipping label.'
-          enum:
-          - PAYMENT_FEE
-          - BOOSTED_FEE
-          - DEPOP_FEE
-          - SHIPPING_FEE
-          example: PAYMENT_FEE
-        amount:
+          description: The unique slug identifier for the product on Depop.
+          example: vintage-levis-501-jeans-w32-l34
+        parcel_id:
           type: string
-          description: The amount of the fee.
+          description: 'Depop''s internal parcel ID.
+
+            Note that multiple line items can share in the same parcel. This is currently true for all buyer orders with multiple items.'
+          example: 6e3538ca-6653-3c25-bf0a-a2be876b17e4
+        description:
+          type: string
+          description: The description of the product.
+          example: 'Product 403d667d-eb4d-49fd-aa10-18a54119d9fb created by the RestAssured automated test framework hashtags #vintage #rare #tee #grunge #y2k'
+        original_price:
+          type: string
+          description: The original price of the product before any discounts or offers.
+          example: '10.00'
+        sold_price:
+          type: string
+          description: How much it sold for, which includes any discounts or negotiated offers.
           example: '5.00'
-        currency:
+        sold_via_offers:
+          type: boolean
+          description: Whether the item was sold via an offer negotiation with the buyer.
+          example: true
+        image_url:
           type: string
-          description: The currency.
-          example: GBP
+          description: The URL of the first image of the product.
+          example: https://media-photos-staging.depop.com/r1/67655700/2147971983_93864b20a2ad4b78833cb92c2154810c/P0.jpg
     ErrorResponse:
       type: object
       properties:
@@ -638,76 +640,31 @@ components:
         errors:
         - code: product_not_found
           message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-    RefundOrderRequest:
+    TotalRefundBreakdown:
       type: object
+      required:
+      - refunded_to_buyer
+      - refunded_to_seller
       properties:
-        send_buyer_message:
-          type: string
-          description: The message to send to the buyer when processing the refund. This is optional but recommended.
-          example: Sorry for the inconvenience, we have processed your refund.
-        items_refund_amount:
-          type: string
-          description: The amount to refund on the items in the order. Must be less than or equal to the total amount paid by the buyer.
-          example: '50.99'
-        shipping_refund_amount:
-          type: string
-          description: 'The amount to refund on the shipping in the order. Must be less than or equal to the shipping price (buyer or seller paid).
-
-
-            **Important:** For orders with Depop shipping (where `depop_shipping` is present), shipping can only be refunded as part of a full refund. Partial refunds cannot include shipping for these orders.
-
-
-            For orders with manual shipping, shipping can be refunded with either full or partial refunds.'
-          example: '4.99'
-    OrdersPage:
-      type: object
-      properties:
-        meta:
-          type: object
-          properties:
-            cursor:
-              type: string
-              example: NDM0NjMyOTI5Njg3
-            has_more:
-              type: boolean
-              example: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Order'
-          example:
-          - seller_id: 123456
-            purchase_id: '123456'
-            status: SHIPPING_PENDING
-            currency: GBP
-            buyer_pays_amount: '50.99'
-            seller_receives_amount: '45.99'
-            buyer_shipping_price: '5.00'
-            buyer_tax_amount: '3.24'
-            buyer_address:
-              name: John Doe
-              address: 123 Main St
-              city: London
-              postal_code: EC1V 4PW
-              state: Greater London
-              country_code: GB
-              phone_number: 07123456789
-            line_items:
-            - purchase_item_id: 2385551
-              sku: ABC-12345-S-BL
-              product_id: 7021251
-              slug: vintage-nike-t-shirt-7021251
-              parcel_id: 6e3538ca-6653-3c25-bf0a-a2be876b17e4
-              description: Vintage Nike T-Shirt
-              original_price: '29.99'
-              sold_price: '25.99'
-              sold_via_offers: false
-              image_url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-            seller_fee_breakdown:
-            - fee_type: DEPOP_FEE
-              amount: '3.00'
-              currency: GBP
-            created_at: '2025-01-01T00:00:00Z'
+        refunded_to_buyer:
+          allOf:
+          - $ref: '#/components/schemas/RefundedToBuyerRefunds'
+          description: The breakdown of all amounts refunded to the buyer.
+        refunded_to_seller:
+          allOf:
+          - $ref: '#/components/schemas/RefundedToSellerRefunds'
+          description: The breakdown of all amounts refunded to the seller.
+      example:
+        refunded_to_buyer:
+          item_refund_amount: '15.00'
+          shipping_refund_amount: '3.00'
+          depop_fee_refund_amount: '0.50'
+          tax_refund_amount: '2.00'
+        refunded_to_seller:
+          ads_fee_refund_amount: '1.50'
+          payment_fee_refund_amount: '0.80'
+          depop_fee_refund_amount: '0.30'
+          shipping_refund_amount: '4.00'
     RefundedToSellerRefunds:
       type: object
       properties:
@@ -737,53 +694,96 @@ components:
         payment_fee_refund_amount: '0.80'
         depop_fee_refund_amount: '0.30'
         shipping_refund_amount: '4.00'
-    DepopShippingResponse:
+    ShippingAddress:
+      required:
+      - city
+      - postal_code
+      - country_code
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the buyer.
+          example: John Doe
+        address:
+          type: string
+          description: The first line of the buyer's address.
+          example: 123 Main St
+        address2:
+          type: string
+          description: The second line of the buyer's address.
+          example: Apt 1
+        city:
+          type: string
+          description: The city of the buyer's address.
+          example: Los Angeles
+        postal_code:
+          type: string
+          description: The postal code of the buyer's address.
+          example: 90022-3049
+        state:
+          type: string
+          description: The state of the buyer's address.
+          example: CA
+        country_code:
+          type: string
+          description: The country code of the buyer's address.
+          example: US
+        phone_number:
+          type: string
+          description: The phone number of the buyer.
+          example: 07123456789
+    RefundOrderRequest:
+      type: object
+      properties:
+        send_buyer_message:
+          type: string
+          description: The message to send to the buyer when processing the refund. This is optional but recommended.
+          example: Sorry for the inconvenience, we have processed your refund.
+        items_refund_amount:
+          type: string
+          description: The amount to refund on the items in the order. Must be less than or equal to the total amount paid by the buyer.
+          example: '50.99'
+        shipping_refund_amount:
+          type: string
+          description: 'The amount to refund on the shipping in the order. Must be less than or equal to the shipping price (buyer or seller paid).
+
+
+            **Important:** For orders with Depop shipping (where `depop_shipping` is present), shipping can only be refunded as part of a full refund. Partial refunds cannot include shipping for these orders.
+
+
+            For orders with manual shipping, shipping can be refunded with either full or partial refunds.'
+          example: '4.99'
+    MarkAsShippedRequest:
+      type: object
+      properties:
+        tracking_number:
+          type: string
+          description: 'The tracking number of the shipment.
+
+            If multiple tracking numbers are provided, they should be separated by commas without spaces.'
+          example: GB1234567890GB,GB0987654321GB
+        carrier:
+          type: string
+          description: The carrier of the shipment.
+          example: Royal Mail
+      required:
+      - tracking_number
+      - carrier
+    ErrorItem:
       type: object
       required:
-      - shipping_provider_id
+      - code
+      - message
       properties:
-        shipping_provider_id:
+        code:
           type: string
-          description: 'The identifier for the shipping provider used for this order.
-
-            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
-          example: USPS
-      example:
-        shipping_provider_id: USPS
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
-    Forbidden:
-      description: Forbidden - Insufficient scope
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: insufficient_scope
-              message: 'Required scope: products_write'
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
   securitySchemes:
     BearerAuth:
       type: http
