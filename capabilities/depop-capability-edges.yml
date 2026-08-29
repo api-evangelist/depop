@@ -1,0 +1,74 @@
+slug: depop
+provider: depop
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Retail & Consumer Goods
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 6
+edges:
+- tag: Orders
+  spec_file: depop-orders-api-openapi.yml
+  capability_id: BC-2330.10
+  capability_id_l1: BC-2330
+  capability_name: Channel Orchestration Management
+  confidence: 0.8
+  evidence: getAllOrders  Get all orders; markOrderAsShipped  Mark an order as shipped, providing tracking
+    information.; refundOrder  Refund an order
+  reason: Marketplace seller order retrieval, shipment marking and refunds — consumer order capture and
+    status across a digital marketplace channel. Could also read as marketplace seller operations (BC-2330.40);
+    channel orchestration chosen as the order-status home.
+- tag: Products
+  spec_file: depop-products-api-openapi.yml
+  capability_id: BC-2370.30
+  capability_id_l1: BC-2370
+  capability_name: Channel Syndication Management
+  confidence: 0.75
+  evidence: createProduct  Create a new product; getAllProducts  Get all products; schemas ProductCreateRequest,
+    PublicPicture, DepopShippingDetails
+  reason: Creating and listing products on the Depop marketplace is publication of product content/listings
+    to a sales channel. Item-master (BC-2370.10) is a plausible alternative reading, hence moderate confidence.
+- tag: Pricing Inspiration
+  spec_file: depop-pricing-inspiration-api-openapi.yml
+  capability_id: BC-440.10
+  capability_id_l1: BC-440
+  capability_name: Pricing Strategy Management
+  confidence: 0.7
+  evidence: getPricingInspiration  Get pricing inspiration when given product listing details; schemas
+    PricePrediction, SimilarSoldItem
+  reason: Recommends a listing price based on comparable sold items — price setting support for the seller.
+    Maps to pricing strategy/price setting; sub-capability choice carries some ambiguity.
+- tag: Products - By Product ID
+  spec_file: depop-products-by-product-id-api-openapi.yml
+  capability_id: BC-2370.30
+  capability_id_l1: BC-2370
+  capability_name: Channel Syndication Management
+  confidence: 0.7
+  evidence: updateProductById  Update an existing product by product ID; markProductAsSoldById  Mark a
+    product as sold by product ID; submitOfferByProductId  Submit an offer for a product
+  reason: Listing lifecycle management on a marketplace channel (create/update/delete/mark-sold), i.e.
+    channel listing syndication. Offer submission slightly broadens the surface, so confidence is moderate.
+- tag: Products - By SKU
+  spec_file: depop-products-by-sku-api-openapi.yml
+  capability_id: BC-2370.30
+  capability_id_l1: BC-2370
+  capability_name: Channel Syndication Management
+  confidence: 0.7
+  evidence: createOrUpdateProduct  Create or update a listing on Depop
+  reason: Same listing-management surface keyed by SKU — publication and maintenance of product listings
+    on the marketplace channel.
+- tag: Products - By Slug
+  spec_file: depop-products-by-slug-api-openapi.yml
+  capability_id: BC-2370.30
+  capability_id_l1: BC-2370
+  capability_name: Channel Syndication Management
+  confidence: 0.7
+  evidence: updateProductBySlug  Update an existing product by slug; deleteProductBySlug  Delete a product
+    by slug
+  reason: Identical listing lifecycle operations addressed by slug; channel listing management.

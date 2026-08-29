@@ -236,6 +236,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/depop-capability-edges.yml
+  name: depop Business Capability Map
 - type: Overlay
   url: overlays/depop-selling-overlay.yaml
 # --- Identity / link properties ---
