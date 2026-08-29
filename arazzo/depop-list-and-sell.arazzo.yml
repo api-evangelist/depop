@@ -4,44 +4,44 @@ info:
   version: 1.0.0
   summary: Create/update a Depop listing by SKU, verify it, then mark it as sold.
 sourceDescriptions:
-  - name: depop
-    url: ../openapi/depop-selling-openapi-original.yml
-    type: openapi
+- name: productsBySkuApi
+  url: ../openapi/depop-products-by-sku-api-openapi.yml
+  type: openapi
 workflows:
-  - workflowId: listAndSell
-    summary: Create or update a listing, read it back, and mark it sold.
-    inputs:
-      type: object
-      properties:
-        sku:
-          type: string
-        product:
-          type: object
-      required: [sku]
-    steps:
-      - stepId: createOrUpdate
-        operationId: createOrUpdateProduct
-        parameters:
-          - name: sku
-            in: path
-            value: $inputs.sku
-        requestBody:
-          payload: $inputs.product
-        successCriteria:
-          - condition: $statusCode == 200
-      - stepId: verify
-        operationId: getProductBySku
-        parameters:
-          - name: sku
-            in: path
-            value: $inputs.sku
-        successCriteria:
-          - condition: $statusCode == 200
-      - stepId: markSold
-        operationId: markProductAsSold
-        parameters:
-          - name: sku
-            in: path
-            value: $inputs.sku
-        successCriteria:
-          - condition: $statusCode == 200
+- workflowId: listAndSell
+  summary: Create or update a listing, read it back, and mark it sold.
+  inputs:
+    type: object
+    properties:
+      sku:
+        type: string
+      product:
+        type: object
+    required: [sku]
+  steps:
+  - stepId: createOrUpdate
+    operationId: createOrUpdateProduct
+    parameters:
+    - name: sku
+      in: path
+      value: $inputs.sku
+    requestBody:
+      payload: $inputs.product
+    successCriteria:
+    - condition: $statusCode == 200
+  - stepId: verify
+    operationId: getProductBySku
+    parameters:
+    - name: sku
+      in: path
+      value: $inputs.sku
+    successCriteria:
+    - condition: $statusCode == 200
+  - stepId: markSold
+    operationId: markProductAsSold
+    parameters:
+    - name: sku
+      in: path
+      value: $inputs.sku
+    successCriteria:
+    - condition: $statusCode == 200

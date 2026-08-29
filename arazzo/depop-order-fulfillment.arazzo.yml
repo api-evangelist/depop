@@ -4,41 +4,41 @@ info:
   version: 1.0.0
   summary: Read an order, mark a parcel shipped with tracking, optionally refund.
 sourceDescriptions:
-  - name: depop
-    url: ../openapi/depop-selling-openapi-original.yml
-    type: openapi
+- name: ordersApi
+  url: ../openapi/depop-orders-api-openapi.yml
+  type: openapi
 workflows:
-  - workflowId: fulfillOrder
-    summary: Fetch an order, mark its parcel shipped, and optionally refund it.
-    inputs:
-      type: object
-      properties:
-        purchase_id:
-          type: string
-        parcel_id:
-          type: string
-        tracking:
-          type: object
-      required: [purchase_id, parcel_id]
-    steps:
-      - stepId: getOrder
-        operationId: getOrderByPurchaseId
-        parameters:
-          - name: purchase_id
-            in: path
-            value: $inputs.purchase_id
-        successCriteria:
-          - condition: $statusCode == 200
-      - stepId: markShipped
-        operationId: markOrderAsShipped
-        parameters:
-          - name: purchase_id
-            in: path
-            value: $inputs.purchase_id
-          - name: parcel_id
-            in: path
-            value: $inputs.parcel_id
-        requestBody:
-          payload: $inputs.tracking
-        successCriteria:
-          - condition: $statusCode == 200
+- workflowId: fulfillOrder
+  summary: Fetch an order, mark its parcel shipped, and optionally refund it.
+  inputs:
+    type: object
+    properties:
+      purchase_id:
+        type: string
+      parcel_id:
+        type: string
+      tracking:
+        type: object
+    required: [purchase_id, parcel_id]
+  steps:
+  - stepId: getOrder
+    operationId: getOrderByPurchaseId
+    parameters:
+    - name: purchase_id
+      in: path
+      value: $inputs.purchase_id
+    successCriteria:
+    - condition: $statusCode == 200
+  - stepId: markShipped
+    operationId: markOrderAsShipped
+    parameters:
+    - name: purchase_id
+      in: path
+      value: $inputs.purchase_id
+    - name: parcel_id
+      in: path
+      value: $inputs.parcel_id
+    requestBody:
+      payload: $inputs.tracking
+    successCriteria:
+    - condition: $statusCode == 200
