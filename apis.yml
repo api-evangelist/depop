@@ -76,7 +76,7 @@ apis:
   humanURL: https://partnerapi.depop.com/api-docs/
   baseURL: https://partnerapi.depop.com
   tags:
-  - API status
+  - API Status
   tags_raw:
   - API status
   properties:
