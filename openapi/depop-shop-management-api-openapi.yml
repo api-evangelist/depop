@@ -2,34 +2,7 @@ openapi: 3.2.0
 info:
   title: Seller Shop Management API
   version: 1.0.0
-  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
-
-
-    ## OAuth 2.0 Scopes
-
-
-    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
-
-
-    - **`products_read`** - Required to read product information and listings
-
-    - **`products_write`** - Required to create, update, or delete products
-
-    - **`orders_read`** - Required to read order information and order history
-
-    - **`orders_write`** - Required to mark orders as shipped or process refunds
-
-    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
-
-    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
-
-    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
-
-
-    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
-
-
-    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+  description: Externally facing API to allow enterprise partners to automate listing on Depop.
 servers:
 - url: https://partnerapi-staging.depop.com
 - url: https://partnerapi.depop.com
@@ -284,102 +257,6 @@ components:
         postal_code: SW1A 1AA
         country: GB
         last_modified: '2025-01-15T10:30:00Z'
-    ShippingProviderInfo:
-      type: object
-      required:
-      - id
-      - parcel_sizes
-      properties:
-        id:
-          type: string
-          description: The unique identifier for the shipping provider.
-          example: USPS
-        parcel_sizes:
-          type: array
-          description: Available parcel sizes for this shipping provider.
-          items:
-            $ref: '#/components/schemas/ShippingParcelSize'
-      example:
-        id: USPS
-        parcel_sizes:
-        - id: small
-          title: Extra small
-          subtitle: Under 8oz
-          cost:
-            original_amount: '5.99'
-            original_currency: USD
-            amount: '5.00'
-            currency: USD
-          courier_service: DROP_OFF
-    ShippingParcelCost:
-      type: object
-      required:
-      - original_amount
-      - original_currency
-      - amount
-      - currency
-      properties:
-        original_amount:
-          type: string
-          description: The original cost amount before any conversions.
-          example: '3.50'
-        original_currency:
-          type: string
-          description: The original currency code.
-          example: GBP
-        amount:
-          type: string
-          description: The cost amount (may be converted to buyer's currency).
-          example: '3.50'
-        currency:
-          type: string
-          description: The currency code for the amount.
-          example: GBP
-      example:
-        original_amount: '3.50'
-        original_currency: GBP
-        amount: '3.50'
-        currency: GBP
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-    SellerDetails:
-      type: object
-      required:
-      - id
-      - username
-      - country_code
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: The unique identifier for the seller.
-          example: 97082934
-        username:
-          type: string
-          description: The Depop username of the seller.
-          example: good_will_charity
-        country_code:
-          type: string
-          description: The ISO 3166-1 alpha-2 country code of the seller.
-          example: US
-      example:
-        id: 97082934
-        username: good_will_charity
-        country_code: US
     ShippingParcelSize:
       type: object
       required:
@@ -430,6 +307,62 @@ components:
           amount: '5.00'
           currency: USD
         courier_service: DROP_OFF
+    ShippingParcelCost:
+      type: object
+      required:
+      - original_amount
+      - original_currency
+      - amount
+      - currency
+      properties:
+        original_amount:
+          type: string
+          description: The original cost amount before any conversions.
+          example: '3.50'
+        original_currency:
+          type: string
+          description: The original currency code.
+          example: GBP
+        amount:
+          type: string
+          description: The cost amount (may be converted to buyer's currency).
+          example: '3.50'
+        currency:
+          type: string
+          description: The currency code for the amount.
+          example: GBP
+      example:
+        original_amount: '3.50'
+        original_currency: GBP
+        amount: '3.50'
+        currency: GBP
+    ShippingProviderInfo:
+      type: object
+      required:
+      - id
+      - parcel_sizes
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the shipping provider.
+          example: USPS
+        parcel_sizes:
+          type: array
+          description: Available parcel sizes for this shipping provider.
+          items:
+            $ref: '#/components/schemas/ShippingParcelSize'
+      example:
+        id: USPS
+        parcel_sizes:
+        - id: small
+          title: Extra small
+          subtitle: Under 8oz
+          cost:
+            original_amount: '5.99'
+            original_currency: USD
+            amount: '5.00'
+            currency: USD
+          courier_service: DROP_OFF
     ErrorItem:
       type: object
       required:
@@ -444,6 +377,46 @@ components:
           type: string
           example: Missing mandatory field
           description: The error message.
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    SellerDetails:
+      type: object
+      required:
+      - id
+      - username
+      - country_code
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The unique identifier for the seller.
+          example: 97082934
+        username:
+          type: string
+          description: The Depop username of the seller.
+          example: good_will_charity
+        country_code:
+          type: string
+          description: The ISO 3166-1 alpha-2 country code of the seller.
+          example: US
+      example:
+        id: 97082934
+        username: good_will_charity
+        country_code: US
   responses:
     Unauthorized:
       description: Unauthorized

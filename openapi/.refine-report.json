@@ -29,7 +29,8 @@
     "depop-selling-openapi-original.yml: tagged webhooks POST productLiked -> Seller API",
     "depop-selling-openapi-original.yml: tagged webhooks POST productUnliked -> Seller API",
     "depop-selling-openapi-original.yml: declared missing tag: Docs",
-    "depop-selling-openapi-original.yml: declared missing tag: Seller API"
+    "depop-selling-openapi-original.yml: declared missing tag: Seller API",
+    "apis.yml register: already-registered"
   ],
   "skipped": [
     "depop-api-status-api-openapi.yml: previously refined output, superseded by openapi/_original/",
@@ -43,6 +44,7 @@
     "depop-products-by-sku-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "depop-products-by-slug-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "depop-products-legacy-deprecated-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "depop-seller-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "depop-shop-management-api-openapi.yml: previously refined output, superseded by openapi/_original/"
   ]
 }

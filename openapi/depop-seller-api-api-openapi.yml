@@ -2,34 +2,7 @@ openapi: 3.2.0
 info:
   title: Seller API
   version: 1.0.0
-  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
-
-
-    ## OAuth 2.0 Scopes
-
-
-    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
-
-
-    - **`products_read`** - Required to read product information and listings
-
-    - **`products_write`** - Required to create, update, or delete products
-
-    - **`orders_read`** - Required to read order information and order history
-
-    - **`orders_write`** - Required to mark orders as shipped or process refunds
-
-    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
-
-    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
-
-    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
-
-
-    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
-
-
-    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+  description: Externally facing API to allow enterprise partners to automate listing on Depop.
 servers:
 - url: https://partnerapi-staging.depop.com
 - url: https://partnerapi.depop.com
@@ -175,173 +148,6 @@ webhooks:
       - Seller API
 components:
   schemas:
-    WebhookShippingAddress:
-      required:
-      - city
-      - postal_code
-      - country
-      type: object
-      description: 'The buyer''s shipping address as delivered in order webhook payloads.
-
-        Note: unlike the Orders endpoint''s address, the country is delivered in the `country` field (not `country_code`).'
-      properties:
-        name:
-          type: string
-          description: The name of the buyer.
-          example: John Doe
-        address:
-          type: string
-          description: The first line of the buyer's address.
-          example: 123 Main St
-        address2:
-          type: string
-          description: The second line of the buyer's address.
-          example: Apt 1
-        city:
-          type: string
-          description: The city of the buyer's address.
-          example: London
-        postal_code:
-          type: string
-          description: The postal code of the buyer's address.
-          example: EC1V 4PW
-        state:
-          type: string
-          description: The state of the buyer's address.
-          example: Greater London
-        country:
-          type: string
-          description: The country code of the buyer's address.
-          example: GB
-        phone_number:
-          type: string
-          description: The phone number of the buyer.
-          example: 07123456789
-    DepopShippingResponse:
-      type: object
-      required:
-      - shipping_provider_id
-      properties:
-        shipping_provider_id:
-          type: string
-          description: 'The identifier for the shipping provider used for this order.
-
-            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
-          example: USPS
-      example:
-        shipping_provider_id: USPS
-    OrderLineItem:
-      type: object
-      required:
-      - purchase_item_id
-      - product_id
-      - slug
-      - parcel_id
-      - description
-      - original_price
-      - sold_price
-      - sold_via_offers
-      - image_url
-      properties:
-        purchase_item_id:
-          type: number
-          description: Depop's internal purchase line item ID. Useful to be logged and to report any issues back to us.
-          example: 2385551
-        sku:
-          type:
-          - string
-          - 'null'
-          description: SKU of the product. This field is optional and will be null if no SKU was assigned to the product.
-          example: ABC-12345-S-BL
-        product_id:
-          type: number
-          description: Depop's internal product ID.
-          example: 7021251
-        slug:
-          type: string
-          description: The unique slug identifier for the product on Depop.
-          example: vintage-levis-501-jeans-w32-l34
-        parcel_id:
-          type: string
-          description: 'Depop''s internal parcel ID.
-
-            Note that multiple line items can share in the same parcel. This is currently true for all buyer orders with multiple items.'
-          example: 6e3538ca-6653-3c25-bf0a-a2be876b17e4
-        description:
-          type: string
-          description: The description of the product.
-          example: 'Product 403d667d-eb4d-49fd-aa10-18a54119d9fb created by the RestAssured automated test framework hashtags #vintage #rare #tee #grunge #y2k'
-        original_price:
-          type: string
-          description: The original price of the product before any discounts or offers.
-          example: '10.00'
-        sold_price:
-          type: string
-          description: How much it sold for, which includes any discounts or negotiated offers.
-          example: '5.00'
-        sold_via_offers:
-          type: boolean
-          description: Whether the item was sold via an offer negotiation with the buyer.
-          example: true
-        image_url:
-          type: string
-          description: The URL of the first image of the product.
-          example: https://media-photos-staging.depop.com/r1/67655700/2147971983_93864b20a2ad4b78833cb92c2154810c/P0.jpg
-    ProductLike:
-      type: object
-      required:
-      - seller_id
-      - product_id
-      - slug
-      - liker_id
-      properties:
-        seller_id:
-          type: number
-          description: The Depop user ID of the product seller.
-          example: 123456
-        product_id:
-          type: number
-          description: The unique identifier of the product.
-          example: 7021251
-        sku:
-          type: string
-          description: The SKU of the product.
-          example: ABC-12345-S-BL
-        slug:
-          type: string
-          description: The URL-friendly identifier for the product on Depop.
-          example: vintage-nike-t-shirt-7021251
-        liker_id:
-          type: number
-          description: The Depop user ID of the user who liked or unliked the product.
-          example: 789012
-    Webhook:
-      type: object
-      required:
-      - id
-      - event_type
-      - created_at
-      - data
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the webhook.
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        event_type:
-          type: string
-          description: The type of event that triggered the webhook.
-          example: v1:order.new
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time the webhook was created.
-          example: '2025-01-01T00:00:00Z'
-        data:
-          description: The data of the webhook.
-          oneOf:
-          - $ref: '#/components/schemas/OrderWebhook'
-          - $ref: '#/components/schemas/RefundedOrder'
-          - $ref: '#/components/schemas/ProductLike'
     OrderWebhook:
       type: object
       required:
@@ -421,6 +227,76 @@ components:
             This field will only be present if the product was listed with Depop managed shipping.'
           example:
             shipping_provider_id: USPS
+    ProductLike:
+      type: object
+      required:
+      - seller_id
+      - product_id
+      - slug
+      - liker_id
+      properties:
+        seller_id:
+          type: number
+          description: The Depop user ID of the product seller.
+          example: 123456
+        product_id:
+          type: number
+          description: The unique identifier of the product.
+          example: 7021251
+        sku:
+          type: string
+          description: The SKU of the product.
+          example: ABC-12345-S-BL
+        slug:
+          type: string
+          description: The URL-friendly identifier for the product on Depop.
+          example: vintage-nike-t-shirt-7021251
+        liker_id:
+          type: number
+          description: The Depop user ID of the user who liked or unliked the product.
+          example: 789012
+    WebhookShippingAddress:
+      required:
+      - city
+      - postal_code
+      - country
+      type: object
+      description: 'The buyer''s shipping address as delivered in order webhook payloads.
+
+        Note: unlike the Orders endpoint''s address, the country is delivered in the `country` field (not `country_code`).'
+      properties:
+        name:
+          type: string
+          description: The name of the buyer.
+          example: John Doe
+        address:
+          type: string
+          description: The first line of the buyer's address.
+          example: 123 Main St
+        address2:
+          type: string
+          description: The second line of the buyer's address.
+          example: Apt 1
+        city:
+          type: string
+          description: The city of the buyer's address.
+          example: London
+        postal_code:
+          type: string
+          description: The postal code of the buyer's address.
+          example: EC1V 4PW
+        state:
+          type: string
+          description: The state of the buyer's address.
+          example: Greater London
+        country:
+          type: string
+          description: The country code of the buyer's address.
+          example: GB
+        phone_number:
+          type: string
+          description: The phone number of the buyer.
+          example: 07123456789
     RefundedOrder:
       type: object
       required:
@@ -442,6 +318,103 @@ components:
           - PARTNER
           - DEPOP
           example: PARTNER
+    Webhook:
+      type: object
+      required:
+      - id
+      - event_type
+      - created_at
+      - data
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the webhook.
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        event_type:
+          type: string
+          description: The type of event that triggered the webhook.
+          example: v1:order.new
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the webhook was created.
+          example: '2025-01-01T00:00:00Z'
+        data:
+          description: The data of the webhook.
+          oneOf:
+          - $ref: '#/components/schemas/OrderWebhook'
+          - $ref: '#/components/schemas/RefundedOrder'
+          - $ref: '#/components/schemas/ProductLike'
+    DepopShippingResponse:
+      type: object
+      required:
+      - shipping_provider_id
+      properties:
+        shipping_provider_id:
+          type: string
+          description: 'The identifier for the shipping provider used for this order.
+
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+      example:
+        shipping_provider_id: USPS
+    OrderLineItem:
+      type: object
+      required:
+      - purchase_item_id
+      - product_id
+      - slug
+      - parcel_id
+      - description
+      - original_price
+      - sold_price
+      - sold_via_offers
+      - image_url
+      properties:
+        purchase_item_id:
+          type: number
+          description: Depop's internal purchase line item ID. Useful to be logged and to report any issues back to us.
+          example: 2385551
+        sku:
+          type:
+          - string
+          - 'null'
+          description: SKU of the product. This field is optional and will be null if no SKU was assigned to the product.
+          example: ABC-12345-S-BL
+        product_id:
+          type: number
+          description: Depop's internal product ID.
+          example: 7021251
+        slug:
+          type: string
+          description: The unique slug identifier for the product on Depop.
+          example: vintage-levis-501-jeans-w32-l34
+        parcel_id:
+          type: string
+          description: 'Depop''s internal parcel ID.
+
+            Note that multiple line items can share in the same parcel. This is currently true for all buyer orders with multiple items.'
+          example: 6e3538ca-6653-3c25-bf0a-a2be876b17e4
+        description:
+          type: string
+          description: The description of the product.
+          example: 'Product 403d667d-eb4d-49fd-aa10-18a54119d9fb created by the RestAssured automated test framework hashtags #vintage #rare #tee #grunge #y2k'
+        original_price:
+          type: string
+          description: The original price of the product before any discounts or offers.
+          example: '10.00'
+        sold_price:
+          type: string
+          description: How much it sold for, which includes any discounts or negotiated offers.
+          example: '5.00'
+        sold_via_offers:
+          type: boolean
+          description: Whether the item was sold via an offer negotiation with the buyer.
+          example: true
+        image_url:
+          type: string
+          description: The URL of the first image of the product.
+          example: https://media-photos-staging.depop.com/r1/67655700/2147971983_93864b20a2ad4b78833cb92c2154810c/P0.jpg
   securitySchemes:
     BearerAuth:
       type: http

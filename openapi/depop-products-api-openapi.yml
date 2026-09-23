@@ -2,34 +2,7 @@ openapi: 3.2.0
 info:
   title: Seller Products API
   version: 1.0.0
-  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
-
-
-    ## OAuth 2.0 Scopes
-
-
-    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
-
-
-    - **`products_read`** - Required to read product information and listings
-
-    - **`products_write`** - Required to create, update, or delete products
-
-    - **`orders_read`** - Required to read order information and order history
-
-    - **`orders_write`** - Required to mark orders as shipped or process refunds
-
-    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
-
-    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
-
-    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
-
-
-    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
-
-
-    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+  description: Externally facing API to allow enterprise partners to automate listing on Depop.
 servers:
 - url: https://partnerapi-staging.depop.com
 - url: https://partnerapi.depop.com
@@ -214,17 +187,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
 components:
   responses:
-    Forbidden:
-      description: Forbidden - Insufficient scope
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: insufficient_scope
-              message: 'Required scope: products_write'
     ProductUnprocessableEntity:
       description: Unprocessable Entity - product validation error
       content:
@@ -296,33 +258,18 @@ components:
             errors:
             - code: unauthorized
               message: invalid api key
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
   schemas:
-    ProductCreateOrUpdateResponse:
-      type: object
-      required:
-      - product_id
-      - slug
-      properties:
-        product_id:
-          type: number
-          example: 12345678
-          description: The product id of the created or updated product.
-        slug:
-          type: string
-          example: vintage-nike-t-shirt-12345678
-          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
-        sku:
-          type:
-          - string
-          - 'null'
-          example: ABC-12345-S-BL
-          description: 'The SKU of the product.
-
-            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
-      example:
-        product_id: 12345678
-        slug: vintage-nike-t-shirt-12345678
-        sku: ABC-12345-S-BL
     DepopShippingDetails:
       type: object
       required:
@@ -370,50 +317,6 @@ components:
         shipping_provider_id: USPS
         parcel_size_id: SMALL
         payer: buyer
-    Address:
-      type: object
-      required:
-      - country_code
-      properties:
-        country_code:
-          type: string
-          example: GB
-        state:
-          type: string
-          description: The state/county of the product's address.
-          example: Greater London
-      example:
-        country_code: GB
-        state: Greater London
-    PublicPicture:
-      type: object
-      required:
-      - url
-      properties:
-        url:
-          type: string
-          description: 'Publicly accessible URL of the picture.
-
-            Non-square images are also supported.
-
-            Currently, we support JPG, WebP and PNG image formats.'
-          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
     Picture:
       type: object
       required:
@@ -431,6 +334,77 @@ components:
         width:
           type: number
           example: 1280
+    ProductCreateOrUpdateResponse:
+      type: object
+      required:
+      - product_id
+      - slug
+      properties:
+        product_id:
+          type: number
+          example: 12345678
+          description: The product id of the created or updated product.
+        slug:
+          type: string
+          example: vintage-nike-t-shirt-12345678
+          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
+        sku:
+          type:
+          - string
+          - 'null'
+          example: ABC-12345-S-BL
+          description: 'The SKU of the product.
+
+            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
+      example:
+        product_id: 12345678
+        slug: vintage-nike-t-shirt-12345678
+        sku: ABC-12345-S-BL
+    Address:
+      type: object
+      required:
+      - country_code
+      properties:
+        country_code:
+          type: string
+          example: GB
+        state:
+          type: string
+          description: The state/county of the product's address.
+          example: Greater London
+      example:
+        country_code: GB
+        state: Greater London
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
     Product:
       type: object
       properties:
@@ -741,6 +715,19 @@ components:
       - is_boosted
       - created_at
       - updated_at
+    PublicPicture:
+      type: object
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          description: 'Publicly accessible URL of the picture.
+
+            Non-square images are also supported.
+
+            Currently, we support JPG, WebP and PNG image formats.'
+          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
     ProductCreateRequest:
       type: object
       required:
@@ -939,20 +926,6 @@ components:
 
             You don''t need to send this with `true` if you have a "boosted shop" or you''re part of the "free boost trial".'
           example: false
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
   securitySchemes:
     BearerAuth:
       type: http

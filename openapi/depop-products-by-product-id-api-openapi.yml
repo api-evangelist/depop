@@ -2,34 +2,7 @@ openapi: 3.2.0
 info:
   title: Seller Products - By Product ID API
   version: 1.0.0
-  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
-
-
-    ## OAuth 2.0 Scopes
-
-
-    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
-
-
-    - **`products_read`** - Required to read product information and listings
-
-    - **`products_write`** - Required to create, update, or delete products
-
-    - **`orders_read`** - Required to read order information and order history
-
-    - **`orders_write`** - Required to mark orders as shipped or process refunds
-
-    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
-
-    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
-
-    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
-
-
-    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
-
-
-    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+  description: Externally facing API to allow enterprise partners to automate listing on Depop.
 servers:
 - url: https://partnerapi-staging.depop.com
 - url: https://partnerapi.depop.com
@@ -525,67 +498,7 @@ paths:
                     - code: validation-error
                       message: Product 7033001 does not have multiple sizes, a size ID must not be provided
 components:
-  responses:
-    Forbidden:
-      description: Forbidden - Insufficient scope
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: insufficient_scope
-              message: 'Required scope: products_write'
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
   schemas:
-    ProductCreateOrUpdateResponse:
-      type: object
-      required:
-      - product_id
-      - slug
-      properties:
-        product_id:
-          type: number
-          example: 12345678
-          description: The product id of the created or updated product.
-        slug:
-          type: string
-          example: vintage-nike-t-shirt-12345678
-          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
-        sku:
-          type:
-          - string
-          - 'null'
-          example: ABC-12345-S-BL
-          description: 'The SKU of the product.
-
-            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
-      example:
-        product_id: 12345678
-        slug: vintage-nike-t-shirt-12345678
-        sku: ABC-12345-S-BL
     DepopShippingDetails:
       type: object
       required:
@@ -633,52 +546,49 @@ components:
         shipping_provider_id: USPS
         parcel_size_id: SMALL
         payer: buyer
-    PatchProductRequest:
-      type: object
-      properties:
-        price_amount:
-          type: string
-          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
-          example: '50.99'
-        discount_price:
-          type: string
-          description: 'The discount price of the item.
-
-            Must be less than the price_amount. Up to 2 decimal places.'
-          example: '48.00'
-        auto_send_offer_price:
-          type: string
-          description: 'The price to automatically send to buyers who liked or have bagged the product.
-
-            There''s a fixed 1h delay before an offer is sent.
-
-            If not set, the product will not automatically send offers.
-
-            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
-          example: '45.00'
-        auto_negotiate_offer_price:
-          type: string
-          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
-          example: '45.00'
-        quantity:
-          type: number
-          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
-          example: 1
-    Address:
+    Picture:
       type: object
       required:
-      - country_code
+      - url
+      - height
+      - width
       properties:
-        country_code:
+        url:
           type: string
-          example: GB
-        state:
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
+    ProductCreateOrUpdateResponse:
+      type: object
+      required:
+      - product_id
+      - slug
+      properties:
+        product_id:
+          type: number
+          example: 12345678
+          description: The product id of the created or updated product.
+        slug:
           type: string
-          description: The state/county of the product's address.
-          example: Greater London
+          example: vintage-nike-t-shirt-12345678
+          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
+        sku:
+          type:
+          - string
+          - 'null'
+          example: ABC-12345-S-BL
+          description: 'The SKU of the product.
+
+            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
       example:
-        country_code: GB
-        state: Greater London
+        product_id: 12345678
+        slug: vintage-nike-t-shirt-12345678
+        sku: ABC-12345-S-BL
     SubmitOfferRequest:
       type: object
       description: Request body for submitting an offer on behalf of a seller to a buyer for a specific product.
@@ -710,362 +620,35 @@ components:
 
             - **Not required** for products without sizes or products with a single size - **Required** for products with multiple sizes - Must be a valid size ID that exists for the product'
           example: 2
-    PublicPicture:
+    Address:
       type: object
       required:
-      - url
+      - country_code
       properties:
-        url:
+        country_code:
           type: string
-          description: 'Publicly accessible URL of the picture.
-
-            Non-square images are also supported.
-
-            Currently, we support JPG, WebP and PNG image formats.'
-          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
-    ErrorResponse:
-      type: object
-      properties:
-        id:
+          example: GB
+        state:
           type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
+          description: The state/county of the product's address.
+          example: Greater London
       example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-    Picture:
+        country_code: GB
+        state: Greater London
+    ErrorItem:
       type: object
       required:
-      - url
-      - height
-      - width
+      - code
+      - message
       properties:
-        url:
+        code:
           type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
-    Product:
-      type: object
-      properties:
-        sku:
-          type:
-          - string
-          - 'null'
-          description: SKU of the product. This field is optional and will be null if no SKU was assigned to the product.
-          example: ABC-12345-S-BL
-        product_id:
-          type: number
-          description: The id of the product.
-          example: 123456789
-        slug:
+          example: missing_attribute
+          description: The error code.
+        message:
           type: string
-          description: The URL-friendly slug of the product. Can be used to construct the product URL as `https://www.depop.com/products/{slug}/`.
-          example: vintage-nike-t-shirt-123456789
-        status:
-          type: string
-          description: The status of the product.
-          anyOf:
-          - type: string
-            enum:
-            - STATUS_ONSALE
-            - STATUS_PURCHASED
-            - STATUS_MARKED_AS_SOLD
-            - STATUS_DELETED
-            - STATUS_DELETED_ONSALE
-            - STATUS_DELETED_PURCHASED
-            - STATUS_DELETED_MARKED_AS_SOLD
-            - STATUS_PRODUCT_BANNED_ONSALE
-            - STATUS_USER_BANNED_ONSALE
-            - STATUS_PRODUCT_BANNED_PURCHASED
-            - STATUS_USER_BANNED_PURCHASED
-          example: STATUS_ONSALE
-        address:
-          $ref: '#/components/schemas/Address'
-        description:
-          type: string
-          description: "A good description should contain key attribute information (brand, category, color, size, age etc), clarifying information about flaws, condition, fit, size and measurements. Commonly they end with hash tags (for example, \\#summer).\nConstraints:\n * Limited to 1000 characters\n * Email addresses are not allowed\n * Can only have up to 5 hashtags (for example, \\#summer)."
-          maxLength: 1000
-          example: "Women's Burgundy and Purple Vest\nMauve and white striped tank top  Small mark at the bottom of the hem \n#stripes #summer"
-        price_currency:
-          type: string
-          description: The currency code of the item's price.
-          example: GBP
-        price_amount:
-          type: string
-          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
-          example: '50.99'
-        current_price:
-          type: string
-          description: The current effective price of the item, reflecting any active discount. Equal to price_amount when no discount is applied.
-          example: '45.99'
-        auto_send_offer_price:
-          type: string
-          description: 'The price to automatically send to buyers who liked or have bagged the product.
-
-            There''s a fixed 1h delay before an offer is sent.
-
-            If not set, the product will not automatically send offers.
-
-            Must be less at least 5% off the price_amount. Up to 2 decimal places.
-
-            **Note:** Requires `offers_read` OAuth scope to include this field in the response. If scope is not provided, this field will be omitted.'
-          example: '45.00'
-        auto_negotiate_offer_price:
-          type: string
-          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_read` OAuth scope to include this field in the response. If scope is not provided, this field will be omitted."
-          example: '45.00'
-        international_shipping_cost:
-          type: string
-          description: The cost of shipping the product internationally. Only set this if the product can be shipped internationally. Same currency as price_currency.
-          example: '5.0'
-        national_shipping_cost:
-          type: string
-          description: 'The cost of shipping the product nationally. Same currency as price_currency. If set to 0, the product has free shipping for buyers.
-
-            **Important:** Either `national_shipping_cost` OR `depop_shipping` must be provided. If using Depop managed shipping, use `depop_shipping` instead and omit this field.'
-          example: '2.0'
-        depop_shipping:
-          allOf:
-          - $ref: '#/components/schemas/DepopShippingDetails'
-          description: 'Depop managed shipping configuration. When provided, Depop will handle the shipping and automatically calculate the national shipping cost based on the selected provider and parcel size.
-
-            **Important:** Either `depop_shipping` OR `national_shipping_cost` must be provided (but not both). If you provide `depop_shipping`, the `national_shipping_cost` will be automatically derived from the shipping provider''s pricing.'
-          example:
-            address_id: 123456
-            shipping_provider_id: USPS
-            parcel_size_id: SMALL
-            payer: buyer
-        quantity:
-          type: number
-          description: The quantity of the product available for sale. Must be at least 1.
-          example: 1
-        pictures:
-          type: array
-          minItems: 1
-          maxItems: 8
-          items:
-            $ref: '#/components/schemas/Picture'
-          example:
-          - url: https://images.example.com/products/vintage-nike-tshirt-front.jpg
-            height: 1280
-            width: 1280
-          - url: https://images.example.com/products/vintage-nike-tshirt-back.jpg
-            height: 1280
-            width: 1280
-          - url: https://images.example.com/products/vintage-nike-tshirt-detail.jpg
-            height: 1280
-            width: 1280
-        department:
-          type: string
-          description: 'Top level category of the product.
-
-            Currently we support: womenswear, menswear, kidswear and everything-else. These rarely change.
-
-            For an up to date list, please make use of our taxonomy endpoint. Currently, in https://api.depop.com/api/v3/attributes/ under the key `department`.'
-          example: womenswear
-        product_type:
-          type: string
-          description: 'The more specific category of the product.
-
-            Note that there''s an intermediate level between department and product type called "group". We don''t need to receive this when an item is being listed but it''s used in the apps/website to organize the product types.
-
-            For example, in "menswear >> swim-beach-wear >> swimsuit-one-piece", we only need to know the department "menswear" and the product type "swimsuit-one-piece".
-
-            For an up to date list, please make use of our taxonomy endpoint. Currently, in https://api.depop.com/api/v3/attributes/ under the key `group`.'
-          example: tshirts
-        size_set_id:
-          type: number
-          description: The size set ID for the given Department and Product Type.
-          example: 2
-        size_id:
-          description: The size ID for a given size Set ID.
-          type: number
-          example: 10
-        condition:
-          type: string
-          anyOf:
-          - type: string
-            enum:
-            - brand_new
-            - used_like_new
-            - used_excellent
-            - used_good
-            - used_fair
-          example: brand_new
-        colour:
-          type: array
-          maxItems: 2
-          items:
-            type: string
-            anyOf:
-            - type: string
-              enum:
-              - black
-              - grey
-              - white
-              - brown
-              - tan
-              - cream
-              - yellow
-              - red
-              - burgundy
-              - orange
-              - pink
-              - purple
-              - blue
-              - navy
-              - green
-              - khaki
-              - multi
-              - silver
-              - gold
-          example:
-          - black
-          - white
-        style:
-          type: array
-          maxItems: 3
-          items:
-            type: string
-            anyOf:
-            - type: string
-              enum:
-              - streetwear
-              - sportswear
-              - loungewear
-              - goth
-              - retro
-              - boho
-              - western
-              - indie
-              - skater
-              - rave
-              - costume
-              - cosplay
-              - grunge
-              - emo
-              - minimalist
-              - preppy
-              - avant_garde
-              - punk
-              - glam
-              - regency
-              - casual
-              - techwear
-              - futuristic
-              - cottage
-              - fairy
-              - kidcore
-              - y2_k
-              - biker
-              - gorpcore
-              - twee
-              - coquette
-              - whimsygoth
-          example:
-          - streetwear
-          - goth
-        age:
-          type: array
-          maxItems: 1
-          items:
-            type: string
-            anyOf:
-            - type: string
-              enum:
-              - modern
-              - y2k
-              - 90s
-              - 80s
-              - 70s
-              - 60s
-              - 50s
-              - antique
-          example:
-          - 90s
-        source:
-          type: array
-          maxItems: 2
-          items:
-            type: string
-            anyOf:
-            - type: string
-              enum:
-              - vintage
-              - preloved
-              - reworked
-              - custom
-              - handmade
-              - deadstock
-              - designer
-              - repaired
-          example:
-          - vintage
-        brand:
-          type: string
-          description: The brand name of the product. For example, "Nike".
-          example: Nike
-        attributes:
-          type: object
-          description: 'Additional attributes of the product.
-
-            For an up to date list, please make use of our attributes endpoint.'
-          additionalProperties:
-            type: array
-            items:
-              type: string
-          example:
-            sleeve-length:
-            - short
-            occasion:
-            - wedding
-        is_boosted:
-          type: boolean
-          description: Whether the product is currently boosted.
-          example: false
-        created_at:
-          type: string
-          format: date-time
-          description: The date and time when the product was created.
-          example: '2025-01-01T00:00:00Z'
-        updated_at:
-          type: string
-          format: date-time
-          description: The date and time when the product was last updated.
-          example: '2025-01-01T00:00:00Z'
-      required:
-      - product_id
-      - slug
-      - status
-      - address
-      - description
-      - price_currency
-      - price_amount
-      - quantity
-      - pictures
-      - department
-      - product_type
-      - colour
-      - style
-      - age
-      - source
-      - brand
-      - attributes
-      - is_boosted
-      - created_at
-      - updated_at
+          example: Missing mandatory field
+          description: The error message.
     ProductPutRequest:
       type: object
       required:
@@ -1379,20 +962,410 @@ components:
           occasion:
           - casual
         is_boosted: false
-    ErrorItem:
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    Product:
+      type: object
+      properties:
+        sku:
+          type:
+          - string
+          - 'null'
+          description: SKU of the product. This field is optional and will be null if no SKU was assigned to the product.
+          example: ABC-12345-S-BL
+        product_id:
+          type: number
+          description: The id of the product.
+          example: 123456789
+        slug:
+          type: string
+          description: The URL-friendly slug of the product. Can be used to construct the product URL as `https://www.depop.com/products/{slug}/`.
+          example: vintage-nike-t-shirt-123456789
+        status:
+          type: string
+          description: The status of the product.
+          anyOf:
+          - type: string
+            enum:
+            - STATUS_ONSALE
+            - STATUS_PURCHASED
+            - STATUS_MARKED_AS_SOLD
+            - STATUS_DELETED
+            - STATUS_DELETED_ONSALE
+            - STATUS_DELETED_PURCHASED
+            - STATUS_DELETED_MARKED_AS_SOLD
+            - STATUS_PRODUCT_BANNED_ONSALE
+            - STATUS_USER_BANNED_ONSALE
+            - STATUS_PRODUCT_BANNED_PURCHASED
+            - STATUS_USER_BANNED_PURCHASED
+          example: STATUS_ONSALE
+        address:
+          $ref: '#/components/schemas/Address'
+        description:
+          type: string
+          description: "A good description should contain key attribute information (brand, category, color, size, age etc), clarifying information about flaws, condition, fit, size and measurements. Commonly they end with hash tags (for example, \\#summer).\nConstraints:\n * Limited to 1000 characters\n * Email addresses are not allowed\n * Can only have up to 5 hashtags (for example, \\#summer)."
+          maxLength: 1000
+          example: "Women's Burgundy and Purple Vest\nMauve and white striped tank top  Small mark at the bottom of the hem \n#stripes #summer"
+        price_currency:
+          type: string
+          description: The currency code of the item's price.
+          example: GBP
+        price_amount:
+          type: string
+          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
+          example: '50.99'
+        current_price:
+          type: string
+          description: The current effective price of the item, reflecting any active discount. Equal to price_amount when no discount is applied.
+          example: '45.99'
+        auto_send_offer_price:
+          type: string
+          description: 'The price to automatically send to buyers who liked or have bagged the product.
+
+            There''s a fixed 1h delay before an offer is sent.
+
+            If not set, the product will not automatically send offers.
+
+            Must be less at least 5% off the price_amount. Up to 2 decimal places.
+
+            **Note:** Requires `offers_read` OAuth scope to include this field in the response. If scope is not provided, this field will be omitted.'
+          example: '45.00'
+        auto_negotiate_offer_price:
+          type: string
+          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_read` OAuth scope to include this field in the response. If scope is not provided, this field will be omitted."
+          example: '45.00'
+        international_shipping_cost:
+          type: string
+          description: The cost of shipping the product internationally. Only set this if the product can be shipped internationally. Same currency as price_currency.
+          example: '5.0'
+        national_shipping_cost:
+          type: string
+          description: 'The cost of shipping the product nationally. Same currency as price_currency. If set to 0, the product has free shipping for buyers.
+
+            **Important:** Either `national_shipping_cost` OR `depop_shipping` must be provided. If using Depop managed shipping, use `depop_shipping` instead and omit this field.'
+          example: '2.0'
+        depop_shipping:
+          allOf:
+          - $ref: '#/components/schemas/DepopShippingDetails'
+          description: 'Depop managed shipping configuration. When provided, Depop will handle the shipping and automatically calculate the national shipping cost based on the selected provider and parcel size.
+
+            **Important:** Either `depop_shipping` OR `national_shipping_cost` must be provided (but not both). If you provide `depop_shipping`, the `national_shipping_cost` will be automatically derived from the shipping provider''s pricing.'
+          example:
+            address_id: 123456
+            shipping_provider_id: USPS
+            parcel_size_id: SMALL
+            payer: buyer
+        quantity:
+          type: number
+          description: The quantity of the product available for sale. Must be at least 1.
+          example: 1
+        pictures:
+          type: array
+          minItems: 1
+          maxItems: 8
+          items:
+            $ref: '#/components/schemas/Picture'
+          example:
+          - url: https://images.example.com/products/vintage-nike-tshirt-front.jpg
+            height: 1280
+            width: 1280
+          - url: https://images.example.com/products/vintage-nike-tshirt-back.jpg
+            height: 1280
+            width: 1280
+          - url: https://images.example.com/products/vintage-nike-tshirt-detail.jpg
+            height: 1280
+            width: 1280
+        department:
+          type: string
+          description: 'Top level category of the product.
+
+            Currently we support: womenswear, menswear, kidswear and everything-else. These rarely change.
+
+            For an up to date list, please make use of our taxonomy endpoint. Currently, in https://api.depop.com/api/v3/attributes/ under the key `department`.'
+          example: womenswear
+        product_type:
+          type: string
+          description: 'The more specific category of the product.
+
+            Note that there''s an intermediate level between department and product type called "group". We don''t need to receive this when an item is being listed but it''s used in the apps/website to organize the product types.
+
+            For example, in "menswear >> swim-beach-wear >> swimsuit-one-piece", we only need to know the department "menswear" and the product type "swimsuit-one-piece".
+
+            For an up to date list, please make use of our taxonomy endpoint. Currently, in https://api.depop.com/api/v3/attributes/ under the key `group`.'
+          example: tshirts
+        size_set_id:
+          type: number
+          description: The size set ID for the given Department and Product Type.
+          example: 2
+        size_id:
+          description: The size ID for a given size Set ID.
+          type: number
+          example: 10
+        condition:
+          type: string
+          anyOf:
+          - type: string
+            enum:
+            - brand_new
+            - used_like_new
+            - used_excellent
+            - used_good
+            - used_fair
+          example: brand_new
+        colour:
+          type: array
+          maxItems: 2
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - black
+              - grey
+              - white
+              - brown
+              - tan
+              - cream
+              - yellow
+              - red
+              - burgundy
+              - orange
+              - pink
+              - purple
+              - blue
+              - navy
+              - green
+              - khaki
+              - multi
+              - silver
+              - gold
+          example:
+          - black
+          - white
+        style:
+          type: array
+          maxItems: 3
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - streetwear
+              - sportswear
+              - loungewear
+              - goth
+              - retro
+              - boho
+              - western
+              - indie
+              - skater
+              - rave
+              - costume
+              - cosplay
+              - grunge
+              - emo
+              - minimalist
+              - preppy
+              - avant_garde
+              - punk
+              - glam
+              - regency
+              - casual
+              - techwear
+              - futuristic
+              - cottage
+              - fairy
+              - kidcore
+              - y2_k
+              - biker
+              - gorpcore
+              - twee
+              - coquette
+              - whimsygoth
+          example:
+          - streetwear
+          - goth
+        age:
+          type: array
+          maxItems: 1
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - modern
+              - y2k
+              - 90s
+              - 80s
+              - 70s
+              - 60s
+              - 50s
+              - antique
+          example:
+          - 90s
+        source:
+          type: array
+          maxItems: 2
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - vintage
+              - preloved
+              - reworked
+              - custom
+              - handmade
+              - deadstock
+              - designer
+              - repaired
+          example:
+          - vintage
+        brand:
+          type: string
+          description: The brand name of the product. For example, "Nike".
+          example: Nike
+        attributes:
+          type: object
+          description: 'Additional attributes of the product.
+
+            For an up to date list, please make use of our attributes endpoint.'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            sleeve-length:
+            - short
+            occasion:
+            - wedding
+        is_boosted:
+          type: boolean
+          description: Whether the product is currently boosted.
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the product was created.
+          example: '2025-01-01T00:00:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the product was last updated.
+          example: '2025-01-01T00:00:00Z'
+      required:
+      - product_id
+      - slug
+      - status
+      - address
+      - description
+      - price_currency
+      - price_amount
+      - quantity
+      - pictures
+      - department
+      - product_type
+      - colour
+      - style
+      - age
+      - source
+      - brand
+      - attributes
+      - is_boosted
+      - created_at
+      - updated_at
+    PublicPicture:
       type: object
       required:
-      - code
-      - message
+      - url
       properties:
-        code:
+        url:
           type: string
-          example: missing_attribute
-          description: The error code.
-        message:
+          description: 'Publicly accessible URL of the picture.
+
+            Non-square images are also supported.
+
+            Currently, we support JPG, WebP and PNG image formats.'
+          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
+    PatchProductRequest:
+      type: object
+      properties:
+        price_amount:
           type: string
-          example: Missing mandatory field
-          description: The error message.
+          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
+          example: '50.99'
+        discount_price:
+          type: string
+          description: 'The discount price of the item.
+
+            Must be less than the price_amount. Up to 2 decimal places.'
+          example: '48.00'
+        auto_send_offer_price:
+          type: string
+          description: 'The price to automatically send to buyers who liked or have bagged the product.
+
+            There''s a fixed 1h delay before an offer is sent.
+
+            If not set, the product will not automatically send offers.
+
+            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
+          example: '45.00'
+        auto_negotiate_offer_price:
+          type: string
+          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
+          example: '45.00'
+        quantity:
+          type: number
+          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
+          example: 1
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
   securitySchemes:
     BearerAuth:
       type: http
