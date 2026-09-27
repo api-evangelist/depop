@@ -458,97 +458,83 @@ paths:
                     - code: validation-error
                       message: Product vintage-nike-t-shirt-7033001 does not have multiple sizes, a size ID must not be provided
 components:
+  responses:
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
   schemas:
-    DepopShippingDetails:
+    ErrorItem:
       type: object
       required:
-      - address_id
-      - shipping_provider_id
-      - parcel_size_id
-      - payer
+      - code
+      - message
       properties:
-        address_id:
-          type: integer
-          format: int64
-          description: 'The ID of the seller address to ship from.
-
-            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
-
-            The address determines which shipping providers and parcel sizes are available.'
-          example: 123456
-        shipping_provider_id:
+        code:
           type: string
-          description: 'The identifier for the shipping provider.
-
-            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
-
-            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
-          example: USPS
-        parcel_size_id:
+          example: missing_attribute
+          description: The error code.
+        message:
           type: string
-          description: 'The identifier for the parcel size.
-
-            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
-
-            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
-          example: SMALL
-        payer:
+          example: Missing mandatory field
+          description: The error message.
+    Address:
+      type: object
+      required:
+      - country_code
+      properties:
+        country_code:
           type: string
-          description: 'Who pays for the shipping cost.
-
-            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
-          enum:
-          - buyer
-          - seller
-          example: buyer
+          example: GB
+        state:
+          type: string
+          description: The state/county of the product's address.
+          example: Greater London
       example:
-        address_id: 123456
-        shipping_provider_id: USPS
-        parcel_size_id: SMALL
-        payer: buyer
-    Picture:
+        country_code: GB
+        state: Greater London
+    PublicPicture:
       type: object
       required:
       - url
-      - height
-      - width
       properties:
         url:
           type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
-    ProductCreateOrUpdateResponse:
-      type: object
-      required:
-      - product_id
-      - slug
-      properties:
-        product_id:
-          type: number
-          example: 12345678
-          description: The product id of the created or updated product.
-        slug:
-          type: string
-          example: vintage-nike-t-shirt-12345678
-          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
-        sku:
-          type:
-          - string
-          - 'null'
-          example: ABC-12345-S-BL
-          description: 'The SKU of the product.
+          description: 'Publicly accessible URL of the picture.
 
-            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
-      example:
-        product_id: 12345678
-        slug: vintage-nike-t-shirt-12345678
-        sku: ABC-12345-S-BL
+            Non-square images are also supported.
+
+            Currently, we support JPG, WebP and PNG image formats.'
+          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
     SubmitOfferRequest:
       type: object
       description: Request body for submitting an offer on behalf of a seller to a buyer for a specific product.
@@ -580,35 +566,6 @@ components:
 
             - **Not required** for products without sizes or products with a single size - **Required** for products with multiple sizes - Must be a valid size ID that exists for the product'
           example: 2
-    Address:
-      type: object
-      required:
-      - country_code
-      properties:
-        country_code:
-          type: string
-          example: GB
-        state:
-          type: string
-          description: The state/county of the product's address.
-          example: Greater London
-      example:
-        country_code: GB
-        state: Greater London
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
     ProductPutRequest:
       type: object
       required:
@@ -922,22 +879,80 @@ components:
           occasion:
           - casual
         is_boosted: false
-    ErrorResponse:
+    PatchProductRequest:
       type: object
       properties:
-        id:
+        price_amount:
           type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
+          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
+          example: '50.99'
+        discount_price:
+          type: string
+          description: 'The discount price of the item.
+
+            Must be less than the price_amount. Up to 2 decimal places.'
+          example: '48.00'
+        auto_send_offer_price:
+          type: string
+          description: 'The price to automatically send to buyers who liked or have bagged the product.
+
+            There''s a fixed 1h delay before an offer is sent.
+
+            If not set, the product will not automatically send offers.
+
+            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
+          example: '45.00'
+        auto_negotiate_offer_price:
+          type: string
+          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
+          example: '45.00'
+        quantity:
+          type: number
+          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
+          example: 1
+    ProductCreateOrUpdateResponse:
+      type: object
+      required:
+      - product_id
+      - slug
+      properties:
+        product_id:
+          type: number
+          example: 12345678
+          description: The product id of the created or updated product.
+        slug:
+          type: string
+          example: vintage-nike-t-shirt-12345678
+          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
+        sku:
+          type:
+          - string
+          - 'null'
+          example: ABC-12345-S-BL
+          description: 'The SKU of the product.
+
+            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
       example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+        product_id: 12345678
+        slug: vintage-nike-t-shirt-12345678
+        sku: ABC-12345-S-BL
+    Picture:
+      type: object
+      required:
+      - url
+      - height
+      - width
+      properties:
+        url:
+          type: string
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
     Product:
       type: object
       properties:
@@ -1248,84 +1263,69 @@ components:
       - is_boosted
       - created_at
       - updated_at
-    PublicPicture:
+    DepopShippingDetails:
       type: object
       required:
-      - url
+      - address_id
+      - shipping_provider_id
+      - parcel_size_id
+      - payer
       properties:
-        url:
+        address_id:
+          type: integer
+          format: int64
+          description: 'The ID of the seller address to ship from.
+
+            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
+
+            The address determines which shipping providers and parcel sizes are available.'
+          example: 123456
+        shipping_provider_id:
           type: string
-          description: 'Publicly accessible URL of the picture.
+          description: 'The identifier for the shipping provider.
 
-            Non-square images are also supported.
+            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
 
-            Currently, we support JPG, WebP and PNG image formats.'
-          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
-    PatchProductRequest:
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+        parcel_size_id:
+          type: string
+          description: 'The identifier for the parcel size.
+
+            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
+
+            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
+          example: SMALL
+        payer:
+          type: string
+          description: 'Who pays for the shipping cost.
+
+            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
+          enum:
+          - buyer
+          - seller
+          example: buyer
+      example:
+        address_id: 123456
+        shipping_provider_id: USPS
+        parcel_size_id: SMALL
+        payer: buyer
+    ErrorResponse:
       type: object
       properties:
-        price_amount:
+        id:
           type: string
-          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
-          example: '50.99'
-        discount_price:
-          type: string
-          description: 'The discount price of the item.
-
-            Must be less than the price_amount. Up to 2 decimal places.'
-          example: '48.00'
-        auto_send_offer_price:
-          type: string
-          description: 'The price to automatically send to buyers who liked or have bagged the product.
-
-            There''s a fixed 1h delay before an offer is sent.
-
-            If not set, the product will not automatically send offers.
-
-            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
-          example: '45.00'
-        auto_negotiate_offer_price:
-          type: string
-          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
-          example: '45.00'
-        quantity:
-          type: number
-          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
-          example: 1
-  responses:
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
-    Forbidden:
-      description: Forbidden - Insufficient scope
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: insufficient_scope
-              message: 'Required scope: products_write'
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
   securitySchemes:
     BearerAuth:
       type: http

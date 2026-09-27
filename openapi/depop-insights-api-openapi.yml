@@ -191,6 +191,62 @@ paths:
           $ref: '#/components/responses/BadGateway'
 components:
   schemas:
+    ProductInsightsResponse:
+      type: object
+      description: Live insights for a single product. Each section is present only when the token holds the scope that section requires; sections for missing scopes are omitted.
+      properties:
+        likes_count:
+          type: integer
+          description: Number of likes on the product. Included only when the token has the `products_read` scope.
+          example: 34
+        bag_count:
+          type: integer
+          description: Number of users who have added the product to their bag. Included only when the token has the `products_read` scope.
+          example: 12
+        offers:
+          $ref: '#/components/schemas/ProductOffersInsights'
+        boost:
+          $ref: '#/components/schemas/ProductBoostInsights'
+    ShopOrdersInsights:
+      type: object
+      description: Order insights for the shop.
+      required:
+      - awaiting_shipping_count
+      properties:
+        awaiting_shipping_count:
+          type: integer
+          description: Count of orders awaiting shipping. Counts orders whose receipt is within the recent cut-off window and that have not been refunded. Capped at 20.
+          example: 5
+          maximum: 20
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
+    ProductOffersInsights:
+      type: object
+      description: Offer insights for the product. Included only when the token has the `offers_read` scope.
+      required:
+      - awaiting_seller_review_count
+      - awaiting_buyer_review_count
+      properties:
+        awaiting_seller_review_count:
+          type: integer
+          description: Number of offers on the product awaiting the seller's review.
+          example: 3
+        awaiting_buyer_review_count:
+          type: integer
+          description: Number of offers on the product awaiting the buyer's review.
+          example: 1
     ShopBoostInsights:
       type: object
       description: Boosted listings (ads) insights for the shop.
@@ -206,6 +262,31 @@ components:
           type: integer
           description: Number of boosted listings that have sold.
           example: 34
+    ShopProductsInsights:
+      type: object
+      description: Product count insights for the shop.
+      required:
+      - on_sale_count
+      - total_count
+      properties:
+        on_sale_count:
+          type: integer
+          description: Number of products currently on sale.
+          example: 42
+        total_count:
+          type: integer
+          description: Total number of products in the shop.
+          example: 150
+    ShopOffersInsights:
+      type: object
+      description: Offer insights for the shop.
+      required:
+      - awaiting_seller_review_count
+      properties:
+        awaiting_seller_review_count:
+          type: integer
+          description: Number of offers across the shop awaiting the seller's review.
+          example: 8
     ProductBoostInsights:
       type: object
       description: Boosted listing (ads) performance for the product. Included only when the token has the `products_read` scope. Individual counters are omitted when the underlying data is unavailable.
@@ -242,56 +323,20 @@ components:
           type: integer
           description: Number of seller reviews received.
           example: 120
-    ShopOrdersInsights:
+    ShopInsightsResponse:
       type: object
-      description: Order insights for the shop.
-      required:
-      - awaiting_shipping_count
+      description: Insights for the authenticated seller's shop. Counters may be delayed by up to 60 minutes.
       properties:
-        awaiting_shipping_count:
-          type: integer
-          description: Count of orders awaiting shipping. Counts orders whose receipt is within the recent cut-off window and that have not been refunded. Capped at 20.
-          example: 5
-          maximum: 20
-    ShopOffersInsights:
-      type: object
-      description: Offer insights for the shop.
-      required:
-      - awaiting_seller_review_count
-      properties:
-        awaiting_seller_review_count:
-          type: integer
-          description: Number of offers across the shop awaiting the seller's review.
-          example: 8
-    ShopProductsInsights:
-      type: object
-      description: Product count insights for the shop.
-      required:
-      - on_sale_count
-      - total_count
-      properties:
-        on_sale_count:
-          type: integer
-          description: Number of products currently on sale.
-          example: 42
-        total_count:
-          type: integer
-          description: Total number of products in the shop.
-          example: 150
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
+        products:
+          $ref: '#/components/schemas/ShopProductsInsights'
+        rating:
+          $ref: '#/components/schemas/ShopRatingInsights'
+        boost:
+          $ref: '#/components/schemas/ShopBoostInsights'
+        orders:
+          $ref: '#/components/schemas/ShopOrdersInsights'
+        offers:
+          $ref: '#/components/schemas/ShopOffersInsights'
     ErrorResponse:
       type: object
       properties:
@@ -308,85 +353,7 @@ components:
         errors:
         - code: product_not_found
           message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-    ProductInsightsResponse:
-      type: object
-      description: Live insights for a single product. Each section is present only when the token holds the scope that section requires; sections for missing scopes are omitted.
-      properties:
-        likes_count:
-          type: integer
-          description: Number of likes on the product. Included only when the token has the `products_read` scope.
-          example: 34
-        bag_count:
-          type: integer
-          description: Number of users who have added the product to their bag. Included only when the token has the `products_read` scope.
-          example: 12
-        offers:
-          $ref: '#/components/schemas/ProductOffersInsights'
-        boost:
-          $ref: '#/components/schemas/ProductBoostInsights'
-    ProductOffersInsights:
-      type: object
-      description: Offer insights for the product. Included only when the token has the `offers_read` scope.
-      required:
-      - awaiting_seller_review_count
-      - awaiting_buyer_review_count
-      properties:
-        awaiting_seller_review_count:
-          type: integer
-          description: Number of offers on the product awaiting the seller's review.
-          example: 3
-        awaiting_buyer_review_count:
-          type: integer
-          description: Number of offers on the product awaiting the buyer's review.
-          example: 1
-    ShopInsightsResponse:
-      type: object
-      description: Insights for the authenticated seller's shop. Counters may be delayed by up to 60 minutes.
-      properties:
-        products:
-          $ref: '#/components/schemas/ShopProductsInsights'
-        rating:
-          $ref: '#/components/schemas/ShopRatingInsights'
-        boost:
-          $ref: '#/components/schemas/ShopBoostInsights'
-        orders:
-          $ref: '#/components/schemas/ShopOrdersInsights'
-        offers:
-          $ref: '#/components/schemas/ShopOffersInsights'
   responses:
-    BadGateway:
-      description: Bad Gateway - an upstream service required to build the insights response failed or returned an unexpected response.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unexpected_response
-              message: An upstream request at depop has failed to be processed.
-    TooManyRequests:
-      description: Too Many Requests - a rate limit has been exceeded.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: too_many_requests
-              message: Rate limit exceeded. Please retry later.
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
     Forbidden:
       description: Forbidden - Insufficient scope
       content:
@@ -409,6 +376,39 @@ components:
             errors:
             - code: product_not_found
               message: 'Product (sku: ABC-12345-S-BL, id: None, slug: None) not found'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
+    TooManyRequests:
+      description: Too Many Requests - a rate limit has been exceeded.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: too_many_requests
+              message: Rate limit exceeded. Please retry later.
+    BadGateway:
+      description: Bad Gateway - an upstream service required to build the insights response failed or returned an unexpected response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unexpected_response
+              message: An upstream request at depop has failed to be processed.
   securitySchemes:
     BearerAuth:
       type: http

@@ -187,6 +187,17 @@ paths:
           $ref: '#/components/responses/Forbidden'
 components:
   responses:
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
     ProductUnprocessableEntity:
       description: Unprocessable Entity - product validation error
       content:
@@ -236,17 +247,6 @@ components:
                 errors:
                 - code: manual_shipping_not_allowed
                   message: 'Failed to create or update product (sku: ABC-12345-S-BL) because manual shipping is not allowed for this user.'
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
     Unauthorized:
       description: Unauthorized
       content:
@@ -258,8 +258,8 @@ components:
             errors:
             - code: unauthorized
               message: invalid api key
-    Forbidden:
-      description: Forbidden - Insufficient scope
+    BadRequest:
+      description: Bad request
       content:
         application/json:
           schema:
@@ -267,73 +267,51 @@ components:
           example:
             id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
             errors:
-            - code: insufficient_scope
-              message: 'Required scope: products_write'
+            - code: bad-request
+              message: invalid request
   schemas:
-    DepopShippingDetails:
+    ErrorItem:
       type: object
       required:
-      - address_id
-      - shipping_provider_id
-      - parcel_size_id
-      - payer
+      - code
+      - message
       properties:
-        address_id:
-          type: integer
-          format: int64
-          description: 'The ID of the seller address to ship from.
-
-            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
-
-            The address determines which shipping providers and parcel sizes are available.'
-          example: 123456
-        shipping_provider_id:
+        code:
           type: string
-          description: 'The identifier for the shipping provider.
-
-            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
-
-            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
-          example: USPS
-        parcel_size_id:
+          example: missing_attribute
+          description: The error code.
+        message:
           type: string
-          description: 'The identifier for the parcel size.
-
-            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
-
-            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
-          example: SMALL
-        payer:
-          type: string
-          description: 'Who pays for the shipping cost.
-
-            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
-          enum:
-          - buyer
-          - seller
-          example: buyer
-      example:
-        address_id: 123456
-        shipping_provider_id: USPS
-        parcel_size_id: SMALL
-        payer: buyer
-    Picture:
+          example: Missing mandatory field
+          description: The error message.
+    PublicPicture:
       type: object
       required:
       - url
-      - height
-      - width
       properties:
         url:
           type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
+          description: 'Publicly accessible URL of the picture.
+
+            Non-square images are also supported.
+
+            Currently, we support JPG, WebP and PNG image formats.'
+          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
+    Address:
+      type: object
+      required:
+      - country_code
+      properties:
+        country_code:
+          type: string
+          example: GB
+        state:
+          type: string
+          description: The state/county of the product's address.
+          example: Greater London
+      example:
+        country_code: GB
+        state: Greater London
     ProductCreateOrUpdateResponse:
       type: object
       required:
@@ -360,51 +338,23 @@ components:
         product_id: 12345678
         slug: vintage-nike-t-shirt-12345678
         sku: ABC-12345-S-BL
-    Address:
+    Picture:
       type: object
       required:
-      - country_code
+      - url
+      - height
+      - width
       properties:
-        country_code:
+        url:
           type: string
-          example: GB
-        state:
-          type: string
-          description: The state/county of the product's address.
-          example: Greater London
-      example:
-        country_code: GB
-        state: Greater London
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
     Product:
       type: object
       properties:
@@ -715,19 +665,53 @@ components:
       - is_boosted
       - created_at
       - updated_at
-    PublicPicture:
+    DepopShippingDetails:
       type: object
       required:
-      - url
+      - address_id
+      - shipping_provider_id
+      - parcel_size_id
+      - payer
       properties:
-        url:
+        address_id:
+          type: integer
+          format: int64
+          description: 'The ID of the seller address to ship from.
+
+            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
+
+            The address determines which shipping providers and parcel sizes are available.'
+          example: 123456
+        shipping_provider_id:
           type: string
-          description: 'Publicly accessible URL of the picture.
+          description: 'The identifier for the shipping provider.
 
-            Non-square images are also supported.
+            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
 
-            Currently, we support JPG, WebP and PNG image formats.'
-          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+        parcel_size_id:
+          type: string
+          description: 'The identifier for the parcel size.
+
+            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
+
+            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
+          example: SMALL
+        payer:
+          type: string
+          description: 'Who pays for the shipping cost.
+
+            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
+          enum:
+          - buyer
+          - seller
+          example: buyer
+      example:
+        address_id: 123456
+        shipping_provider_id: USPS
+        parcel_size_id: SMALL
+        payer: buyer
     ProductCreateRequest:
       type: object
       required:
@@ -926,6 +910,22 @@ components:
 
             You don''t need to send this with `true` if you have a "boosted shop" or you''re part of the "free boost trial".'
           example: false
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
   securitySchemes:
     BearerAuth:
       type: http
