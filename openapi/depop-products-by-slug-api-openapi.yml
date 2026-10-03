@@ -493,79 +493,6 @@ components:
             - code: bad-request
               message: invalid request
   schemas:
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
-    Address:
-      type: object
-      required:
-      - country_code
-      properties:
-        country_code:
-          type: string
-          example: GB
-        state:
-          type: string
-          description: The state/county of the product's address.
-          example: Greater London
-      example:
-        country_code: GB
-        state: Greater London
-    PublicPicture:
-      type: object
-      required:
-      - url
-      properties:
-        url:
-          type: string
-          description: 'Publicly accessible URL of the picture.
-
-            Non-square images are also supported.
-
-            Currently, we support JPG, WebP and PNG image formats.'
-          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
-    SubmitOfferRequest:
-      type: object
-      description: Request body for submitting an offer on behalf of a seller to a buyer for a specific product.
-      required:
-      - offer_recipient_id
-      - offer_value
-      - offer_currency
-      properties:
-        offer_recipient_id:
-          type: integer
-          format: int64
-          description: The user ID of the buyer who will receive the offer.
-          example: 456789
-        offer_value:
-          type: number
-          format: double
-          description: The offer amount. Must be at least 5% lower than the product price_amount.
-          example: 25.0
-          minimum: 0.01
-        offer_currency:
-          type: string
-          description: The currency code for the offer (e.g., GBP, USD, EUR). Must match the product's currency.
-          example: GBP
-          maxLength: 3
-        size_id:
-          type: integer
-          format: int32
-          description: 'The size ID for products with multiple sizes.
-
-            - **Not required** for products without sizes or products with a single size - **Required** for products with multiple sizes - Must be a valid size ID that exists for the product'
-          example: 2
     ProductPutRequest:
       type: object
       required:
@@ -879,6 +806,154 @@ components:
           occasion:
           - casual
         is_boosted: false
+    DepopShippingDetails:
+      type: object
+      required:
+      - address_id
+      - shipping_provider_id
+      - parcel_size_id
+      - payer
+      properties:
+        address_id:
+          type: integer
+          format: int64
+          description: 'The ID of the seller address to ship from.
+
+            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
+
+            The address determines which shipping providers and parcel sizes are available.'
+          example: 123456
+        shipping_provider_id:
+          type: string
+          description: 'The identifier for the shipping provider.
+
+            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
+
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+        parcel_size_id:
+          type: string
+          description: 'The identifier for the parcel size.
+
+            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
+
+            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
+          example: SMALL
+        payer:
+          type: string
+          description: 'Who pays for the shipping cost.
+
+            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
+          enum:
+          - buyer
+          - seller
+          example: buyer
+      example:
+        address_id: 123456
+        shipping_provider_id: USPS
+        parcel_size_id: SMALL
+        payer: buyer
+    ProductCreateOrUpdateResponse:
+      type: object
+      required:
+      - product_id
+      - slug
+      properties:
+        product_id:
+          type: number
+          example: 12345678
+          description: The product id of the created or updated product.
+        slug:
+          type: string
+          example: vintage-nike-t-shirt-12345678
+          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
+        sku:
+          type:
+          - string
+          - 'null'
+          example: ABC-12345-S-BL
+          description: 'The SKU of the product.
+
+            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
+      example:
+        product_id: 12345678
+        slug: vintage-nike-t-shirt-12345678
+        sku: ABC-12345-S-BL
+    SubmitOfferRequest:
+      type: object
+      description: Request body for submitting an offer on behalf of a seller to a buyer for a specific product.
+      required:
+      - offer_recipient_id
+      - offer_value
+      - offer_currency
+      properties:
+        offer_recipient_id:
+          type: integer
+          format: int64
+          description: The user ID of the buyer who will receive the offer.
+          example: 456789
+        offer_value:
+          type: number
+          format: double
+          description: The offer amount. Must be at least 5% lower than the product price_amount.
+          example: 25.0
+          minimum: 0.01
+        offer_currency:
+          type: string
+          description: The currency code for the offer (e.g., GBP, USD, EUR). Must match the product's currency.
+          example: GBP
+          maxLength: 3
+        size_id:
+          type: integer
+          format: int32
+          description: 'The size ID for products with multiple sizes.
+
+            - **Not required** for products without sizes or products with a single size - **Required** for products with multiple sizes - Must be a valid size ID that exists for the product'
+          example: 2
+    PublicPicture:
+      type: object
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          description: 'Publicly accessible URL of the picture.
+
+            Non-square images are also supported.
+
+            Currently, we support JPG, WebP and PNG image formats.'
+          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
+    Picture:
+      type: object
+      required:
+      - url
+      - height
+      - width
+      properties:
+        url:
+          type: string
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
     PatchProductRequest:
       type: object
       properties:
@@ -910,49 +985,6 @@ components:
           type: number
           description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
           example: 1
-    ProductCreateOrUpdateResponse:
-      type: object
-      required:
-      - product_id
-      - slug
-      properties:
-        product_id:
-          type: number
-          example: 12345678
-          description: The product id of the created or updated product.
-        slug:
-          type: string
-          example: vintage-nike-t-shirt-12345678
-          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
-        sku:
-          type:
-          - string
-          - 'null'
-          example: ABC-12345-S-BL
-          description: 'The SKU of the product.
-
-            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
-      example:
-        product_id: 12345678
-        slug: vintage-nike-t-shirt-12345678
-        sku: ABC-12345-S-BL
-    Picture:
-      type: object
-      required:
-      - url
-      - height
-      - width
-      properties:
-        url:
-          type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
     Product:
       type: object
       properties:
@@ -1263,53 +1295,6 @@ components:
       - is_boosted
       - created_at
       - updated_at
-    DepopShippingDetails:
-      type: object
-      required:
-      - address_id
-      - shipping_provider_id
-      - parcel_size_id
-      - payer
-      properties:
-        address_id:
-          type: integer
-          format: int64
-          description: 'The ID of the seller address to ship from.
-
-            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
-
-            The address determines which shipping providers and parcel sizes are available.'
-          example: 123456
-        shipping_provider_id:
-          type: string
-          description: 'The identifier for the shipping provider.
-
-            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
-
-            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
-          example: USPS
-        parcel_size_id:
-          type: string
-          description: 'The identifier for the parcel size.
-
-            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
-
-            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
-          example: SMALL
-        payer:
-          type: string
-          description: 'Who pays for the shipping cost.
-
-            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
-          enum:
-          - buyer
-          - seller
-          example: buyer
-      example:
-        address_id: 123456
-        shipping_provider_id: USPS
-        parcel_size_id: SMALL
-        payer: buyer
     ErrorResponse:
       type: object
       properties:
@@ -1326,6 +1311,21 @@ components:
         errors:
         - code: product_not_found
           message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    Address:
+      type: object
+      required:
+      - country_code
+      properties:
+        country_code:
+          type: string
+          example: GB
+        state:
+          type: string
+          description: The state/county of the product's address.
+          example: Greater London
+      example:
+        country_code: GB
+        state: Greater London
   securitySchemes:
     BearerAuth:
       type: http
