@@ -178,31 +178,6 @@ paths:
                 id: 43d738a4-a3bf-4c79-bdd0-97a61ecf022a
 components:
   schemas:
-    OAuthTokenResponse:
-      type: object
-      description: Partner OAuth authentication response with access and refresh tokens for authorization code flow
-      properties:
-        access_token:
-          type: string
-          description: Partner access token with 1 hour expiry
-          example: pat_4eea1fdb98106005fea67ed65138df69afa0e6aa
-        refresh_token:
-          type: string
-          description: Partner refresh token with 1 year expiry
-          example: prt_26f4f74b761c83ef0d383bcfc419e114fd554331
-        expires_in:
-          type: integer
-          description: Access token expiry time in seconds (3600 = 1 hour)
-          example: 3600
-        token_type:
-          type: string
-          enum:
-          - Bearer
-          example: Bearer
-      required:
-      - access_token
-      - refresh_token
-      - expires_in
     OAuthErrorResponse:
       type: object
       description: OAuth 2.0 error response from the clientauth service
@@ -241,6 +216,31 @@ components:
       - error
       - message
       - id
+    OAuthTokenResponse:
+      type: object
+      description: Partner OAuth authentication response with access and refresh tokens for authorization code flow
+      properties:
+        access_token:
+          type: string
+          description: Partner access token with 1 hour expiry
+          example: pat_4eea1fdb98106005fea67ed65138df69afa0e6aa
+        refresh_token:
+          type: string
+          description: Partner refresh token with 1 year expiry
+          example: prt_26f4f74b761c83ef0d383bcfc419e114fd554331
+        expires_in:
+          type: integer
+          description: Access token expiry time in seconds (3600 = 1 hour)
+          example: 3600
+        token_type:
+          type: string
+          enum:
+          - Bearer
+          example: Bearer
+      required:
+      - access_token
+      - refresh_token
+      - expires_in
   securitySchemes:
     BearerAuth:
       type: http

@@ -193,57 +193,19 @@ paths:
                 - code: address_not_found
                   message: Address with ID 999999 not found
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
   schemas:
-    ShippingParcelSize:
-      type: object
-      required:
-      - id
-      - title
-      - subtitle
-      - cost
-      - courier_service
-      properties:
-        id:
-          type: string
-          description: The unique identifier for the parcel size.
-          example: SMALL
-        title:
-          type: string
-          description: The display title for the parcel size.
-          example: Small parcel
-        subtitle:
-          type: string
-          description: Additional information about the parcel size (e.g., dimensions).
-          example: Up to 35 x 25 x 16cm
-        cost:
-          $ref: '#/components/schemas/ShippingParcelCost'
-        courier_service:
-          type: string
-          description: 'The courier service type for this parcel size.
-
-
-            - `DROP_OFF`: Seller drops off the parcel at a designated location
-
-            - `COURIER_COLLECT`: Courier collects the parcel from the seller
-
-            - `OTHER`: Other courier service types (reserved for future use)
-
-            '
-          enum:
-          - DROP_OFF
-          - COURIER_COLLECT
-          - OTHER
-          example: DROP_OFF
-      example:
-        id: small
-        title: Extra small
-        subtitle: Under 8oz
-        cost:
-          original_amount: '5.99'
-          original_currency: USD
-          amount: '5.00'
-          currency: USD
-        courier_service: DROP_OFF
     ShippingProviderInfo:
       type: object
       required:
@@ -295,6 +257,35 @@ components:
         id: 97082934
         username: good_will_charity
         country_code: US
+    ShippingParcelCost:
+      type: object
+      required:
+      - original_amount
+      - original_currency
+      - amount
+      - currency
+      properties:
+        original_amount:
+          type: string
+          description: The original cost amount before any conversions.
+          example: '3.50'
+        original_currency:
+          type: string
+          description: The original currency code.
+          example: GBP
+        amount:
+          type: string
+          description: The cost amount (may be converted to buyer's currency).
+          example: '3.50'
+        currency:
+          type: string
+          description: The currency code for the amount.
+          example: GBP
+      example:
+        original_amount: '3.50'
+        original_currency: GBP
+        amount: '3.50'
+        currency: GBP
     ErrorItem:
       type: object
       required:
@@ -309,22 +300,6 @@ components:
           type: string
           example: Missing mandatory field
           description: The error message.
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
     SellerAddress:
       type: object
       required:
@@ -388,47 +363,72 @@ components:
         postal_code: SW1A 1AA
         country: GB
         last_modified: '2025-01-15T10:30:00Z'
-    ShippingParcelCost:
+    ShippingParcelSize:
       type: object
       required:
-      - original_amount
-      - original_currency
-      - amount
-      - currency
+      - id
+      - title
+      - subtitle
+      - cost
+      - courier_service
       properties:
-        original_amount:
+        id:
           type: string
-          description: The original cost amount before any conversions.
-          example: '3.50'
-        original_currency:
+          description: The unique identifier for the parcel size.
+          example: SMALL
+        title:
           type: string
-          description: The original currency code.
-          example: GBP
-        amount:
+          description: The display title for the parcel size.
+          example: Small parcel
+        subtitle:
           type: string
-          description: The cost amount (may be converted to buyer's currency).
-          example: '3.50'
-        currency:
+          description: Additional information about the parcel size (e.g., dimensions).
+          example: Up to 35 x 25 x 16cm
+        cost:
+          $ref: '#/components/schemas/ShippingParcelCost'
+        courier_service:
           type: string
-          description: The currency code for the amount.
-          example: GBP
+          description: 'The courier service type for this parcel size.
+
+
+            - `DROP_OFF`: Seller drops off the parcel at a designated location
+
+            - `COURIER_COLLECT`: Courier collects the parcel from the seller
+
+            - `OTHER`: Other courier service types (reserved for future use)
+
+            '
+          enum:
+          - DROP_OFF
+          - COURIER_COLLECT
+          - OTHER
+          example: DROP_OFF
       example:
-        original_amount: '3.50'
-        original_currency: GBP
-        amount: '3.50'
-        currency: GBP
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
+        id: small
+        title: Extra small
+        subtitle: Under 8oz
+        cost:
+          original_amount: '5.99'
+          original_currency: USD
+          amount: '5.00'
+          currency: USD
+        courier_service: DROP_OFF
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
   securitySchemes:
     BearerAuth:
       type: http
