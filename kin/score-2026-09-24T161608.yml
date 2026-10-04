@@ -1,21 +1,19 @@
-# Kin Score artifact — depop — 2026-09-01T222808
+# Kin Score artifact — depop — 2026-09-24T161608
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: depop
-  schema_version: 0.18.0
-  scored_at: '2026-09-01'
-  run_ts: 2026-09-01T222808
-  composite: 53.0
-  band: developing
+  schema_version: 0.22.0
+  scored_at: '2026-09-24'
+  run_ts: 2026-09-24T161608
+  composite: 55.6
+  band: strong
   facets:
     discoverability: 75.9
     contract_quality: 67.1
-    governance: 4.5
+    contract_governance: 4.5
     operational_transparency: 81.6
     developer_ergonomics: 66.1
-    commercial_clarity: 21.1
-    contract_governance: 4.5
     access_clarity: 21.1
   agent_readiness:
     score: 37.5
