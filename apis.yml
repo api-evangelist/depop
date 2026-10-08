@@ -236,6 +236,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: RateLimits
+  url: rate-limits/depop-rate-limits.yml
 - type: CapabilityMap
   url: capabilities/depop-capability-edges.yml
   name: depop Business Capability Map
