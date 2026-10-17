@@ -88,28 +88,91 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
-    PricePrediction:
-      title: PricePrediction
+    Picture:
       type: object
-      description: The price prediction range with the predicted balanced sale price and a higher and lower bound price.
+      required:
+      - url
+      - height
+      - width
       properties:
-        balanced:
+        url:
           type: string
-          description: The balanced price for the product.
-          example: '19.00'
-        prediction:
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
+    SimilarSoldItem:
+      title: SimilarSoldItem
+      type: object
+      description: A list of sold items that are similar to the product request.
+      properties:
+        picture:
+          $ref: '#/components/schemas/Picture'
+        sold_price_amount:
           type: string
-          description: The predicted price for the product. Deprecated - use 'balanced' instead.
-          example: '19.00'
-          deprecated: true
-        upper_bound:
+          description: The sale price of the item.
+          example: '50.00'
+        sold_price_currency:
           type: string
-          description: The upper bound of the predicted price range.
-          example: '22.00'
-        lower_bound:
+          description: The currency of the sale price.
+          example: GBP
+        condition:
           type: string
-          description: The lower bound of the predicted price range.
-          example: '17.00'
+          anyOf:
+          - type: string
+            enum:
+            - brand_new
+            - used_like_new
+            - used_excellent
+            - used_good
+            - used_fair
+          example: brand_new
+          description: The condition of the sold item.
+        brand_name:
+          type: string
+          description: The canonical brand name of the product.
+          example: Nike
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
+    PricingInspirationResponse:
+      title: PricingInspirationResponse
+      type: object
+      required:
+      - price_prediction
+      - similar_sold_items
+      properties:
+        price_prediction:
+          $ref: '#/components/schemas/PricePrediction'
+        similar_sold_items:
+          type: array
+          description: A best-effort list of similar sold items. May be empty if no comparable items are found, or if the similar sold items lookup is temporarily unavailable. The price prediction is still returned in either case.
+          items:
+            $ref: '#/components/schemas/SimilarSoldItem'
+          example:
+          - brand_name: Nike
+            condition: used_excellent
+            picture:
+              height: 1280
+              url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+              width: 1280
+            sold_price_amount: '50.00'
+            sold_price_currency: GBP
     PricingInspirationRequest:
       title: PricingInspirationRequest
       required:
@@ -250,60 +313,28 @@ components:
               - repaired
           example:
           - vintage
-    Picture:
+    PricePrediction:
+      title: PricePrediction
       type: object
-      required:
-      - url
-      - height
-      - width
+      description: The price prediction range with the predicted balanced sale price and a higher and lower bound price.
       properties:
-        url:
+        balanced:
           type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
+          description: The balanced price for the product.
+          example: '19.00'
+        prediction:
           type: string
-          example: missing_attribute
-          description: The error code.
-        message:
+          description: The predicted price for the product. Deprecated - use 'balanced' instead.
+          example: '19.00'
+          deprecated: true
+        upper_bound:
           type: string
-          example: Missing mandatory field
-          description: The error message.
-    PricingInspirationResponse:
-      title: PricingInspirationResponse
-      type: object
-      required:
-      - price_prediction
-      - similar_sold_items
-      properties:
-        price_prediction:
-          $ref: '#/components/schemas/PricePrediction'
-        similar_sold_items:
-          type: array
-          description: A best-effort list of similar sold items. May be empty if no comparable items are found, or if the similar sold items lookup is temporarily unavailable. The price prediction is still returned in either case.
-          items:
-            $ref: '#/components/schemas/SimilarSoldItem'
-          example:
-          - brand_name: Nike
-            condition: used_excellent
-            picture:
-              height: 1280
-              url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-              width: 1280
-            sold_price_amount: '50.00'
-            sold_price_currency: GBP
+          description: The upper bound of the predicted price range.
+          example: '22.00'
+        lower_bound:
+          type: string
+          description: The lower bound of the predicted price range.
+          example: '17.00'
     ErrorResponse:
       type: object
       properties:
@@ -320,49 +351,7 @@ components:
         errors:
         - code: product_not_found
           message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-    SimilarSoldItem:
-      title: SimilarSoldItem
-      type: object
-      description: A list of sold items that are similar to the product request.
-      properties:
-        picture:
-          $ref: '#/components/schemas/Picture'
-        sold_price_amount:
-          type: string
-          description: The sale price of the item.
-          example: '50.00'
-        sold_price_currency:
-          type: string
-          description: The currency of the sale price.
-          example: GBP
-        condition:
-          type: string
-          anyOf:
-          - type: string
-            enum:
-            - brand_new
-            - used_like_new
-            - used_excellent
-            - used_good
-            - used_fair
-          example: brand_new
-          description: The condition of the sold item.
-        brand_name:
-          type: string
-          description: The canonical brand name of the product.
-          example: Nike
   responses:
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
     Unauthorized:
       description: Unauthorized
       content:
@@ -374,6 +363,17 @@ components:
             errors:
             - code: unauthorized
               message: invalid api key
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
   securitySchemes:
     BearerAuth:
       type: http

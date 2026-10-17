@@ -175,27 +175,6 @@ components:
           - $ref: '#/components/schemas/OrderWebhook'
           - $ref: '#/components/schemas/RefundedOrder'
           - $ref: '#/components/schemas/ProductLike'
-    RefundedOrder:
-      type: object
-      required:
-      - purchase_id
-      - refunded_by
-      properties:
-        purchase_id:
-          type: string
-          description: Depop's internal purchase ID. Useful to be logged and to report any issues back to us.
-          example: '123456'
-        refunded_by:
-          type: string
-          description: 'Who triggered the refund. Can be either PARTNER or DEPOP.
-
-            PARTNER indicates the refund was requested by a partner via the API, or in the Depop app.
-
-            DEPOP indicates the refund was triggered by Depop, for example due to a dispute or if the order was auto-cancelled.'
-          enum:
-          - PARTNER
-          - DEPOP
-          example: PARTNER
     OrderLineItem:
       type: object
       required:
@@ -374,6 +353,40 @@ components:
           type: string
           description: The phone number of the buyer.
           example: 07123456789
+    RefundedOrder:
+      type: object
+      required:
+      - purchase_id
+      - refunded_by
+      properties:
+        purchase_id:
+          type: string
+          description: Depop's internal purchase ID. Useful to be logged and to report any issues back to us.
+          example: '123456'
+        refunded_by:
+          type: string
+          description: 'Who triggered the refund. Can be either PARTNER or DEPOP.
+
+            PARTNER indicates the refund was requested by a partner via the API, or in the Depop app.
+
+            DEPOP indicates the refund was triggered by Depop, for example due to a dispute or if the order was auto-cancelled.'
+          enum:
+          - PARTNER
+          - DEPOP
+          example: PARTNER
+    DepopShippingResponse:
+      type: object
+      required:
+      - shipping_provider_id
+      properties:
+        shipping_provider_id:
+          type: string
+          description: 'The identifier for the shipping provider used for this order.
+
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+      example:
+        shipping_provider_id: USPS
     ProductLike:
       type: object
       required:
@@ -402,19 +415,6 @@ components:
           type: number
           description: The Depop user ID of the user who liked or unliked the product.
           example: 789012
-    DepopShippingResponse:
-      type: object
-      required:
-      - shipping_provider_id
-      properties:
-        shipping_provider_id:
-          type: string
-          description: 'The identifier for the shipping provider used for this order.
-
-            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
-          example: USPS
-      example:
-        shipping_provider_id: USPS
   securitySchemes:
     BearerAuth:
       type: http
