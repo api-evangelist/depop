@@ -1,0 +1,33 @@
+openapi: 3.2.0
+info:
+  title: Seller Docs API
+  version: 1.0.0
+  description: Externally facing API to allow enterprise partners to automate listing on Depop.
+servers:
+- url: https://partnerapi-staging.depop.com
+- url: https://partnerapi.depop.com
+security:
+- BearerAuth: []
+tags:
+- name: Docs
+paths:
+  /api-docs/openapi.yaml:
+    get:
+      summary: Get the latest version of the OpenAPI specification (this document)
+      description: 'This endpoint returns the latest version of the OpenAPI specification for the Depop API.
+
+        You can use this to generate client libraries or to understand the API better.
+
+        The OpenAPI specification is in YAML format and can be used with tools like Swagger UI or Postman.'
+      operationId: getOpenAPISpec
+      tags:
+      - Docs
+      responses:
+        '200':
+          description: OK
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key

@@ -1,7 +1,7 @@
 {
   "provider": "depop",
   "sources": [
-    "_original/depop-selling-openapi-original.yml"
+    "_original/depop-openapi.yml"
   ],
   "outputs": [
     "depop-api-status-api-openapi.yml",
@@ -16,35 +16,27 @@
     "depop-products-by-slug-api-openapi.yml",
     "depop-products-legacy-deprecated-api-openapi.yml",
     "depop-seller-api-api-openapi.yml",
-    "depop-shop-management-api-openapi.yml"
+    "depop-shop-management-api-openapi.yml",
+    "depop-webhook-configuration-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
-    "depop-selling-openapi-original.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "depop-selling-openapi-original.yml: tagged webhooks POST newOrder -> Seller API",
-    "depop-selling-openapi-original.yml: tagged webhooks POST orderRefunded -> Seller API",
-    "depop-selling-openapi-original.yml: tagged webhooks POST productLiked -> Seller API",
-    "depop-selling-openapi-original.yml: tagged webhooks POST productUnliked -> Seller API",
-    "depop-selling-openapi-original.yml: declared missing tag: Docs",
-    "depop-selling-openapi-original.yml: declared missing tag: Seller API",
-    "apis.yml register: already-registered"
+    "depop-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "depop-openapi.yml: tagged webhooks POST newOrder -> Seller API",
+    "depop-openapi.yml: tagged webhooks POST orderRefunded -> Seller API",
+    "depop-openapi.yml: tagged webhooks POST orderUpdated -> Seller API",
+    "depop-openapi.yml: tagged webhooks POST productLiked -> Seller API",
+    "depop-openapi.yml: tagged webhooks POST productUnliked -> Seller API",
+    "depop-openapi.yml: tagged webhooks POST productCreated -> Seller API",
+    "depop-openapi.yml: tagged webhooks POST productUpdated -> Seller API",
+    "depop-openapi.yml: declared missing tag: Docs",
+    "depop-openapi.yml: declared missing tag: Seller API",
+    "apis.yml register: written (+1 apis, 14 total)"
   ],
   "skipped": [
-    "depop-api-status-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-authentication-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-docs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-insights-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-pricing-inspiration-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-products-by-product-id-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-products-by-sku-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-products-by-slug-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-products-legacy-deprecated-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-seller-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "depop-shop-management-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+    "depop-seller-api-api-openapi.yml: previously refined output, superseded by openapi/_original/"
   ]
 }

@@ -2,7 +2,34 @@ openapi: 3.2.0
 info:
   title: Seller Products API
   version: 1.0.0
-  description: Externally facing API to allow enterprise partners to automate listing on Depop.
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
 servers:
 - url: https://partnerapi-staging.depop.com
 - url: https://partnerapi.depop.com
@@ -116,7 +143,7 @@ paths:
         It can return a maximum of 100 products at a time and can be paginated using the `cursor` parameter by providing the `cursor` found in the `meta` object.
 
 
-        The products are returned in descending order, with the latest product added shown first.'
+        By default the products are returned in descending order by product ID, with the latest product added shown first. Use the `sort_by` parameter to change the ordering.'
       operationId: getAllProducts
       parameters:
       - name: limit
@@ -134,12 +161,13 @@ paths:
           type: string
       - name: sort_by
         in: query
-        description: Sort order for products by product ID. `id_desc` returns products in descending order (newest first), `id_asc` returns products in ascending order (oldest first). Default is `id_desc`.
+        description: Sort order for products. `id_desc` returns products in descending order by product ID (newest first), `id_asc` returns products in ascending order by product ID (oldest first), `created_date_desc` returns products in descending order by creation date (most recently created first). Default is `id_desc`.
         schema:
           type: string
           enum:
           - id_desc
           - id_asc
+          - created_date_desc
           default: id_desc
         example: id_desc
       - name: state
@@ -152,6 +180,20 @@ paths:
           - sold
           - all
         example: selling
+      - name: from_created_date
+        in: query
+        description: Only return products created on or after this date. Must be an ISO-8601 datetime (e.g. `2025-01-01T00:00:00Z`). When not provided, there is no lower bound on creation date.
+        schema:
+          type: string
+          format: date-time
+        example: '2025-01-01T00:00:00Z'
+      - name: to_created_date
+        in: query
+        description: Only return products created on or before this date. Must be an ISO-8601 datetime (e.g. `2025-12-31T23:59:59Z`). When not provided, there is no upper bound on creation date. When both bounds are provided, `from_created_date` must be before or equal to `to_created_date`, otherwise the request is rejected with `422 Unprocessable Entity`.
+        schema:
+          type: string
+          format: date-time
+        example: '2025-12-31T23:59:59Z'
       responses:
         '200':
           description: This returns all the products you have listed on Depop.
@@ -185,7 +227,132 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
+    ProductUnprocessableEntity:
+      description: Unprocessable Entity - the product failed validation, or the seller's Depop account is not currently able to list items. Retrying the same request will not help until the product or the seller's account is fixed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            tooManyPictures:
+              summary: Too many pictures provided
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: too_many_pictures
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because too many pictures were provided. The maximum is 8 pictures.'
+            invalidBrand:
+              summary: Invalid brand name
+              value:
+                id: b320134g-d2g4-5e95-b3ce-8g29d79664f3
+                errors:
+                - code: invalid_brand
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid brand. Please check the brand configuration.'
+            invalidSize:
+              summary: Invalid size configuration
+              value:
+                id: c431245h-e3h5-6f06-c4df-9h30e80775g4
+                errors:
+                - code: invalid_size
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid size. Please check the size configuration.'
+            invalidDescription:
+              summary: Invalid description (too many hashtags)
+              value:
+                id: d5423561-f416-4a17-b5e0-0141f91886c5
+                errors:
+                - code: invalid_description
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid description. Use a maximum of 5 hashtags and only tag the brand your item belongs to.'
+            invalidCategory:
+              summary: Invalid category (missing department/gender)
+              value:
+                id: e6534670-a5b7-4c28-ae6f-1a52c02997d6
+                errors:
+                - code: invalid_department
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid category. Please ensure a valid department (gender) is provided.'
+            manualShippingNotAllowed:
+              summary: Manual shipping not allowed for user
+              value:
+                id: f7645780-a6b8-4c39-b7e1-2a63c13008d7
+                errors:
+                - code: manual_shipping_not_allowed
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because manual shipping is not allowed for this user.'
+            sellerOnboardingIncomplete:
+              summary: Seller has not finished onboarding with Depop
+              description: The seller has outstanding onboarding requirements on their Depop account (for example they have not set up how they get paid), so they cannot list items yet. The seller needs to complete onboarding in the Depop app before the product can be created or updated. Do not retry until they have.
+              value:
+                id: c9978a02-d9e1-4f62-ea04-5d96f46331a0
+                errors:
+                - code: seller_onboarding_incomplete
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because the seller has not finished onboarding with Depop. The seller needs to complete their outstanding onboarding requirements in the Depop app before they can list items.'
+            duplicateSku:
+              summary: SKU already belongs to another product
+              value:
+                id: b6e99a15-5c35-47a5-9af8-d649d3cb2e41
+                errors:
+                - code: duplicate_sku
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because that SKU already belongs to another product. SKUs must be unique.'
+            pictureNotOwned:
+              summary: Depop-hosted picture belongs to another user
+              value:
+                id: a8756891-b7c9-4d40-c8f2-3b74d24119e8
+                errors:
+                - code: validation
+                  message: Depop Picture URL https://media-photos.depop.com/b1/11111111/2151170221_29b7a3284c084ba9ac5e5735be0a7bf7/P0.jpg does not belong to the requesting user
+            pictureNotValid:
+              summary: Depop-hosted picture is not valid or no longer exists
+              value:
+                id: b9867902-c8d0-4e51-d9a3-4c85e35220f9
+                errors:
+                - code: validation
+                  message: Depop Picture URL https://media-photos.depop.com/b1/111111/2151170221_29b7a3284c084ba9ac5e5735be0a7bf7/P0.jpg could not be processed because it is not valid or no longer exists
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
+    UnprocessableEntity:
+      description: Unprocessable Entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: validation
+              message: Missing fields for request
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
   schemas:
     PublicPicture:
       type: object
@@ -198,7 +365,9 @@ components:
 
             Non-square images are also supported.
 
-            Currently, we support JPG, WebP and PNG image formats.'
+            Currently, we support JPG, WebP and PNG image formats.
+
+            If a Depop hosted picture URL is provided (`media-photos.depop.com`), it must reference a picture belonging to the requesting user and that picture must still exist. URLs pointing at another user''s picture, or at a picture that no longer exists or is invalid, are rejected with a `422` validation error. External URLs (not hosted on `media-photos.depop.com`) are unaffected.'
           example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
     ProductCreateOrUpdateResponse:
       type: object
@@ -226,70 +395,6 @@ components:
         product_id: 12345678
         slug: vintage-nike-t-shirt-12345678
         sku: ABC-12345-S-BL
-    Picture:
-      type: object
-      required:
-      - url
-      - height
-      - width
-      properties:
-        url:
-          type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
-    DepopShippingDetails:
-      type: object
-      required:
-      - address_id
-      - shipping_provider_id
-      - parcel_size_id
-      - payer
-      properties:
-        address_id:
-          type: integer
-          format: int64
-          description: 'The ID of the seller address to ship from.
-
-            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
-
-            The address determines which shipping providers and parcel sizes are available.'
-          example: 123456
-        shipping_provider_id:
-          type: string
-          description: 'The identifier for the shipping provider.
-
-            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
-
-            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
-          example: USPS
-        parcel_size_id:
-          type: string
-          description: 'The identifier for the parcel size.
-
-            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
-
-            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
-          example: SMALL
-        payer:
-          type: string
-          description: 'Who pays for the shipping cost.
-
-            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
-          enum:
-          - buyer
-          - seller
-          example: buyer
-      example:
-        address_id: 123456
-        shipping_provider_id: USPS
-        parcel_size_id: SMALL
-        payer: buyer
     ProductCreateRequest:
       type: object
       required:
@@ -488,6 +593,84 @@ components:
 
             You don''t need to send this with `true` if you have a "boosted shop" or you''re part of the "free boost trial".'
           example: false
+    DepopShippingDetails:
+      type: object
+      required:
+      - address_id
+      - shipping_provider_id
+      - parcel_size_id
+      - payer
+      properties:
+        address_id:
+          type: integer
+          format: int64
+          description: 'The ID of the seller address to ship from.
+
+            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
+
+            The address determines which shipping providers and parcel sizes are available.'
+          example: 123456
+        shipping_provider_id:
+          type: string
+          description: 'The identifier for the shipping provider.
+
+            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
+
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+        parcel_size_id:
+          type: string
+          description: 'The identifier for the parcel size.
+
+            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
+
+            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
+          example: SMALL
+        payer:
+          type: string
+          description: 'Who pays for the shipping cost.
+
+            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
+          enum:
+          - buyer
+          - seller
+          example: buyer
+      example:
+        address_id: 123456
+        shipping_provider_id: USPS
+        parcel_size_id: SMALL
+        payer: buyer
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    Address:
+      type: object
+      required:
+      - country_code
+      properties:
+        country_code:
+          type: string
+          example: GB
+        state:
+          type: string
+          description: The state/county of the product's address.
+          example: Greater London
+      example:
+        country_code: GB
+        state: Greater London
     Product:
       type: object
       properties:
@@ -541,6 +724,10 @@ components:
         current_price:
           type: string
           description: The current effective price of the item, reflecting any active discount. Equal to price_amount when no discount is applied.
+          example: '45.99'
+        discount_price:
+          type: string
+          description: The discounted price of the item. Only present when the seller has an active discount on the product.
           example: '45.99'
         auto_send_offer_price:
           type: string
@@ -798,6 +985,23 @@ components:
       - is_boosted
       - created_at
       - updated_at
+    Picture:
+      type: object
+      required:
+      - url
+      - height
+      - width
+      properties:
+        url:
+          type: string
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
     ErrorItem:
       type: object
       required:
@@ -812,120 +1016,6 @@ components:
           type: string
           example: Missing mandatory field
           description: The error message.
-    Address:
-      type: object
-      required:
-      - country_code
-      properties:
-        country_code:
-          type: string
-          example: GB
-        state:
-          type: string
-          description: The state/county of the product's address.
-          example: Greater London
-      example:
-        country_code: GB
-        state: Greater London
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-  responses:
-    ProductUnprocessableEntity:
-      description: Unprocessable Entity - product validation error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            tooManyPictures:
-              summary: Too many pictures provided
-              value:
-                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-                errors:
-                - code: too_many_pictures
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because too many pictures were provided. The maximum is 8 pictures.'
-            invalidBrand:
-              summary: Invalid brand name
-              value:
-                id: b320134g-d2g4-5e95-b3ce-8g29d79664f3
-                errors:
-                - code: invalid_brand
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid brand. Please check the brand configuration.'
-            invalidSize:
-              summary: Invalid size configuration
-              value:
-                id: c431245h-e3h5-6f06-c4df-9h30e80775g4
-                errors:
-                - code: invalid_size
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid size. Please check the size configuration.'
-            invalidDescription:
-              summary: Invalid description (too many hashtags)
-              value:
-                id: d5423561-f416-4a17-b5e0-0141f91886c5
-                errors:
-                - code: invalid_description
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid description. Use a maximum of 5 hashtags and only tag the brand your item belongs to.'
-            invalidCategory:
-              summary: Invalid category (missing department/gender)
-              value:
-                id: e6534670-a5b7-4c28-ae6f-1a52c02997d6
-                errors:
-                - code: invalid_department
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) due to invalid category. Please ensure a valid department (gender) is provided.'
-            manualShippingNotAllowed:
-              summary: Manual shipping not allowed for user
-              value:
-                id: f7645780-a6b8-4c39-b7e1-2a63c13008d7
-                errors:
-                - code: manual_shipping_not_allowed
-                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because manual shipping is not allowed for this user.'
-    Forbidden:
-      description: Forbidden - Insufficient scope
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: insufficient_scope
-              message: 'Required scope: products_write'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
   securitySchemes:
     BearerAuth:
       type: http

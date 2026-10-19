@@ -1,0 +1,565 @@
+openapi: 3.2.0
+info:
+  title: Seller Webhook Configuration API
+  version: 1.0.0
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
+servers:
+- url: https://partnerapi-staging.depop.com
+- url: https://partnerapi.depop.com
+security:
+- BearerAuth: []
+tags:
+- name: Webhook Configuration
+  description: Webhook configuration management for receiving Depop event notifications
+paths:
+  /api/v1/webhooks/:
+    get:
+      tags:
+      - Webhook Configuration
+      summary: Get all webhook configurations
+      description: 'This endpoint returns all of your webhook configurations, keyed by webhook ID.
+
+        Webhook secrets are only returned once, when a configuration is created, and are not included in this response.
+
+        Event types are returned as they were supplied, so wildcard subscriptions such as `v1:order.*` are returned verbatim rather than expanded into individual event types.'
+      operationId: getWebhooks
+      responses:
+        '200':
+          description: All of your webhook configurations, keyed by webhook ID. If you have no webhook configurations an empty object is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWebhooksResponse'
+              example:
+                33a735f2-e68f-49b4-8192-45fb7ec50ce6:
+                  url: https://example.com/webhooks
+                  enabled: true
+                  event_types:
+                  - v1:order.*
+                  - v1:product.update
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+    post:
+      tags:
+      - Webhook Configuration
+      summary: Create a new webhook configuration
+      description: 'This endpoint allows you to create a new webhook configuration.
+
+        A maximum of 10 webhook configurations can be created at any time.'
+      operationId: createNewWebhookConfig
+      requestBody:
+        description: Webhook creation request payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreationRequest'
+            example:
+              url: https://example.com/webhooks
+              enabled: true
+              event_types:
+              - v1:order.*
+              - v1:product.update
+        required: true
+      responses:
+        '200':
+          description: Webhook configuration was created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookCreationResponse'
+              example:
+                webhook_id: 33a735f2-e68f-49b4-8192-45fb7ec50ce6
+                secret: rncxmdh5v2b37etli3ajb0e8f3xvopel
+        '400':
+          $ref: '#/components/responses/WebhookCreationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/WebhookConflictError'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+  /api/v1/webhooks/{webhookConfigId}/:
+    patch:
+      tags:
+      - Webhook Configuration
+      summary: Update a webhook configuration
+      description: 'This endpoint allows you to partially update an existing webhook configuration.
+
+        At least one of `url`, `enabled` or `event_types` must be provided. Any field which is not provided keeps its current value. If `event_types` is provided it replaces the existing list entirely rather than being merged with it.'
+      operationId: updateWebhookConfig
+      parameters:
+      - name: webhookConfigId
+        in: path
+        description: The ID of the webhook configuration to be updated.
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: aa04e55c-9ead-4050-979e-394bdb2e953e
+      requestBody:
+        description: Webhook update request payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookUpdateRequest'
+            example:
+              enabled: false
+        required: true
+      responses:
+        '200':
+          description: Webhook configuration was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookUpdateResponse'
+              example:
+                webhook_id: 33a735f2-e68f-49b4-8192-45fb7ec50ce6
+                url: https://example.com/webhooks
+                enabled: false
+                event_types:
+                - v1:order.*
+                - v1:product.update
+        '400':
+          $ref: '#/components/responses/WebhookUpdateError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/WebhookNotFoundError'
+        '409':
+          $ref: '#/components/responses/WebhookConflictError'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+    delete:
+      tags:
+      - Webhook Configuration
+      summary: Delete a webhook configuration
+      description: This endpoint allows you to delete a webhook configuration.
+      operationId: deleteWebhookConfig
+      parameters:
+      - name: webhookConfigId
+        in: path
+        description: The ID of the webhook configuration to be deleted.
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: aa04e55c-9ead-4050-979e-394bdb2e953e
+      responses:
+        '204':
+          description: Webhook configuration was successfully deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/WebhookNotFoundError'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+components:
+  schemas:
+    WebhookDetails:
+      type: object
+      required:
+      - url
+      - enabled
+      - event_types
+      properties:
+        url:
+          type: string
+          format: url
+          description: The URL where incoming webhooks will be received.
+        enabled:
+          type: boolean
+          description: Whether this webhook configuration is enabled.
+        event_types:
+          $ref: '#/components/schemas/WebhookEventTypes'
+      example:
+        url: https://example.com/webhooks
+        enabled: true
+        event_types:
+        - v1:order.*
+        - v1:product.update
+    WebhookCreationResponse:
+      type: object
+      required:
+      - webhook_id
+      - secret
+      properties:
+        webhook_id:
+          type: string
+          format: uuid
+          description: The ID of the newly created webhook configuration.
+        secret:
+          type: string
+          description: 'The secret which can be used to verify that incoming webhooks were generated by Depop.
+
+            Use this string as-is as the HMAC-SHA256 key when verifying the `X-Depop-Signature` header — do not base64-decode it. It should be kept secret and never shared with anyone. You can use this secret to verify the legitimacy of webhooks by following the guide at https://partnerapi.depop.com/api-docs/how-to-guides/validate-webhooks/.'
+      example:
+        webhook_id: 33a735f2-e68f-49b4-8192-45fb7ec50ce6
+        secret: rncxmdh5v2b37etli3ajb0e8f3xvopel
+    RateLimitErrorResponse:
+      type: object
+      description: Error body returned when a rate limit is exceeded.
+      properties:
+        error:
+          type: string
+          example: TOO_MANY_REQUESTS
+          description: The error code.
+        error_description:
+          type: string
+          example: Too many requests
+          description: A short description of the error.
+        error_message:
+          type: string
+          example: Too many requests. Please try again in 1 minute.
+          description: Descriptive message of the error.
+        message:
+          type: string
+          example: Too many requests. Please try again in 1 minute.
+          description: Descriptive message of the error.
+        detail:
+          type: string
+          example: 'Too many requests made with client id: 1234abcd. Retry after 1 minute.'
+          description: 'Which limit was exceeded: `user id` for a per-seller limit, `client id` for the per-client limit.'
+        id:
+          type: string
+          example: 2f3d3b1a-6b6a-4b7e-9d43-3f8f1e9b6a51
+          description: A unique identifier for the error response.
+        code:
+          type: integer
+          example: 429
+          description: The HTTP status code.
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    WebhookUpdateRequest:
+      type: object
+      minProperties: 1
+      description: A partial update to a webhook configuration. At least one of `url`, `enabled` or `event_types` must be provided. Any field which is not provided keeps its current value.
+      properties:
+        url:
+          type: string
+          format: url
+          description: The publicly accessible URL where you wish to receive incoming webhooks. This must be a valid HTTPS url.
+        enabled:
+          type: boolean
+          description: If this webhook configuration is enabled webhooks will be sent to the configured URL. If enabled is false no webhooks will be sent.
+        event_types:
+          $ref: '#/components/schemas/WebhookEventTypes'
+      example:
+        enabled: false
+    GetWebhooksResponse:
+      type: object
+      description: A map of webhook configuration IDs to their details.
+      additionalProperties:
+        $ref: '#/components/schemas/WebhookDetails'
+      example:
+        33a735f2-e68f-49b4-8192-45fb7ec50ce6:
+          url: https://example.com/webhooks
+          enabled: true
+          event_types:
+          - v1:order.*
+          - v1:product.update
+    WebhookCreationRequest:
+      type: object
+      required:
+      - url
+      - enabled
+      - event_types
+      properties:
+        url:
+          type: string
+          format: url
+          description: The publicly accessible URL where you wish to receive incoming webhooks. This must be a valid HTTPS url.
+        enabled:
+          type: boolean
+          description: If this webhook configuration is enabled webhooks will be sent to the configured URL. If enabled is false no webhooks will be sent.
+        event_types:
+          $ref: '#/components/schemas/WebhookEventTypes'
+      example:
+        url: https://example.com/webhooks
+        enabled: true
+        event_types:
+        - v1:order.*
+        - v1:product.update
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
+    WebhookEventTypes:
+      type: array
+      minItems: 1
+      items:
+        type: string
+        enum:
+        - v1:*
+        - v1:order.*
+        - v1:product.*
+        - v1:order.new
+        - v1:order.refund
+        - v1:order.update
+        - v1:product.create
+        - v1:product.like
+        - v1:product.unlike
+        - v1:product.update
+      description: "The Depop event types you wish to receive webhooks for.\nEvent types can either be the full name of an event, e.g. `v1:order.new`, or an event prefix with a wildcard. For example, if you wished to subscribe to all `v1` events you could supply the event type `v1:*`, or if you wished to subscribe to all order events `v1:order.*`. Supplying a wildcard will also automatically subscribe you to any new events created in future which match that scheme.\nWildcards must specify an event version, and can optionally supply a resource, however this cannot be a partial resource. See below for some examples:\nValid:\n  - v1:*\n  - v1:order.*\n  - v1:product.*\n\nInvalid:\n  - *\n  - v1*\n  - v1:ord*\n  - v1:product.*like\n  - v1:product.u*"
+    WebhookUpdateResponse:
+      type: object
+      required:
+      - webhook_id
+      - url
+      - enabled
+      - event_types
+      properties:
+        webhook_id:
+          type: string
+          format: uuid
+          description: The ID of the updated webhook configuration.
+        url:
+          type: string
+          format: url
+          description: The URL where incoming webhooks will be received.
+        enabled:
+          type: boolean
+          description: Whether this webhook configuration is enabled.
+        event_types:
+          $ref: '#/components/schemas/WebhookEventTypes'
+      example:
+        webhook_id: 33a735f2-e68f-49b4-8192-45fb7ec50ce6
+        url: https://example.com/webhooks
+        enabled: false
+        event_types:
+        - v1:order.*
+        - v1:product.update
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
+    BadGateway:
+      description: Bad Gateway - an upstream service required to build the insights response failed or returned an unexpected response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unexpected_response
+              message: An upstream request at depop has failed to be processed.
+    TooManyRequests:
+      description: Too Many Requests - the rate limit for a shop or seller, or the overall limit for your integration, has been exceeded.
+      headers:
+        Retry-After:
+          description: Number of seconds to wait before retrying.
+          schema:
+            type: integer
+            example: 60
+        X-RateLimit-Limit:
+          description: The size of the allowance that was exceeded.
+          schema:
+            type: integer
+            example: 30000
+        X-RateLimit-Remaining:
+          description: Requests remaining in that allowance.
+          schema:
+            type: integer
+            example: 0
+        X-RateLimit-Reset:
+          description: Unix timestamp (seconds) at which the allowance is fully restored.
+          schema:
+            type: integer
+            example: 1788778800
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RateLimitErrorResponse'
+          example:
+            error: TOO_MANY_REQUESTS
+            error_description: Too many requests
+            error_message: Too many requests. Please try again in 1 minute.
+            message: Too many requests. Please try again in 1 minute.
+            detail: 'Too many requests made with client id: 1234abcd. Retry after 1 minute.'
+            id: 2f3d3b1a-6b6a-4b7e-9d43-3f8f1e9b6a51
+            code: 429
+    Forbidden:
+      description: Forbidden - Insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: insufficient_scope
+              message: 'Required scope: products_write'
+    WebhookNotFoundError:
+      description: Webhook configuration was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: webhook_config_not_found
+              message: Webhook config with id '<WEBHOOK_CONFIG_ID>' not found.
+    WebhookCreationError:
+      description: Webhook creation request was invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            webhookCreationLimitError:
+              summary: Webhook configuration limit reached.
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: webhook_limit_reached
+                  message: Limit of 10 webhooks has been reached.
+            webhookCreationInvalidUrlError:
+              summary: Webhook configuration must contain a valid HTTPS url.
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: webhook_url_invalid
+                  message: '''<URL>'' is not a valid HTTPS url.'
+            unknownEventTypeError:
+              summary: An invalid event type was given.
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: unknown_event_type
+                  message: '''<EVENT_TYPE>'' is not a valid event type.'
+            webhookCreationNoEventsError:
+              summary: Webhook configuration specified no events.
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: no_events
+                  message: At least 1 event type must be subscribed to.
+    WebhookConflictError:
+      description: A webhook configuration with the given URL already exists.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: webhook_url_conflict
+              message: 'A webhook with url ''<URL>'' already exists (webhook_id: ''<WEBHOOK_ID>'').'
+    WebhookUpdateError:
+      description: Webhook update request was invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            emptyUpdateError:
+              summary: No fields were provided to update.
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: empty_update
+                  message: At least one of 'url', 'enabled' or 'event_types' must be provided.
+            webhookUpdateInvalidUrlError:
+              summary: Webhook configuration must contain a valid HTTPS url.
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: webhook_url_invalid
+                  message: '''<URL>'' is not a valid HTTPS url.'
+            unknownEventTypeError:
+              summary: An invalid event type was given.
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: unknown_event_type
+                  message: '''<EVENT_TYPE>'' is not a valid event type.'
+            webhookUpdateNoEventsError:
+              summary: Webhook configuration specified no events.
+              value:
+                id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+                errors:
+                - code: no_events
+                  message: At least 1 event type must be subscribed to.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key

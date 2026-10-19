@@ -230,6 +230,16 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/depop-seller-api-api-openapi.yml
+- aid: depop:depop-webhook-configuration-api
+  name: depop Webhook Configuration API
+  description: Webhook configuration management for receiving Depop event notifications
+  humanURL: https://partnerapi.depop.com/api-docs/
+  baseURL: https://partnerapi.depop.com
+  tags:
+  - Webhook Configuration
+  properties:
+  - type: OpenAPI
+    url: openapi/depop-webhook-configuration-api-openapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

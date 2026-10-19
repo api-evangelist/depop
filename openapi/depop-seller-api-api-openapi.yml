@@ -2,7 +2,34 @@ openapi: 3.2.0
 info:
   title: Seller API
   version: 1.0.0
-  description: Externally facing API to allow enterprise partners to automate listing on Depop.
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
 servers:
 - url: https://partnerapi-staging.depop.com
 - url: https://partnerapi.depop.com
@@ -92,6 +119,71 @@ webhooks:
           description: Acknowledgment.
       tags:
       - Seller API
+  orderUpdated:
+    post:
+      summary: '`v1:order.update` Order updated webhook'
+      description: 'This webhook is sent whenever the shipping status of an order changes, for example when the parcel enters transit or is delivered.
+
+        The payload has the same shape as the `v1:order.new` webhook, with `status` reflecting the new status of the order.
+
+        **Required OAuth Scope:** `orders_read`
+
+        **Notes:**
+
+        - `status` is derived from the carrier tracking status as follows: `AWAITING_SHIPPING` → `SHIPPING_PENDING`, `IN_TRANSIT` → `SHIPPED`, `DELIVERED` → `COMPLETED`, `RETURNED` → `REFUNDED`, `CANCELLED` → `CANCELLED`, `FAILED` → `FAILED`. Any other tracking status does not produce a webhook.
+
+        - Only orders using Depop managed shipping produce this webhook. Orders where the seller arranges shipping themselves are not covered yet.
+
+        - The `id` is derived from the purchase ID, so every update for a given order shares the same `id`. Do not use it on its own to de-duplicate deliveries.
+
+        - Delivery is best effort. Please use the orders endpoint to reconcile if you need a guaranteed up-to-date view of an order.'
+      operationId: orderUpdatedWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Webhook'
+            example:
+              id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+              event_type: v1:order.update
+              created_at: '2025-01-01T00:00:00Z'
+              data:
+                seller_id: 123456
+                purchase_id: '123456'
+                status: SHIPPED
+                currency: GBP
+                buyer_pays_amount: '50.99'
+                seller_receives_amount: '45.99'
+                fee_amount: '5.00'
+                buyer_shipping_price: '5.00'
+                buyer_address:
+                  name: John Doe
+                  address: 123 Main St
+                  address2: Apt 1
+                  city: London
+                  postal_code: EC1V 4PW
+                  state: Greater London
+                  country: GB
+                  phone_number: 07123456789
+                line_items:
+                - purchase_item_id: 2385551
+                  sku: ABC-12345-S-BL
+                  product_id: 7021251
+                  slug: vintage-nike-t-shirt-7021251
+                  parcel_id: 6e3538ca-6653-3c25-bf0a-a2be876b17e4
+                  description: Vintage Nike T-Shirt in excellent condition. Black with white swoosh logo on the front.
+                  original_price: '29.99'
+                  sold_price: '25.99'
+                  sold_via_offers: false
+                  image_url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+                depop_shipping:
+                  shipping_provider_id: USPS
+      responses:
+        '200':
+          description: Acknowledgment.
+      tags:
+      - Seller API
   productLiked:
     post:
       summary: '`v1:product.like` Product liked webhook'
@@ -146,8 +238,341 @@ webhooks:
           description: Acknowledgment.
       tags:
       - Seller API
+  productCreated:
+    post:
+      summary: '`v1:product.create` Product created webhook'
+      description: 'This webhook is sent whenever a product is created in your shop on Depop, whether the listing was made through this API or by the seller in the Depop app or website.
+
+        The payload contains the full state of the newly created product, in the same shape as the response of GET `/api/v1/products/by-sku/{sku}/`. You can use this webhook to pick up new listings as they appear without polling the products endpoints.
+
+        **Required OAuth Scope:** `products_read`
+
+        **Notes:**
+
+        - `product_id` and `slug` are stable for the lifetime of a product, `product_id` is the safest key to match the payload against your own records. Assume every other field can change after creation, including `sku`.
+
+        - `auto_send_offer_price` and `auto_negotiate_offer_price` are never included in this payload. Use GET `/api/v1/products/by-sku/{sku}/` with the `offers_read` scope if you need the current offer pricing.
+
+        - Delivery is best effort. Please use the products endpoints to reconcile if you need a guaranteed up-to-date view of your shop.'
+      operationId: productCreatedWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Webhook'
+            example:
+              id: e653267i-g5j7-8h28-e6fh-1j52g02997i6
+              event_type: v1:product.create
+              created_at: '2025-01-01T00:00:00Z'
+              data:
+                seller_id: 123456
+                product:
+                  sku: ABC-12345-S-BL
+                  product_id: 7021251
+                  slug: vintage-nike-t-shirt-7021251
+                  status: STATUS_ONSALE
+                  address:
+                    country_code: GB
+                    state: Greater London
+                  description: 'Vintage Nike T-Shirt in excellent condition.
+
+                    Black with white swoosh logo on the front.
+
+
+                    #vintage #nike'
+                  price_currency: GBP
+                  price_amount: '25.99'
+                  current_price: '25.99'
+                  national_shipping_cost: '3.50'
+                  international_shipping_cost: '12.00'
+                  quantity: 1
+                  pictures:
+                  - url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+                    height: 1280
+                    width: 1280
+                  department: menswear
+                  product_type: tshirts
+                  size_set_id: 52
+                  size_id: 10
+                  condition: used_excellent
+                  colour:
+                  - black
+                  - white
+                  style:
+                  - streetwear
+                  age:
+                  - 90s
+                  source:
+                  - vintage
+                  attributes:
+                    material:
+                    - cotton
+                  brand: Nike
+                  is_boosted: false
+                  created_at: '2025-01-01T00:00:00Z'
+                  updated_at: '2025-01-01T00:00:00Z'
+      responses:
+        '200':
+          description: Acknowledgment.
+      tags:
+      - Seller API
+  productUpdated:
+    post:
+      summary: '`v1:product.update` Product updated webhook'
+      description: 'This webhook is sent whenever a product in your shop is updated on Depop, whether the change was made through this API or by the seller in the Depop app or website.
+
+        The payload contains the full, current state of the product, in the same shape as the response of GET `/api/v1/products/by-sku/{sku}/`. You can use this webhook to keep your own catalogue in sync without polling the products endpoints.
+
+        **Required OAuth Scope:** `products_read`
+
+        **Notes:**
+
+        - `product_id` and `slug` are stable for the lifetime of a product, `product_id` is the safest key to match the payload against your own records. Assume every other field can change between updates, including `sku`.
+
+        - `quantity` reflects the live stock level at the time the webhook was generated, which may differ from the quantity that was set by the update itself (for example if the product also sold).
+
+        - `auto_send_offer_price` and `auto_negotiate_offer_price` are never included in this payload. Use GET `/api/v1/products/by-sku/{sku}/` with the `offers_read` scope if you need the current offer pricing.
+
+        - Delivery is best effort. Please use the products endpoints to reconcile if you need a guaranteed up-to-date view of a product.'
+      operationId: productUpdatedWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Webhook'
+            example:
+              id: d542156h-f4i6-7g17-d5eg-0i41f91886h5
+              event_type: v1:product.update
+              created_at: '2025-01-01T00:00:00Z'
+              data:
+                seller_id: 123456
+                product:
+                  sku: ABC-12345-S-BL
+                  product_id: 7021251
+                  slug: vintage-nike-t-shirt-7021251
+                  status: STATUS_ONSALE
+                  address:
+                    country_code: GB
+                    state: Greater London
+                  description: 'Vintage Nike T-Shirt in excellent condition.
+
+                    Black with white swoosh logo on the front.
+
+
+                    #vintage #nike'
+                  price_currency: GBP
+                  price_amount: '25.99'
+                  current_price: '24.00'
+                  discount_price: '24.00'
+                  national_shipping_cost: '3.50'
+                  international_shipping_cost: '12.00'
+                  quantity: 1
+                  pictures:
+                  - url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+                    height: 1280
+                    width: 1280
+                  department: menswear
+                  product_type: tshirts
+                  size_set_id: 52
+                  size_id: 10
+                  condition: used_excellent
+                  colour:
+                  - black
+                  - white
+                  style:
+                  - streetwear
+                  age:
+                  - 90s
+                  source:
+                  - vintage
+                  attributes:
+                    material:
+                    - cotton
+                  brand: Nike
+                  is_boosted: false
+                  created_at: '2024-01-15T10:30:00Z'
+                  updated_at: '2025-01-01T00:00:00Z'
+      responses:
+        '200':
+          description: Acknowledgment.
+      tags:
+      - Seller API
 components:
   schemas:
+    WebhookShippingAddress:
+      required:
+      - city
+      - postal_code
+      - country
+      type: object
+      description: 'The buyer''s shipping address as delivered in order webhook payloads.
+
+        Note: unlike the Orders endpoint''s address, the country is delivered in the `country` field (not `country_code`).'
+      properties:
+        name:
+          type: string
+          description: The name of the buyer.
+          example: John Doe
+        address:
+          type: string
+          description: The first line of the buyer's address.
+          example: 123 Main St
+        address2:
+          type: string
+          description: The second line of the buyer's address.
+          example: Apt 1
+        city:
+          type: string
+          description: The city of the buyer's address.
+          example: London
+        postal_code:
+          type: string
+          description: The postal code of the buyer's address.
+          example: EC1V 4PW
+        state:
+          type: string
+          description: The state of the buyer's address.
+          example: Greater London
+        country:
+          type: string
+          description: The country code of the buyer's address.
+          example: GB
+        phone_number:
+          type: string
+          description: The phone number of the buyer.
+          example: 07123456789
+    DepopShippingResponse:
+      type: object
+      required:
+      - shipping_provider_id
+      properties:
+        shipping_provider_id:
+          type: string
+          description: 'The identifier for the shipping provider used for this order.
+
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+      example:
+        shipping_provider_id: USPS
+    ProductCreate:
+      type: object
+      description: The payload of the `v1:product.create` webhook, containing the full state of the newly created product.
+      required:
+      - seller_id
+      - product
+      properties:
+        seller_id:
+          type: number
+          description: The Depop user ID of the product seller.
+          example: 123456
+        product:
+          allOf:
+          - $ref: '#/components/schemas/Product'
+          description: 'The state of the product as created, in the same shape as the response of GET `/api/v1/products/by-sku/{sku}/`.
+
+            **Note:** `auto_send_offer_price` and `auto_negotiate_offer_price` are never included here.'
+    DepopShippingDetails:
+      type: object
+      required:
+      - address_id
+      - shipping_provider_id
+      - parcel_size_id
+      - payer
+      properties:
+        address_id:
+          type: integer
+          format: int64
+          description: 'The ID of the seller address to ship from.
+
+            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
+
+            The address determines which shipping providers and parcel sizes are available.'
+          example: 123456
+        shipping_provider_id:
+          type: string
+          description: 'The identifier for the shipping provider.
+
+            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
+
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+        parcel_size_id:
+          type: string
+          description: 'The identifier for the parcel size.
+
+            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
+
+            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
+          example: SMALL
+        payer:
+          type: string
+          description: 'Who pays for the shipping cost.
+
+            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
+          enum:
+          - buyer
+          - seller
+          example: buyer
+      example:
+        address_id: 123456
+        shipping_provider_id: USPS
+        parcel_size_id: SMALL
+        payer: buyer
+    Address:
+      type: object
+      required:
+      - country_code
+      properties:
+        country_code:
+          type: string
+          example: GB
+        state:
+          type: string
+          description: The state/county of the product's address.
+          example: Greater London
+      example:
+        country_code: GB
+        state: Greater London
+    ProductUpdate:
+      type: object
+      description: The payload of the `v1:product.update` webhook, containing the full current state of the updated product.
+      required:
+      - seller_id
+      - product
+      properties:
+        seller_id:
+          type: number
+          description: The Depop user ID of the product seller.
+          example: 123456
+        product:
+          allOf:
+          - $ref: '#/components/schemas/Product'
+          description: 'The current state of the product after the update, in the same shape as the response of GET `/api/v1/products/by-sku/{sku}/`.
+
+            **Note:** `auto_send_offer_price` and `auto_negotiate_offer_price` are never included here.'
+    RefundedOrder:
+      type: object
+      required:
+      - purchase_id
+      - refunded_by
+      properties:
+        purchase_id:
+          type: string
+          description: Depop's internal purchase ID. Useful to be logged and to report any issues back to us.
+          example: '123456'
+        refunded_by:
+          type: string
+          description: 'Who triggered the refund. Can be either PARTNER or DEPOP.
+
+            PARTNER indicates the refund was requested by a partner via the API, or in the Depop app.
+
+            DEPOP indicates the refund was triggered by Depop, for example due to a dispute or if the order was auto-cancelled.'
+          enum:
+          - PARTNER
+          - DEPOP
+          example: PARTNER
     Webhook:
       type: object
       required:
@@ -158,11 +583,23 @@ components:
       properties:
         id:
           type: string
-          description: The unique identifier of the webhook.
+          description: 'The identifier of the webhook.
+
+            For the order webhooks (`v1:order.new`, `v1:order.refund`, `v1:order.update`) this is derived from the purchase ID, so it is stable per order and shared across those event types rather than unique per delivery. Combine it with `event_type` and `created_at` if you need to de-duplicate.'
           example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
         event_type:
           type: string
           description: The type of event that triggered the webhook.
+          anyOf:
+          - type: string
+            enum:
+            - v1:order.new
+            - v1:order.refund
+            - v1:order.update
+            - v1:product.create
+            - v1:product.like
+            - v1:product.unlike
+            - v1:product.update
           example: v1:order.new
         created_at:
           type: string
@@ -175,6 +612,322 @@ components:
           - $ref: '#/components/schemas/OrderWebhook'
           - $ref: '#/components/schemas/RefundedOrder'
           - $ref: '#/components/schemas/ProductLike'
+          - $ref: '#/components/schemas/ProductCreate'
+          - $ref: '#/components/schemas/ProductUpdate'
+    Product:
+      type: object
+      properties:
+        sku:
+          type:
+          - string
+          - 'null'
+          description: SKU of the product. This field is optional and will be null if no SKU was assigned to the product.
+          example: ABC-12345-S-BL
+        product_id:
+          type: number
+          description: The id of the product.
+          example: 123456789
+        slug:
+          type: string
+          description: The URL-friendly slug of the product. Can be used to construct the product URL as `https://www.depop.com/products/{slug}/`.
+          example: vintage-nike-t-shirt-123456789
+        status:
+          type: string
+          description: The status of the product.
+          anyOf:
+          - type: string
+            enum:
+            - STATUS_ONSALE
+            - STATUS_PURCHASED
+            - STATUS_MARKED_AS_SOLD
+            - STATUS_DELETED
+            - STATUS_DELETED_ONSALE
+            - STATUS_DELETED_PURCHASED
+            - STATUS_DELETED_MARKED_AS_SOLD
+            - STATUS_PRODUCT_BANNED_ONSALE
+            - STATUS_USER_BANNED_ONSALE
+            - STATUS_PRODUCT_BANNED_PURCHASED
+            - STATUS_USER_BANNED_PURCHASED
+          example: STATUS_ONSALE
+        address:
+          $ref: '#/components/schemas/Address'
+        description:
+          type: string
+          description: "A good description should contain key attribute information (brand, category, color, size, age etc), clarifying information about flaws, condition, fit, size and measurements. Commonly they end with hash tags (for example, \\#summer).\nConstraints:\n * Limited to 1000 characters\n * Email addresses are not allowed\n * Can only have up to 5 hashtags (for example, \\#summer)."
+          maxLength: 1000
+          example: "Women's Burgundy and Purple Vest\nMauve and white striped tank top  Small mark at the bottom of the hem \n#stripes #summer"
+        price_currency:
+          type: string
+          description: The currency code of the item's price.
+          example: GBP
+        price_amount:
+          type: string
+          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
+          example: '50.99'
+        current_price:
+          type: string
+          description: The current effective price of the item, reflecting any active discount. Equal to price_amount when no discount is applied.
+          example: '45.99'
+        discount_price:
+          type: string
+          description: The discounted price of the item. Only present when the seller has an active discount on the product.
+          example: '45.99'
+        auto_send_offer_price:
+          type: string
+          description: 'The price to automatically send to buyers who liked or have bagged the product.
+
+            There''s a fixed 1h delay before an offer is sent.
+
+            If not set, the product will not automatically send offers.
+
+            Must be less at least 5% off the price_amount. Up to 2 decimal places.
+
+            **Note:** Requires `offers_read` OAuth scope to include this field in the response. If scope is not provided, this field will be omitted.'
+          example: '45.00'
+        auto_negotiate_offer_price:
+          type: string
+          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_read` OAuth scope to include this field in the response. If scope is not provided, this field will be omitted."
+          example: '45.00'
+        international_shipping_cost:
+          type: string
+          description: The cost of shipping the product internationally. Only set this if the product can be shipped internationally. Same currency as price_currency.
+          example: '5.0'
+        national_shipping_cost:
+          type: string
+          description: 'The cost of shipping the product nationally. Same currency as price_currency. If set to 0, the product has free shipping for buyers.
+
+            **Important:** Either `national_shipping_cost` OR `depop_shipping` must be provided. If using Depop managed shipping, use `depop_shipping` instead and omit this field.'
+          example: '2.0'
+        depop_shipping:
+          allOf:
+          - $ref: '#/components/schemas/DepopShippingDetails'
+          description: 'Depop managed shipping configuration. When provided, Depop will handle the shipping and automatically calculate the national shipping cost based on the selected provider and parcel size.
+
+            **Important:** Either `depop_shipping` OR `national_shipping_cost` must be provided (but not both). If you provide `depop_shipping`, the `national_shipping_cost` will be automatically derived from the shipping provider''s pricing.'
+          example:
+            address_id: 123456
+            shipping_provider_id: USPS
+            parcel_size_id: SMALL
+            payer: buyer
+        quantity:
+          type: number
+          description: The quantity of the product available for sale. Must be at least 1.
+          example: 1
+        pictures:
+          type: array
+          minItems: 1
+          maxItems: 8
+          items:
+            $ref: '#/components/schemas/Picture'
+          example:
+          - url: https://images.example.com/products/vintage-nike-tshirt-front.jpg
+            height: 1280
+            width: 1280
+          - url: https://images.example.com/products/vintage-nike-tshirt-back.jpg
+            height: 1280
+            width: 1280
+          - url: https://images.example.com/products/vintage-nike-tshirt-detail.jpg
+            height: 1280
+            width: 1280
+        department:
+          type: string
+          description: 'Top level category of the product.
+
+            Currently we support: womenswear, menswear, kidswear and everything-else. These rarely change.
+
+            For an up to date list, please make use of our taxonomy endpoint. Currently, in https://api.depop.com/api/v3/attributes/ under the key `department`.'
+          example: womenswear
+        product_type:
+          type: string
+          description: 'The more specific category of the product.
+
+            Note that there''s an intermediate level between department and product type called "group". We don''t need to receive this when an item is being listed but it''s used in the apps/website to organize the product types.
+
+            For example, in "menswear >> swim-beach-wear >> swimsuit-one-piece", we only need to know the department "menswear" and the product type "swimsuit-one-piece".
+
+            For an up to date list, please make use of our taxonomy endpoint. Currently, in https://api.depop.com/api/v3/attributes/ under the key `group`.'
+          example: tshirts
+        size_set_id:
+          type: number
+          description: The size set ID for the given Department and Product Type.
+          example: 2
+        size_id:
+          description: The size ID for a given size Set ID.
+          type: number
+          example: 10
+        condition:
+          type: string
+          anyOf:
+          - type: string
+            enum:
+            - brand_new
+            - used_like_new
+            - used_excellent
+            - used_good
+            - used_fair
+          example: brand_new
+        colour:
+          type: array
+          maxItems: 2
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - black
+              - grey
+              - white
+              - brown
+              - tan
+              - cream
+              - yellow
+              - red
+              - burgundy
+              - orange
+              - pink
+              - purple
+              - blue
+              - navy
+              - green
+              - khaki
+              - multi
+              - silver
+              - gold
+          example:
+          - black
+          - white
+        style:
+          type: array
+          maxItems: 3
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - streetwear
+              - sportswear
+              - loungewear
+              - goth
+              - retro
+              - boho
+              - western
+              - indie
+              - skater
+              - rave
+              - costume
+              - cosplay
+              - grunge
+              - emo
+              - minimalist
+              - preppy
+              - avant_garde
+              - punk
+              - glam
+              - regency
+              - casual
+              - techwear
+              - futuristic
+              - cottage
+              - fairy
+              - kidcore
+              - y2_k
+              - biker
+              - gorpcore
+              - twee
+              - coquette
+              - whimsygoth
+          example:
+          - streetwear
+          - goth
+        age:
+          type: array
+          maxItems: 1
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - modern
+              - y2k
+              - 90s
+              - 80s
+              - 70s
+              - 60s
+              - 50s
+              - antique
+          example:
+          - 90s
+        source:
+          type: array
+          maxItems: 2
+          items:
+            type: string
+            anyOf:
+            - type: string
+              enum:
+              - vintage
+              - preloved
+              - reworked
+              - custom
+              - handmade
+              - deadstock
+              - designer
+              - repaired
+          example:
+          - vintage
+        brand:
+          type: string
+          description: The brand name of the product. For example, "Nike".
+          example: Nike
+        attributes:
+          type: object
+          description: 'Additional attributes of the product.
+
+            For an up to date list, please make use of our attributes endpoint.'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            sleeve-length:
+            - short
+            occasion:
+            - wedding
+        is_boosted:
+          type: boolean
+          description: Whether the product is currently boosted.
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the product was created.
+          example: '2025-01-01T00:00:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the product was last updated.
+          example: '2025-01-01T00:00:00Z'
+      required:
+      - product_id
+      - slug
+      - status
+      - address
+      - description
+      - price_currency
+      - price_amount
+      - quantity
+      - pictures
+      - department
+      - product_type
+      - colour
+      - style
+      - age
+      - source
+      - brand
+      - attributes
+      - is_boosted
+      - created_at
+      - updated_at
     OrderLineItem:
       type: object
       required:
@@ -232,8 +985,26 @@ components:
           type: string
           description: The URL of the first image of the product.
           example: https://media-photos-staging.depop.com/r1/67655700/2147971983_93864b20a2ad4b78833cb92c2154810c/P0.jpg
+    Picture:
+      type: object
+      required:
+      - url
+      - height
+      - width
+      properties:
+        url:
+          type: string
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
     OrderWebhook:
       type: object
+      description: The payload of the `v1:order.new` and `v1:order.update` webhooks.
       required:
       - seller_id
       - purchase_id
@@ -256,7 +1027,7 @@ components:
           example: '123456'
         status:
           type: string
-          description: The status of the order.
+          description: The status of the order. For `v1:order.new` this is always `SHIPPING_PENDING`. For `v1:order.update` it reflects the latest status, derived from the carrier tracking status.
           anyOf:
           - type: string
             enum:
@@ -265,6 +1036,7 @@ components:
             - REFUNDED
             - CANCELLED
             - COMPLETED
+            - FAILED
           example: SHIPPING_PENDING
         currency:
           type: string
@@ -311,82 +1083,6 @@ components:
             This field will only be present if the product was listed with Depop managed shipping.'
           example:
             shipping_provider_id: USPS
-    WebhookShippingAddress:
-      required:
-      - city
-      - postal_code
-      - country
-      type: object
-      description: 'The buyer''s shipping address as delivered in order webhook payloads.
-
-        Note: unlike the Orders endpoint''s address, the country is delivered in the `country` field (not `country_code`).'
-      properties:
-        name:
-          type: string
-          description: The name of the buyer.
-          example: John Doe
-        address:
-          type: string
-          description: The first line of the buyer's address.
-          example: 123 Main St
-        address2:
-          type: string
-          description: The second line of the buyer's address.
-          example: Apt 1
-        city:
-          type: string
-          description: The city of the buyer's address.
-          example: London
-        postal_code:
-          type: string
-          description: The postal code of the buyer's address.
-          example: EC1V 4PW
-        state:
-          type: string
-          description: The state of the buyer's address.
-          example: Greater London
-        country:
-          type: string
-          description: The country code of the buyer's address.
-          example: GB
-        phone_number:
-          type: string
-          description: The phone number of the buyer.
-          example: 07123456789
-    RefundedOrder:
-      type: object
-      required:
-      - purchase_id
-      - refunded_by
-      properties:
-        purchase_id:
-          type: string
-          description: Depop's internal purchase ID. Useful to be logged and to report any issues back to us.
-          example: '123456'
-        refunded_by:
-          type: string
-          description: 'Who triggered the refund. Can be either PARTNER or DEPOP.
-
-            PARTNER indicates the refund was requested by a partner via the API, or in the Depop app.
-
-            DEPOP indicates the refund was triggered by Depop, for example due to a dispute or if the order was auto-cancelled.'
-          enum:
-          - PARTNER
-          - DEPOP
-          example: PARTNER
-    DepopShippingResponse:
-      type: object
-      required:
-      - shipping_provider_id
-      properties:
-        shipping_provider_id:
-          type: string
-          description: 'The identifier for the shipping provider used for this order.
-
-            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
-          example: USPS
-      example:
-        shipping_provider_id: USPS
     ProductLike:
       type: object
       required:

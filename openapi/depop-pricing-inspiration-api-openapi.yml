@@ -2,7 +2,34 @@ openapi: 3.2.0
 info:
   title: Seller Pricing Inspiration API
   version: 1.0.0
-  description: Externally facing API to allow enterprise partners to automate listing on Depop.
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
 servers:
 - url: https://partnerapi-staging.depop.com
 - url: https://partnerapi.depop.com
@@ -87,24 +114,53 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: bad-request
+              message: invalid request
   schemas:
-    Picture:
+    PricingInspirationResponse:
+      title: PricingInspirationResponse
       type: object
       required:
-      - url
-      - height
-      - width
+      - price_prediction
+      - similar_sold_items
       properties:
-        url:
-          type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
+        price_prediction:
+          $ref: '#/components/schemas/PricePrediction'
+        similar_sold_items:
+          type: array
+          description: A best-effort list of similar sold items. May be empty if no comparable items are found, or if the similar sold items lookup is temporarily unavailable. The price prediction is still returned in either case.
+          items:
+            $ref: '#/components/schemas/SimilarSoldItem'
+          example:
+          - brand_name: Nike
+            condition: used_excellent
+            picture:
+              height: 1280
+              url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+              width: 1280
+            sold_price_amount: '50.00'
+            sold_price_currency: GBP
     SimilarSoldItem:
       title: SimilarSoldItem
       type: object
@@ -136,43 +192,6 @@ components:
           type: string
           description: The canonical brand name of the product.
           example: Nike
-    ErrorItem:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          example: missing_attribute
-          description: The error code.
-        message:
-          type: string
-          example: Missing mandatory field
-          description: The error message.
-    PricingInspirationResponse:
-      title: PricingInspirationResponse
-      type: object
-      required:
-      - price_prediction
-      - similar_sold_items
-      properties:
-        price_prediction:
-          $ref: '#/components/schemas/PricePrediction'
-        similar_sold_items:
-          type: array
-          description: A best-effort list of similar sold items. May be empty if no comparable items are found, or if the similar sold items lookup is temporarily unavailable. The price prediction is still returned in either case.
-          items:
-            $ref: '#/components/schemas/SimilarSoldItem'
-          example:
-          - brand_name: Nike
-            condition: used_excellent
-            picture:
-              height: 1280
-              url: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-              width: 1280
-            sold_price_amount: '50.00'
-            sold_price_currency: GBP
     PricingInspirationRequest:
       title: PricingInspirationRequest
       required:
@@ -313,6 +332,22 @@ components:
               - repaired
           example:
           - vintage
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
     PricePrediction:
       title: PricePrediction
       type: object
@@ -335,45 +370,37 @@ components:
           type: string
           description: The lower bound of the predicted price range.
           example: '17.00'
-    ErrorResponse:
+    Picture:
       type: object
+      required:
+      - url
+      - height
+      - width
       properties:
-        id:
+        url:
           type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: bad-request
-              message: invalid request
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
+    ErrorItem:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          example: missing_attribute
+          description: The error code.
+        message:
+          type: string
+          example: Missing mandatory field
+          description: The error message.
   securitySchemes:
     BearerAuth:
       type: http

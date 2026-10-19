@@ -2,7 +2,34 @@ openapi: 3.2.0
 info:
   title: Seller Products - Legacy (Deprecated) API
   version: 1.0.0
-  description: Externally facing API to allow enterprise partners to automate listing on Depop.
+  description: 'Externally facing API to allow enterprise partners to automate listing on Depop.
+
+
+    ## OAuth 2.0 Scopes
+
+
+    This API uses OAuth 2.0 scopes to control access to different resources. Each endpoint requires specific scopes to access:
+
+
+    - **`products_read`** - Required to read product information and listings
+
+    - **`products_write`** - Required to create, update, or delete products
+
+    - **`orders_read`** - Required to read order information and order history
+
+    - **`orders_write`** - Required to mark orders as shipped or process refunds
+
+    - **`offers_read`** - Required to read offer pricing information (auto send offer price, auto negotiate offer price)
+
+    - **`offers_write`** - Required to set or modify offer prices (auto send offer price, auto negotiate offer price)
+
+    - **`shop_read`** - Required to read shop information including seller addresses and available shipping providers
+
+
+    API key tokens have access to all scopes, while OAuth tokens are limited to the scopes specified in the token.
+
+
+    If you attempt to access an endpoint without the required scope, you will receive a `403 Forbidden` response with the error code `insufficient_scope`.'
 servers:
 - url: https://partnerapi-staging.depop.com
 - url: https://partnerapi.depop.com
@@ -405,109 +432,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    PublicPicture:
-      type: object
-      required:
-      - url
-      properties:
-        url:
-          type: string
-          description: 'Publicly accessible URL of the picture.
-
-            Non-square images are also supported.
-
-            Currently, we support JPG, WebP and PNG image formats.'
-          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
-    ProductCreateOrUpdateResponse:
-      type: object
-      required:
-      - product_id
-      - slug
-      properties:
-        product_id:
-          type: number
-          example: 12345678
-          description: The product id of the created or updated product.
-        slug:
-          type: string
-          example: vintage-nike-t-shirt-12345678
-          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
-        sku:
-          type:
-          - string
-          - 'null'
-          example: ABC-12345-S-BL
-          description: 'The SKU of the product.
-
-            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
-      example:
-        product_id: 12345678
-        slug: vintage-nike-t-shirt-12345678
-        sku: ABC-12345-S-BL
-    Picture:
-      type: object
-      required:
-      - url
-      - height
-      - width
-      properties:
-        url:
-          type: string
-          description: URL of the picture.
-          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
-        height:
-          type: number
-          example: 1280
-        width:
-          type: number
-          example: 1280
-    DepopShippingDetails:
-      type: object
-      required:
-      - address_id
-      - shipping_provider_id
-      - parcel_size_id
-      - payer
-      properties:
-        address_id:
-          type: integer
-          format: int64
-          description: 'The ID of the seller address to ship from.
-
-            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
-
-            The address determines which shipping providers and parcel sizes are available.'
-          example: 123456
-        shipping_provider_id:
-          type: string
-          description: 'The identifier for the shipping provider.
-
-            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
-
-            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
-          example: USPS
-        parcel_size_id:
-          type: string
-          description: 'The identifier for the parcel size.
-
-            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
-
-            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
-          example: SMALL
-        payer:
-          type: string
-          description: 'Who pays for the shipping cost.
-
-            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
-          enum:
-          - buyer
-          - seller
-          example: buyer
-      example:
-        address_id: 123456
-        shipping_provider_id: USPS
-        parcel_size_id: SMALL
-        payer: buyer
     ProductPutRequest:
       type: object
       required:
@@ -821,6 +745,156 @@ components:
           occasion:
           - casual
         is_boosted: false
+    ProductCreateOrUpdateResponse:
+      type: object
+      required:
+      - product_id
+      - slug
+      properties:
+        product_id:
+          type: number
+          example: 12345678
+          description: The product id of the created or updated product.
+        slug:
+          type: string
+          example: vintage-nike-t-shirt-12345678
+          description: The URL-friendly identifier for the product on Depop. This can be used with the `/api/v1/products/by-slug/{slug}/` endpoints.
+        sku:
+          type:
+          - string
+          - 'null'
+          example: ABC-12345-S-BL
+          description: 'The SKU of the product.
+
+            - For PUT `/api/v1/products/by-sku/{sku}/`: Always present (same as the SKU in the URL path). - For PUT `/api/v1/products/by-slug/{slug}/`: Present if the product has a SKU, otherwise null. - For PUT `/api/v1/products/by-product-id/{productId}/`: Present if the product has a SKU, otherwise null. - For POST `/api/v1/products/`: Present if SKU was provided in the request, otherwise null.'
+      example:
+        product_id: 12345678
+        slug: vintage-nike-t-shirt-12345678
+        sku: ABC-12345-S-BL
+    PublicPicture:
+      type: object
+      required:
+      - url
+      properties:
+        url:
+          type: string
+          description: 'Publicly accessible URL of the picture.
+
+            Non-square images are also supported.
+
+            Currently, we support JPG, WebP and PNG image formats.
+
+            If a Depop hosted picture URL is provided (`media-photos.depop.com`), it must reference a picture belonging to the requesting user and that picture must still exist. URLs pointing at another user''s picture, or at a picture that no longer exists or is invalid, are rejected with a `422` validation error. External URLs (not hosted on `media-photos.depop.com`) are unaffected.'
+          example: https://images.ctfassets.net/itoh30v6uh9a/3c1QQDGUAEHH9A76ovYSTA/1837e557daee3c763b6fbedd19785094/WW.jpg
+    PatchProductRequest:
+      type: object
+      properties:
+        price_amount:
+          type: string
+          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
+          example: '50.99'
+        discount_price:
+          type: string
+          description: 'The discount price of the item.
+
+            Must be less than the price_amount. Up to 2 decimal places.'
+          example: '48.00'
+        auto_send_offer_price:
+          type: string
+          description: 'The price to automatically send to buyers who liked or have bagged the product.
+
+            There''s a fixed 1h delay before an offer is sent.
+
+            If not set, the product will not automatically send offers.
+
+            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
+          example: '45.00'
+        auto_negotiate_offer_price:
+          type: string
+          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
+          example: '45.00'
+        quantity:
+          type: number
+          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
+          example: 1
+    DepopShippingDetails:
+      type: object
+      required:
+      - address_id
+      - shipping_provider_id
+      - parcel_size_id
+      - payer
+      properties:
+        address_id:
+          type: integer
+          format: int64
+          description: 'The ID of the seller address to ship from.
+
+            This must be an address ID obtained from the `/api/v1/shop/seller-addresses/` endpoint.
+
+            The address determines which shipping providers and parcel sizes are available.'
+          example: 123456
+        shipping_provider_id:
+          type: string
+          description: 'The identifier for the shipping provider.
+
+            This must be a provider ID returned from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint for the specified address.
+
+            Common providers include: USPS, MY_HERMES (EVRI), SENDLE.'
+          example: USPS
+        parcel_size_id:
+          type: string
+          description: 'The identifier for the parcel size.
+
+            This must be a parcel size ID available for the specified shipping provider, obtained from the `/api/v1/shop/seller-addresses/{address_id}/shipping-providers/` endpoint.
+
+            Common sizes include: SMALL, MEDIUM, LARGE, etc.'
+          example: SMALL
+        payer:
+          type: string
+          description: 'Who pays for the shipping cost.
+
+            - `buyer`: The buyer pays for shipping (shipping cost is added to the total price) - `seller`: The seller pays for shipping (free shipping for buyers)'
+          enum:
+          - buyer
+          - seller
+          example: buyer
+      example:
+        address_id: 123456
+        shipping_provider_id: USPS
+        parcel_size_id: SMALL
+        payer: buyer
+    ErrorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+          description: A unique identifier for the error response.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+      example:
+        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+        errors:
+        - code: product_not_found
+          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
+    Address:
+      type: object
+      required:
+      - country_code
+      properties:
+        country_code:
+          type: string
+          example: GB
+        state:
+          type: string
+          description: The state/county of the product's address.
+          example: Greater London
+      example:
+        country_code: GB
+        state: Greater London
     Product:
       type: object
       properties:
@@ -874,6 +948,10 @@ components:
         current_price:
           type: string
           description: The current effective price of the item, reflecting any active discount. Equal to price_amount when no discount is applied.
+          example: '45.99'
+        discount_price:
+          type: string
+          description: The discounted price of the item. Only present when the seller has an active discount on the product.
           example: '45.99'
         auto_send_offer_price:
           type: string
@@ -1131,6 +1209,23 @@ components:
       - is_boosted
       - created_at
       - updated_at
+    Picture:
+      type: object
+      required:
+      - url
+      - height
+      - width
+      properties:
+        url:
+          type: string
+          description: URL of the picture.
+          example: https://media-photos-staging.depop.com/b0/18220/5612584_b6795bc34778465293e45647518906d6/P0.jpg
+        height:
+          type: number
+          example: 1280
+        width:
+          type: number
+          example: 1280
     ErrorItem:
       type: object
       required:
@@ -1145,71 +1240,20 @@ components:
           type: string
           example: Missing mandatory field
           description: The error message.
-    Address:
-      type: object
-      required:
-      - country_code
-      properties:
-        country_code:
-          type: string
-          example: GB
-        state:
-          type: string
-          description: The state/county of the product's address.
-          example: Greater London
-      example:
-        country_code: GB
-        state: Greater London
-    PatchProductRequest:
-      type: object
-      properties:
-        price_amount:
-          type: string
-          description: The price of the item. Must be at least $1.00 or £1.00. Up to 2 decimal places.
-          example: '50.99'
-        discount_price:
-          type: string
-          description: 'The discount price of the item.
-
-            Must be less than the price_amount. Up to 2 decimal places.'
-          example: '48.00'
-        auto_send_offer_price:
-          type: string
-          description: 'The price to automatically send to buyers who liked or have bagged the product.
-
-            There''s a fixed 1h delay before an offer is sent.
-
-            If not set, the product will not automatically send offers.
-
-            Must be less at least 5% off the price_amount or the discount_price if the discount_price is set. Up to 2 decimal places.'
-          example: '45.00'
-        auto_negotiate_offer_price:
-          type: string
-          description: "The price to automatically respond with when a buyer sends an offer in this product:\n * If the buyer offer is higher or equal to this value, then the offer will be automatically accepted.\n * If the buyer offer is lower than this value, then the offer will be automatically countered with this price.\n\nIf the buyer counters again, the same value will be used to counter the buyer's offer.\nIf not set, the offers will not be automatically responded to.\nMust be less at least 5% off the price_amount. Up to 2 decimal places.\n**Note:** Requires `offers_write` OAuth scope."
-          example: '45.00'
-        quantity:
-          type: number
-          description: The quantity of the product available for sale. Must be at least 1. (Use the marked as sold endpoint to reduce quantity to 0)
-          example: 1
-    ErrorResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-          description: A unique identifier for the error response.
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorItem'
-      example:
-        id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-        errors:
-        - code: product_not_found
-          message: 'Product (sku: womens-tshirt-1, id: 123) not found'
   responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
+            errors:
+            - code: unauthorized
+              message: invalid api key
     ProductUnprocessableEntity:
-      description: Unprocessable Entity - product validation error
+      description: Unprocessable Entity - the product failed validation, or the seller's Depop account is not currently able to list items. Retrying the same request will not help until the product or the seller's account is fixed.
       content:
         application/json:
           schema:
@@ -1257,6 +1301,35 @@ components:
                 errors:
                 - code: manual_shipping_not_allowed
                   message: 'Failed to create or update product (sku: ABC-12345-S-BL) because manual shipping is not allowed for this user.'
+            sellerOnboardingIncomplete:
+              summary: Seller has not finished onboarding with Depop
+              description: The seller has outstanding onboarding requirements on their Depop account (for example they have not set up how they get paid), so they cannot list items yet. The seller needs to complete onboarding in the Depop app before the product can be created or updated. Do not retry until they have.
+              value:
+                id: c9978a02-d9e1-4f62-ea04-5d96f46331a0
+                errors:
+                - code: seller_onboarding_incomplete
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because the seller has not finished onboarding with Depop. The seller needs to complete their outstanding onboarding requirements in the Depop app before they can list items.'
+            duplicateSku:
+              summary: SKU already belongs to another product
+              value:
+                id: b6e99a15-5c35-47a5-9af8-d649d3cb2e41
+                errors:
+                - code: duplicate_sku
+                  message: 'Failed to create or update product (sku: ABC-12345-S-BL) because that SKU already belongs to another product. SKUs must be unique.'
+            pictureNotOwned:
+              summary: Depop-hosted picture belongs to another user
+              value:
+                id: a8756891-b7c9-4d40-c8f2-3b74d24119e8
+                errors:
+                - code: validation
+                  message: Depop Picture URL https://media-photos.depop.com/b1/11111111/2151170221_29b7a3284c084ba9ac5e5735be0a7bf7/P0.jpg does not belong to the requesting user
+            pictureNotValid:
+              summary: Depop-hosted picture is not valid or no longer exists
+              value:
+                id: b9867902-c8d0-4e51-d9a3-4c85e35220f9
+                errors:
+                - code: validation
+                  message: Depop Picture URL https://media-photos.depop.com/b1/111111/2151170221_29b7a3284c084ba9ac5e5735be0a7bf7/P0.jpg could not be processed because it is not valid or no longer exists
     Forbidden:
       description: Forbidden - Insufficient scope
       content:
@@ -1268,17 +1341,6 @@ components:
             errors:
             - code: insufficient_scope
               message: 'Required scope: products_write'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            id: a210923f-c1f3-4d84-a2bd-7f18c68553e2
-            errors:
-            - code: unauthorized
-              message: invalid api key
     BadRequest:
       description: Bad request
       content:
